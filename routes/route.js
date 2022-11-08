@@ -6,7 +6,7 @@ module.exports = (app) => {
     router.post("/add-users", user.create);
     router.get("/registered-users", user.findAll);
     router.delete("/delete-users/:id", user.delete);
-    // router.put("/update/:id", user.update);
+    router.put("/update-users/:id", user.update);
     app.use("/api/dashboard", router);
 
 };
