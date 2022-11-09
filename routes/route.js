@@ -8,6 +8,9 @@ module.exports = (app) => {
     router.get("/registered-users", user.findAll);
     router.delete("/delete-users/:id", user.delete);
     router.put("/update-users/:id", user.update);
+
+    router.post("/add-advisors", advisor.create);
+
     app.use("/api/dashboard", router);
 
 };
