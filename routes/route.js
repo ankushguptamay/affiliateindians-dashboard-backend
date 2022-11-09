@@ -11,6 +11,7 @@ module.exports = (app) => {
 
     router.post("/add-advisors", advisor.create);
     router.get("/advisors", advisor.findAll);
+    router.delete("/delete-advisors/:id", advisor.delete);
 
     app.use("/api/dashboard", router);
 

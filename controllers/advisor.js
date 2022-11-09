@@ -12,9 +12,9 @@ exports.create = async (req, res) => {
             });
             res.status(201).send(`Advisor added with ID: ${advisor.id}`);
     }
-    catch(error){
-        console.log(error);
-        res.status(500).send(error);
+    catch(err){
+        console.log(err);
+        res.status(500).send(err);
     }
 };
 
@@ -22,8 +22,23 @@ exports.findAll = async (req, res) => {
     try{
         const advisor = await Advisor.findAll();
         res.status(200).send(advisor);
-    }catch(error){
-        console.log(error);
-        res.status(500).send(error);
+    }catch(err){
+        console.log(err);
+        res.status(500).send(err);
+    }
+};
+
+exports.delete = async (req, res) => {
+    try{
+        const id = req.params.id;
+        const advisor = await Advisor.findOne({where: {id: id}});
+        if (!advisor){
+           console.log("err");
+        }
+        advisor.destroy();
+        res.status(200).send(`Advisor deleted with ID: ${id}`);
+    }catch(err){
+            console.log(err);
+            res.status(500).send(err);
     }
 };
