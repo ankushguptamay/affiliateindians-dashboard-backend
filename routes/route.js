@@ -1,5 +1,6 @@
 module.exports = (app) => {
     const user = require('../controllers/user.js');
+    const advisor = require('../controllers/advisor.js');   
 
     const router = require('express').Router();
 
