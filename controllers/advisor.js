@@ -42,3 +42,23 @@ exports.delete = async (req, res) => {
             res.status(500).send(err);
     }
 };
+
+exports.update = async (req, res) => {
+    try{
+        const id = req.params.id;
+        const advisor = await Advisor.findOne({where: {id: id}});
+        if (!advisor){
+            console.log("err");
+        }
+        advisor.update({
+            name: req.body.name,
+            email: req.body.email,
+            mobileNumber: req.body.mobileNumber,
+            image: req.body.image
+        });
+        res.status(200).send(`Advisor modified with ID: ${id}`);
+    }catch(err){
+        console.log(err);
+        res.status(500).send(err);
+    }
+};

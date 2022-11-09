@@ -12,6 +12,7 @@ module.exports = (app) => {
     router.post("/add-advisors", advisor.create);
     router.get("/advisors", advisor.findAll);
     router.delete("/delete-advisors/:id", advisor.delete);
+    router.put("/update-advisors/:id", advisor.update);
 
     app.use("/api/dashboard", router);
 
