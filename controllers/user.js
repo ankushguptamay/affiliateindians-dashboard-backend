@@ -38,7 +38,7 @@ exports.delete = async (req, res) => {
         const id = req.params.id;
         const users = await User.findOne({where: {id: id}});
         if (!users){
-           console.log("err");
+           console.log("error");
         }
         users.destroy();
         res.status(200).send(`User deleted with ID: ${id}`);

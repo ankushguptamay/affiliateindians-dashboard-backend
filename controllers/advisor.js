@@ -48,7 +48,7 @@ exports.update = async (req, res) => {
         const id = req.params.id;
         const advisors = await Advisor.findOne({where: {id: id}});
         if (!advisors){
-            console.log("err");
+            console.log("error");
         }
         advisors.update({
             name: req.body.name,

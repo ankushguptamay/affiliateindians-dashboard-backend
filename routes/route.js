@@ -16,6 +16,7 @@ module.exports = (app) => {
     router.put("/update-advisors/:id", advisor.update);
 
     router.post("/add-members", member.create); 
+    router.get("/members", member.findAll);
 
     app.use("/api/dashboard", router);
 

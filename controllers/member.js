@@ -20,3 +20,13 @@ exports.create = async (req, res) => {
         res.status(500).send(err);
     }
 };
+
+exports.findAll = async (req, res) => {
+    try{
+        const members = await Member.findAll();
+        res.status(200).send(members);
+    }catch(error){
+        console.log(error);
+        res.status(500).send(error);
+    }
+};
