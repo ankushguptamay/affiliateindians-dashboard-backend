@@ -17,6 +17,7 @@ module.exports = (app) => {
 
     router.post("/add-members", member.create); 
     router.get("/members", member.findAll);
+    router.delete("/delete-members/:id", member.delete);
 
     app.use("/api/dashboard", router);
 

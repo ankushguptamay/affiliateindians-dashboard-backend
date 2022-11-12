@@ -25,8 +25,23 @@ exports.findAll = async (req, res) => {
     try{
         const members = await Member.findAll();
         res.status(200).send(members);
-    }catch(error){
-        console.log(error);
-        res.status(500).send(error);
+    }catch(err){
+        console.log(err);
+        res.status(500).send(err);
+    }
+};
+
+exports.delete = async (req, res) => {
+    try{
+        const id = req.params.id;
+        const members = await Member.findOne({where: {id: id}});
+        if (!members){
+           console.log("error");
+        }
+        members.destroy();
+        res.status(200).send(`Member deleted of ID: ${id}`);
+    }catch(err){
+            console.log(err);
+            res.status(500).send(err);
     }
 };

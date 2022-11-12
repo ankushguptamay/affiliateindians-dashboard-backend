@@ -36,7 +36,7 @@ exports.delete = async (req, res) => {
            console.log("err");
         }
         advisors.destroy();
-        res.status(200).send(`Advisor deleted with ID: ${id}`);
+        res.status(200).send(`Advisor deleted of ID: ${id}`);
     }catch(err){
             console.log(err);
             res.status(500).send(err);
@@ -56,7 +56,7 @@ exports.update = async (req, res) => {
             mobileNumber: req.body.mobileNumber,
             image: req.body.image
         });
-        res.status(200).send(`Advisor modified with ID: ${id}`);
+        res.status(200).send(`Advisor modified of ID: ${id}`);
     }catch(err){
         console.log(err);
         res.status(500).send(err);
