@@ -1,16 +1,16 @@
 const db = require('../models');
-const Advisor = db.user;
+const Advisor = db.advisor;
 
 exports.create = async (req, res) => {
     try{
         console.log(req.body);
-        const advisor = await Advisor.create({
+        const advisors = await Advisor.create({
             name: req.body.name,
             email: req.body.email,
             mobileNumber: req.body.mobileNumber,
             image: req.body.image
             });
-            res.status(201).send(`Advisor added with ID: ${advisor.id}`);
+            res.status(201).send(`Advisor added with ID: ${advisors.id}`);
     }
     catch(err){
         console.log(err);
@@ -20,8 +20,8 @@ exports.create = async (req, res) => {
 
 exports.findAll = async (req, res) => {
     try{
-        const advisor = await Advisor.findAll();
-        res.status(200).send(advisor);
+        const advisors = await Advisor.findAll();
+        res.status(200).send(advisors);
     }catch(err){
         console.log(err);
         res.status(500).send(err);
@@ -31,11 +31,11 @@ exports.findAll = async (req, res) => {
 exports.delete = async (req, res) => {
     try{
         const id = req.params.id;
-        const advisor = await Advisor.findOne({where: {id: id}});
-        if (!advisor){
+        const advisors = await Advisor.findOne({where: {id: id}});
+        if (!advisors){
            console.log("err");
         }
-        advisor.destroy();
+        advisors.destroy();
         res.status(200).send(`Advisor deleted with ID: ${id}`);
     }catch(err){
             console.log(err);
@@ -46,11 +46,11 @@ exports.delete = async (req, res) => {
 exports.update = async (req, res) => {
     try{
         const id = req.params.id;
-        const advisor = await Advisor.findOne({where: {id: id}});
-        if (!advisor){
+        const advisors = await Advisor.findOne({where: {id: id}});
+        if (!advisors){
             console.log("err");
         }
-        advisor.update({
+        advisors.update({
             name: req.body.name,
             email: req.body.email,
             mobileNumber: req.body.mobileNumber,

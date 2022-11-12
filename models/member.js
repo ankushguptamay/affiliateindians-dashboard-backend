@@ -1,9 +1,18 @@
 module.exports = (sequelize, Sequelize) => {
-    const User = sequelize.define("user", {
+    const Member = sequelize.define("member", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
+      },
+      date: {
+        type: Sequelize.DATEONLY,
+      },
+      funnel: {
+        type: Sequelize.STRING,
+      },
+      tag: {
+        type: Sequelize.STRING,
       },
       name: {
         type: Sequelize.STRING,
@@ -14,21 +23,9 @@ module.exports = (sequelize, Sequelize) => {
       mobileNumber: {
         type: Sequelize.INTEGER,
       },
-      address: {
-        type: Sequelize.STRING,
-      },
-      city: {
-        type: Sequelize.STRING,
-      },
-      state: {
-        type: Sequelize.STRING,
-      },
-      country: {
-        type: Sequelize.STRING,
-      },
-      pinCode: {
-        type: Sequelize.INTEGER,
+      lastTrainingDay: {
+        type: Sequelize.DATEONLY,
       }
     });
-    return User;
+    return Member;
 };
