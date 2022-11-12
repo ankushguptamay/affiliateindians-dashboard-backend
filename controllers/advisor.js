@@ -33,7 +33,7 @@ exports.delete = async (req, res) => {
         const id = req.params.id;
         const advisors = await Advisor.findOne({where: {id: id}});
         if (!advisors){
-           console.log("err");
+           console.log("error: Advisor is not present!");
         }
         advisors.destroy();
         res.status(200).send(`Advisor deleted of ID: ${id}`);
@@ -48,7 +48,7 @@ exports.update = async (req, res) => {
         const id = req.params.id;
         const advisors = await Advisor.findOne({where: {id: id}});
         if (!advisors){
-            console.log("error");
+            console.log("error: Advisor is not present!");
         }
         advisors.update({
             name: req.body.name,

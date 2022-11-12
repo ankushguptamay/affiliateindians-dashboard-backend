@@ -13,7 +13,7 @@ exports.create = async (req, res) => {
             mobileNumber: req.body.mobileNumber,
             lastTrainingDay: req.body.lastTrainingDay
             });
-            res.status(201).send(`Members added with ID: ${members.id}`);
+            res.status(201).send(`Member added with ID: ${members.id}`);
     }
     catch(err){
         console.log(err);
@@ -36,12 +36,35 @@ exports.delete = async (req, res) => {
         const id = req.params.id;
         const members = await Member.findOne({where: {id: id}});
         if (!members){
-           console.log("error");
+           console.log("error: Member is not present!");
         }
         members.destroy();
         res.status(200).send(`Member deleted of ID: ${id}`);
     }catch(err){
             console.log(err);
             res.status(500).send(err);
+    }
+};
+
+exports.update = async (req, res) => {
+    try{
+        const id = req.params.id;
+        const members = await Member.findOne({where: {id: id}});
+        if (!members){
+            console.log("error: Member is not present!");
+        }
+        members.update({
+            date: req.body.date,
+            funnel: req.body.funnel,
+            tag: req.body.tag,
+            name: req.body.name,
+            email: req.body.email,
+            mobileNumber: req.body.mobileNumber,
+            lastTrainingDay: req.body.lastTrainingDay
+        });
+        res.status(200).send(`Member modified of ID: ${id}`);
+    }catch(err){
+        console.log(err);
+        res.status(500).send(err);
     }
 };

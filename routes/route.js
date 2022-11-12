@@ -18,6 +18,7 @@ module.exports = (app) => {
     router.post("/add-members", member.create); 
     router.get("/members", member.findAll);
     router.delete("/delete-members/:id", member.delete);
+    router.put("/update-members/:id", member.update);
 
     app.use("/api/dashboard", router);
 

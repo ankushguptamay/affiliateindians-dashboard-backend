@@ -38,7 +38,7 @@ exports.delete = async (req, res) => {
         const id = req.params.id;
         const users = await User.findOne({where: {id: id}});
         if (!users){
-           console.log("error");
+           console.log("error: User is not present!");
         }
         users.destroy();
         res.status(200).send(`User deleted of ID: ${id}`);
@@ -53,7 +53,7 @@ exports.update = async (req, res) => {
         const id = req.params.id;
         const users = await User.findOne({where: {id: id}});
         if (!users){
-            console.log("error");
+            console.log("error: User is not present!");
         }
         users.update({
             name: req.body.name,
