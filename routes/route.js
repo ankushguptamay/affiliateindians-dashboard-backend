@@ -1,8 +1,9 @@
 module.exports = (app) => {
     const user = require('../controllers/user.js');
     const advisor = require('../controllers/advisor.js');
-    const member = require('../controllers/member.js')
-    const lead = require('../controllers/lead.js')
+    const member = require('../controllers/member.js');
+    const lead = require('../controllers/lead.js');
+    const scheduleBooking = require('../controllers/scheduleBooking.js');
 
     const router = require('express').Router();
 
@@ -25,6 +26,11 @@ module.exports = (app) => {
     router.get("/leads", lead.findAll);
     router.delete("/delete-leads/:id", lead.delete);
     router.put("/update-leads/:id", lead.update);
+
+    router.post("/add-scheduleBookings", scheduleBooking.create); 
+    router.get("/scheduleBookings", scheduleBooking.findAll);
+    router.delete("/delete-scheduleBookings/:id", scheduleBooking.delete);
+    router.put("/update-scheduleBookings/:id", scheduleBooking.update);
 
     app.use("/api/dashboard", router);
 

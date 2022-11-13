@@ -10,8 +10,6 @@ exports.create = async (req, res) => {
             tag: req.body.tag,
             name: req.body.name,
             email: req.body.email,
-            mobileNumber: req.body.mobileNumber,
-            lastTrainingDay: req.body.lastTrainingDay
             });
             res.status(201).send(`Lead added with ID: ${leads.id}`);
     }
@@ -59,8 +57,6 @@ exports.update = async (req, res) => {
             tag: req.body.tag,
             name: req.body.name,
             email: req.body.email,
-            mobileNumber: req.body.mobileNumber,
-            lastTrainingDay: req.body.lastTrainingDay
         });
         res.status(200).send(`Lead modified of ID: ${id}`);
     }catch(err){
