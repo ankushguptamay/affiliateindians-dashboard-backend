@@ -5,6 +5,7 @@ module.exports = (app) => {
     const lead = require('../controllers/lead.js');
     const scheduleBooking = require('../controllers/scheduleBooking.js');
     const myBooking = require('../controllers/myBooking.js');
+    const eWallet = require('../controllers/eWallet.js');
 
     const router = require('express').Router();
 
@@ -38,6 +39,10 @@ module.exports = (app) => {
     router.delete("/delete-myBookings/:id", myBooking.delete);
     router.put("/update-myBookings/:id", myBooking.update);
 
+    router.post("/add-eWallets", eWallet.create); 
+    router.get("/eWallets", eWallet.findAll);
+    router.delete("/delete-eWallets/:id", eWallet.delete);
+    router.put("/update-eWallets/:id", eWallet.update);
 
     app.use("/api/dashboard", router);
 

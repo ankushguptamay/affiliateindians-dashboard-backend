@@ -23,5 +23,6 @@ db.member = require('./member.js')(sequelize, Sequelize);
 db.lead = require('./lead.js')(sequelize, Sequelize);
 db.scheduleBooking = require('./scheduleBooking.js')(sequelize, Sequelize);
 db.myBooking = require('./myBooking.js')(sequelize, Sequelize);
+db.eWallet = require('./eWallet.js')(sequelize, Sequelize);
 
 module.exports = db;
