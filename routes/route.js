@@ -4,6 +4,7 @@ module.exports = (app) => {
     const member = require('../controllers/member.js');
     const lead = require('../controllers/lead.js');
     const scheduleBooking = require('../controllers/scheduleBooking.js');
+    const myBooking = require('../controllers/myBooking.js');
 
     const router = require('express').Router();
 
@@ -31,6 +32,12 @@ module.exports = (app) => {
     router.get("/scheduleBookings", scheduleBooking.findAll);
     router.delete("/delete-scheduleBookings/:id", scheduleBooking.delete);
     router.put("/update-scheduleBookings/:id", scheduleBooking.update);
+
+    router.post("/add-myBookings", myBooking.create); 
+    router.get("/myBookings", myBooking.findAll);
+    router.delete("/delete-myBookings/:id", myBooking.delete);
+    router.put("/update-myBookings/:id", myBooking.update);
+
 
     app.use("/api/dashboard", router);
 
