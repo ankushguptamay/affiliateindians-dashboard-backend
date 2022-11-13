@@ -2,6 +2,7 @@ module.exports = (app) => {
     const user = require('../controllers/user.js');
     const advisor = require('../controllers/advisor.js');
     const member = require('../controllers/member.js')
+    const lead = require('../controllers/lead.js')
 
     const router = require('express').Router();
 
@@ -19,6 +20,11 @@ module.exports = (app) => {
     router.get("/members", member.findAll);
     router.delete("/delete-members/:id", member.delete);
     router.put("/update-members/:id", member.update);
+
+    router.post("/add-leads", lead.create); 
+    router.get("/leads", lead.findAll);
+    router.delete("/delete-leads/:id", lead.delete);
+    router.put("/update-leads/:id", lead.update);
 
     app.use("/api/dashboard", router);
 
