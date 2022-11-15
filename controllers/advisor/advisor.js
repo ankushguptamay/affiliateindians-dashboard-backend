@@ -1,4 +1,4 @@
-const db = require('../models');
+const db = require('../../models');
 const Advisor = db.advisor;
 
 exports.create = async (req, res) => {

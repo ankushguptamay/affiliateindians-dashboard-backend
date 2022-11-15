@@ -1,11 +1,11 @@
 module.exports = (app) => {
-    const user = require('../controllers/user.js');
-    const advisor = require('../controllers/advisor.js');
-    const member = require('../controllers/member.js');
-    const lead = require('../controllers/lead.js');
-    const scheduleBooking = require('../controllers/scheduleBooking.js');
-    const myBooking = require('../controllers/myBooking.js');
-    const eWallet = require('../controllers/eWallet.js');
+    const user = require('../controllers/user/user.js');
+    const advisor = require('../controllers/advisor/advisor.js');
+    const member = require('../controllers/member/member.js');
+    const lead = require('../controllers/lead/lead.js');
+    const scheduleBooking = require('../controllers/scheduleBooking/scheduleBooking.js');
+    const myBooking = require('../controllers/myBooking/myBooking.js');
+    const eWallet = require('../controllers/eWallet/eWallet.js');
 
     const router = require('express').Router();
 
