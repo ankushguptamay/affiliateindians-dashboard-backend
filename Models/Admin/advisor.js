@@ -12,7 +12,7 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
       },
       mobileNumber: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
       },
       image: {
         type: Sequelize.STRING,

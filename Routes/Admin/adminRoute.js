@@ -21,11 +21,11 @@ router.delete("/delete-users/:id", user.delete);
 router.put("/update-users/:id", user.update);
 
 router.post("/add-advisors", verifyToken, isAdminPresent, uploadImage.single("advisorImage"), [
-    body('email', 'Enter a valid Email').isEmail().optional()
+    body('email', 'Enter a valid Email').isEmail().exists()
 ], advisor.createAdvisor);
 router.get("/advisors", verifyToken, isAdminPresent, advisor.getAllAdvisor);
 router.delete("/delete-advisors/:id", verifyToken, isAdminPresent, advisor.deleteAdvisor);
-router.put("/update-advisors/:id", verifyToken, isAdminPresent, [
+router.put("/update-advisors/:id", verifyToken, isAdminPresent, uploadImage.single("advisorImage"), [
     body('email', 'Enter a valid Email').isEmail().optional()
 ], advisor.updateAdvisor);
 
