@@ -1,4 +1,4 @@
-const db = require('../../models');
+const db = require('../../../Models');
 const EWallet = db.eWallet;
 
 exports.create = async (req, res) => {

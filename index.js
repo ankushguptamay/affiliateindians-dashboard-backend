@@ -1,28 +1,36 @@
+require("dotenv").config();
 const express = require('express');
-const app = express();
 const bodyParser = require('body-parser');
+const cors = require("cors");
 
-const PORT = 8080;
+const app = express();
 
-const db = require('./models');
+var corsOptions = {
+    origin: "*",
+  };
+
+const db = require('./Models');
 db.sequelize.sync()
 .then(() => {
-    //console.log('Database is synced');
+    console.log('Database is synced');
 })
 .catch((err) => {
-    //console.log(err);
+    console.log(err);
 });
 
+app.use(cors(corsOptions));
 app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: true })); 
 
-require('./routes/route.js')(app);
-app.use(express.static(__dirname + "/public"));
+app.use("/admin", require("./Routes/Admin/authAdmin"));
+app.use("/admin/auth", require("./Routes/Admin/adminRoute"));
+// app.use(express.static(__dirname + "/public"));
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
 
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-   console.log(`Server is running on port ${PORT}.`);
+  console.log(`Server is running on port ${PORT}.`);
 });

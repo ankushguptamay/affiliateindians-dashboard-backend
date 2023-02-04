@@ -1,5 +1,5 @@
 
-const db = require('../../models');
+const db = require('../../../Models');
 const User = db.user;
 
 exports.create = async (req, res) => {

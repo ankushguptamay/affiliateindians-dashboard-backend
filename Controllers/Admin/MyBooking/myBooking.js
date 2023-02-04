@@ -1,16 +1,16 @@
-const db = require('../../models');
-const ScheduleBooking = db.scheduleBooking;
+const db = require('../../../Models');
+const MyBooking = db.myBooking;
 
 exports.create = async (req, res) => {
     try{
         console.log(req.body);
-        const scheduleBookings = await ScheduleBooking.create({
+        const myBookings = await MyBooking.create({
             date: req.body.date,
             name: req.body.name,
             timing: req.body.timing,
             advisorName: req.body.advisorName
             });
-            res.status(201).send(`Schedule Booking added with ID: ${scheduleBookings.id}`);
+            res.status(201).send(`My Booking added with ID: ${myBookings.id}`);
     }
     catch(err){
         console.log(err);
@@ -20,8 +20,8 @@ exports.create = async (req, res) => {
 
 exports.findAll = async (req, res) => {
     try{
-        const scheduleBookings = await ScheduleBooking.findAll();
-        res.status(200).send(scheduleBookings);
+        const myBookings = await MyBooking.findAll();
+        res.status(200).send(myBookings);
     }catch(err){
         console.log(err);
         res.status(500).send(err);
@@ -31,12 +31,12 @@ exports.findAll = async (req, res) => {
 exports.delete = async (req, res) => {
     try{
         const id = req.params.id;
-        const scheduleBookings = await ScheduleBooking.findOne({where: {id: id}});
-        if (!scheduleBookings){
-           console.log(`error: Schedule Booking is not present with this id: ${id}!`);
+        const myBookings = await MyBooking.findOne({where: {id: id}});
+        if (!myBookings){
+           console.log(`error: My Booking is not present with this id: ${id}!`);
         }
-        scheduleBookings.destroy();
-        res.status(200).send(`Schedule Booking deleted of ID: ${id}`);
+        myBookings.destroy();
+        res.status(200).send(`My Booking deleted of ID: ${id}`);
     }catch(err){
             console.log(err);
             res.status(500).send(err);
@@ -46,17 +46,17 @@ exports.delete = async (req, res) => {
 exports.update = async (req, res) => {
     try{
         const id = req.params.id;
-        const scheduleBookings = await ScheduleBooking.findOne({where: {id: id}});
-        if (!scheduleBookings){
-            console.log(`error: Schedule Booking is not present with this id: ${id}!`);
+        const myBookings = await MyBooking.findOne({where: {id: id}});
+        if (!myBookings){
+            console.log(`error: My Booking is not present with this id: ${id}!`);
         }
-        scheduleBookings.update({
+        myBookings.update({
             date: req.body.date,
             name: req.body.name,
             timing: req.body.timing,
             advisorName: req.body.advisorName
         });
-        res.status(200).send(`Schedule Booking modified of ID: ${id}`);
+        res.status(200).send(`My Booking modified of ID: ${id}`);
     }catch(err){
         console.log(err);
         res.status(500).send(err);
