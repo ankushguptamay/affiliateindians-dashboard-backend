@@ -3,15 +3,14 @@ const AddCourse = addCourse;
 
 exports.createAddCourse = async (req, res) => {
     try {
-        console.log(req.files.authorImage);
-        const { title, subTitle, categories, authorName, authorImage, courseImage, } = req.body;
+        const { title, subTitle, categories, authorName } = req.body;
         await AddCourse.create({
             title: title,
             subTitle: subTitle,
             authorName: authorName,
-            authorImage: req.files.authorImage.path,
+            authorImage: req.files.authorImage[0].path,
             categories: categories,
-            courseImage: req.files.courseImage.path,
+            courseImage: req.files.courseImage[0].path,
         });
         res.status(201).send({ message: `AddCourse added successfully!` });
     }

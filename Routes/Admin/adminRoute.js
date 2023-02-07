@@ -17,6 +17,7 @@ const addCourse = require('../../Controllers/Admin/AddCourse/addCourseController
 const { verifyToken } = require('../../Middlewares/varifyToken');
 const { isAdminPresent } = require('../../Middlewares/isAdminPresent');
 const uploadImage = require('../../Middlewares/uploadImages');
+const uploadImageOrPDF = require('../../Middlewares/uploadImageOrPDF');
 
 router.post("/add-users", user.create);
 router.get("/users", user.findAll);
@@ -57,13 +58,13 @@ router.get("/eWallets", eWallet.findAll);
 router.delete("/delete-eWallets/:id", eWallet.delete);
 router.put("/update-eWallets/:id", eWallet.update);
 
-router.post("/add-addCourse",uploadImage.fields([{ name: 'authorImage', maxCount: 1 }, { name: 'courseImage', maxCount: 1 }]), addCourse.createAddCourse);
+router.post("/add-addCourse", uploadImage.fields([{ name: 'authorImage', maxCount: 1 }, { name: 'courseImage', maxCount: 1 }]), addCourse.createAddCourse);
 router.get("/addCourses", addCourse.getAddCourse);
 
 router.post("/add-section", section.createCourseSection);
 router.get("/sections", section.getCourseSection);
 
-router.post("/add-lecture", uploadImage.single("lectureFile"), lecture.createLecture);
+router.post("/add-lecture", uploadImageOrPDF.single("lectureFile"), lecture.createLecture);
 router.get("/lectures", lecture.getLecture);
 
 module.exports = router;
