@@ -4,12 +4,12 @@ const { validationResult } = require('express-validator');
 const { deleteFile } = require("../../../Util/deleteFile")
 
 exports.createAdvisor = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        deleteFile(req.file.path);
+        return res.status(402).json({ errors: errors.array() });
+    }
     try {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-            deleteFile(req.file.path);
-            return res.status(402).json({ errors: errors.array() });
-        }
         const advisors = await Advisor.create({
             name: req.body.name,
             email: req.body.email,
@@ -56,19 +56,19 @@ exports.deleteAdvisor = async (req, res) => {
 exports.updateAdvisor = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        if(req.file){
+        if (req.file) {
             deleteFile(req.file.path);
         }
         return res.status(402).json({ errors: errors.array() });
     }
     try {
-        let Image; 
+        let Image;
         const id = req.params.id;
         const advisors = await Advisor.findOne({ where: { id: id } });
         if (!advisors) {
             return res.status(400).send({ message: "Advisor is not present!" });
         }
-        if(req.file){
+        if (req.file) {
             deleteFile(advisors.image);
             Image = req.file.path;
         }

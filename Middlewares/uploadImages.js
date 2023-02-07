@@ -3,7 +3,6 @@ const path = require("path");
 
 const imageFilter = (req, file, cb) => {
      if (file.mimetype.startsWith("image")) {
-        console.log(req.body)
         cb(null, true);
     } else {
         cb("Please upload only images.", false);
