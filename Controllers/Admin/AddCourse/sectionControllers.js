@@ -4,10 +4,10 @@ const CourseSection = courseSection;
 
 exports.createCourseSection = async (req, res) => {
     try {
-        await CourseSection.create({
+        const section = await CourseSection.create({
             addCourse_id: req.body.addCourse_id
         });
-        res.status(201).send({ message: `section added successfully!` });
+        res.status(201).send({ message: `section added successfully! ID: ${section.id}` });
     }
     catch (err) {
         console.log(err);
@@ -18,7 +18,7 @@ exports.createCourseSection = async (req, res) => {
 exports.getCourseSection = async (req, res) => {
     try {
         const section = await CourseSection.findAll({
-            include:[{
+            include: [{
                 model: lecture
             }]
         });

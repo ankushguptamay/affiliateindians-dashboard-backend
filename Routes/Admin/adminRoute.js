@@ -19,12 +19,12 @@ const { isAdminPresent } = require('../../Middlewares/isAdminPresent');
 const uploadImage = require('../../Middlewares/uploadImages');
 const uploadImageOrPDF = require('../../Middlewares/uploadImageOrPDF');
 
-router.post("/add-users", user.create);
+router.post("/create-users", user.create);
 router.get("/users", user.findAll);
 router.delete("/delete-users/:id", user.delete);
 router.put("/update-users/:id", user.update);
 
-router.post("/add-advisors", verifyToken, isAdminPresent, uploadImage.single("advisorImage"), [
+router.post("/create-advisors", verifyToken, isAdminPresent, uploadImage.single("advisorImage"), [
     body('email', 'Enter a valid Email').isEmail().exists()
 ], advisor.createAdvisor);
 router.get("/advisors", verifyToken, isAdminPresent, advisor.getAllAdvisor);
@@ -33,38 +33,43 @@ router.put("/update-advisors/:id", verifyToken, isAdminPresent, uploadImage.sing
     body('email', 'Enter a valid Email').isEmail().optional()
 ], advisor.updateAdvisor);
 
-router.post("/add-members", member.create);
+router.post("/create-members", member.create);
 router.get("/members", member.findAll);
 router.delete("/delete-members/:id", member.delete);
 router.put("/update-members/:id", member.update);
 
-router.post("/add-leads", lead.create);
+router.post("/create-leads", lead.create);
 router.get("/leads", lead.findAll);
 router.delete("/delete-leads/:id", lead.delete);
 router.put("/update-leads/:id", lead.update);
 
-router.post("/add-scheduleBookings", scheduleBooking.create);
+router.post("/create-scheduleBookings", scheduleBooking.create);
 router.get("/scheduleBookings", scheduleBooking.findAll);
 router.delete("/delete-scheduleBookings/:id", scheduleBooking.delete);
 router.put("/update-scheduleBookings/:id", scheduleBooking.update);
 
-router.post("/add-myBookings", myBooking.create);
+router.post("/create-myBookings", myBooking.create);
 router.get("/myBookings", myBooking.findAll);
 router.delete("/delete-myBookings/:id", myBooking.delete);
 router.put("/update-myBookings/:id", myBooking.update);
 
-router.post("/add-eWallets", eWallet.create);
+router.post("/create-eWallets", eWallet.create);
 router.get("/eWallets", eWallet.findAll);
 router.delete("/delete-eWallets/:id", eWallet.delete);
 router.put("/update-eWallets/:id", eWallet.update);
 
-router.post("/add-addCourse", uploadImage.fields([{ name: 'authorImage', maxCount: 1 }, { name: 'courseImage', maxCount: 1 }]), addCourse.createAddCourse);
+router.post("/create-addCourse", uploadImage.fields([{ name: 'authorImage', maxCount: 1 }, { name: 'courseImage', maxCount: 1 }]), addCourse.createAddCourse);
 router.get("/addCourses", addCourse.getAddCourse);
+// router.delete("/delete-addCourse/:id", addCourse.deleteAddCourse);
+router.put("/update-addCourse/:id", uploadImage.fields([{ name: 'authorImage', maxCount: 1 }, { name: 'courseImage', maxCount: 1 }]), addCourse.updateAddCourse);
 
-router.post("/add-section", section.createCourseSection);
+router.post("/create-section", section.createCourseSection);
 router.get("/sections", section.getCourseSection);
 
-router.post("/add-lecture", uploadImageOrPDF.single("lectureFile"), lecture.createLecture);
+router.post("/create-lecture", uploadImageOrPDF.single("lectureFile"), lecture.createLecture);
 router.get("/lectures", lecture.getLecture);
+router.delete("/delete-lecture/:id", lecture.deleteLecture);
+router.put("/update-lecture/:id", uploadImageOrPDF.single("lectureFile"), lecture.updateLecture);
+router.put("/delete-lectureFile/:id", lecture.deleteOnlyFile);
 
 module.exports = router;

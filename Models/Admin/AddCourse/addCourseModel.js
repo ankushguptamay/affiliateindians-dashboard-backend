@@ -1,5 +1,12 @@
+const { addCourse } = require("../..");
+
 module.exports = (sequelize, DataTypes) => {
     const AddCourse = sequelize.define("addCourse", {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
         title: {
             type: DataTypes.STRING,
         },

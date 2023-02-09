@@ -1,5 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
     const Lecture = sequelize.define("lecture", {
+        id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true,
+        },
         video: {
             type: DataTypes.STRING,
         },
