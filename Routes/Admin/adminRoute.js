@@ -60,11 +60,12 @@ router.put("/update-eWallets/:id", eWallet.update);
 
 router.post("/create-addCourse", uploadImage.fields([{ name: 'authorImage', maxCount: 1 }, { name: 'courseImage', maxCount: 1 }]), addCourse.createAddCourse);
 router.get("/addCourses", addCourse.getAddCourse);
-// router.delete("/delete-addCourse/:id", addCourse.deleteAddCourse);
+router.delete("/delete-addCourse/:id", addCourse.deleteAddCourse);
 router.put("/update-addCourse/:id", uploadImage.fields([{ name: 'authorImage', maxCount: 1 }, { name: 'courseImage', maxCount: 1 }]), addCourse.updateAddCourse);
 
 router.post("/create-section", section.createCourseSection);
-router.get("/sections", section.getCourseSection);
+router.get("/sections", section.getSection);
+router.delete("/delete-section/:id", section.deleteSection);
 
 router.post("/create-lecture", uploadImageOrPDF.single("lectureFile"), lecture.createLecture);
 router.get("/lectures", lecture.getLecture);

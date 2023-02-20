@@ -1,5 +1,8 @@
+const { Model } = require("sequelize");
+const { deleteFile } = require("../../../Util/deleteFile")
 module.exports = (sequelize, DataTypes) => {
-    const Lecture = sequelize.define("lecture", {
+    class Lecture extends Model { };
+    Lecture.init({
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -26,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
         richTextEditor: {
             type: DataTypes.TEXT,
         }
+    }, {
+        timestamps: false,
+        sequelize,
+        modelName: "lecture"
     });
     return Lecture;
 };

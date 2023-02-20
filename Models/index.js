@@ -1,4 +1,5 @@
 const dbConfig = require('../Config/db.config.js');
+const { deleteFile } = require("../Util/deleteFile")
 
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.password, {
@@ -30,12 +31,12 @@ db.admin = require('./Admin/admin')(sequelize, Sequelize);
 // Admin AddCourse
 db.addCourse = require('./Admin/AddCourse/addCourseModel')(sequelize, Sequelize);
 db.lecture = require('./Admin/AddCourse/lectureModel')(sequelize, Sequelize);
-db.courseSection = require('./Admin/AddCourse/sectionModel')(sequelize, Sequelize);
+db.section = require('./Admin/AddCourse/sectionModel')(sequelize, Sequelize);
 
-db.addCourse.hasMany(db.courseSection, { foreignKey: "addCourse_id", as: "curriculum" });
-db.courseSection.belongsTo(db.addCourse, { foreignKey: "addCourse_id" });
+db.addCourse.hasMany(db.section, { foreignKey: "addCourse_id", as: "curriculum", onDelete: "CASCADE" });
+db.section.belongsTo(db.addCourse, { foreignKey: "addCourse_id" });
 
-db.courseSection.hasMany(db.lecture, { foreignKey: "section_id"});
-db.lecture.belongsTo(db.courseSection, { foreignKey: "section_id" });
+db.section.hasMany(db.lecture, { foreignKey: "section_id", onDelete: "CASCADE", hooks: true });
+db.lecture.belongsTo(db.section, { foreignKey: "section_id", onDelete: "CASCADE" });
 
 module.exports = db;

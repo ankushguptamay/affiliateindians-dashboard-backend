@@ -1,7 +1,7 @@
-const { addCourse } = require("../..");
-
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-    const AddCourse = sequelize.define("addCourse", {
+    class AddCourse extends Model { };
+    AddCourse.init({
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -25,6 +25,10 @@ module.exports = (sequelize, DataTypes) => {
         courseImage: {
             type: DataTypes.STRING,
         }
+    }, {
+        timestamps: false,
+        sequelize,
+        modelName: "addCourse"
     });
     return AddCourse;
 };

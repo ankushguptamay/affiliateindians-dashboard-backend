@@ -1,6 +1,6 @@
-const { addCourse, courseSection, lecture } = require('../../../Models');
+const { addCourse, section, lecture } = require('../../../Models');
 const AddCourse = addCourse;
-const { deleteFile } = require("../../../Util/deleteFile")
+const { deleteFile, deleteMultiFile } = require("../../../Util/deleteFile")
 
 exports.createAddCourse = async (req, res) => {
     try {
@@ -25,11 +25,11 @@ exports.getAddCourse = async (req, res) => {
     try {
         const addCourse = await AddCourse.findAll({
             include: [{
-                model: courseSection,
+                model: section,
                 as: "curriculum",
                 include: [{
                     model: lecture,
-                    as: "lectures"
+                    as: "lectures",
                 }]
             }]
         });
@@ -43,22 +43,35 @@ exports.getAddCourse = async (req, res) => {
     }
 };
 
-// exports.deleteAddCourse = async (req, res) => {
-//     try {
-//         const id = req.params.id;
-//         const addCourse = await AddCourse.findOne({ where: { id: id } });
-//         if (!addCourse) {
-//             return res.status(400).send({ message: "AddCourse is not present!" });
-//         }
-//         deleteFile(addCourse.authorImage);
-//         deleteFile(addCourse.courseImage);
-//         await addCourse.destroy();
-//         res.status(200).send({ message: `AddCourse deleted of ID: ${id}` });
-//     } catch (err) {
-//         console.log(err);
-//         res.status(500).send(err);
-//     }
-// };
+exports.deleteAddCourse = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const addCourse = await AddCourse.findOne({ where: { id: id } });
+        if (!addCourse) {
+            return res.status(400).send({ message: "AddCourse is not present!" });
+        };
+
+        const sections = await section.findAll({ where: { addCourse_id: id }, attributes: ["id"] });
+        const lectures = [];
+        for (let i = 0; i < sections.length; i++) {
+            lectures.push(await lecture.findAll({ where: { section_id: sections[i].id }, attributes: ["file"] }));
+        }
+        const fileArray = [];
+        for (let i = 0; i < lectures.length; i++) {
+            for (let j = 0; j < lectures[i].length; j++) {
+                fileArray.push(lectures[i][j].file);
+            }
+        }
+
+        deleteFile(addCourse.authorImage);
+        deleteFile(addCourse.courseImage);
+        await addCourse.destroy({ where: { id: id } });
+        res.status(200).send({ message: `AddCourse deleted successfully! ID: ${id}` });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+};
 
 exports.updateAddCourse = async (req, res) => {
     try {

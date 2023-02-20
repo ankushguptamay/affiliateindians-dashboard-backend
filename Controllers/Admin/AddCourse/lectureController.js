@@ -42,11 +42,10 @@ exports.deleteLecture = async (req, res) => {
         const lecture = await Lecture.findOne({ where: { id: id } });
         if (!lecture) {
             return res.status(400).send({ message: "Lecture is not present!" });
-        }
-        deleteFile(lecture.file);
+        };
         await lecture.destroy();
         res.status(200).send({
-            message: `Lecture fetched successfully! Id: ${id}`
+            message: `Lecture deleted successfully! Id: ${id}`
         });
     } catch (err) {
         console.log(err);
