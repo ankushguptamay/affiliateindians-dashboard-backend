@@ -29,14 +29,14 @@ db.eWallet = require('./Admin/eWallet.js')(sequelize, Sequelize);
 db.admin = require('./Admin/admin')(sequelize, Sequelize);
 
 // Admin AddCourse
-db.addCourse = require('./Admin/AddCourse/addCourseModel')(sequelize, Sequelize);
-db.lecture = require('./Admin/AddCourse/lectureModel')(sequelize, Sequelize);
-db.section = require('./Admin/AddCourse/sectionModel')(sequelize, Sequelize);
+db.AddCourse = require('./Admin/AddCourse/addCourseModel')(sequelize, Sequelize);
+db.Lecture = require('./Admin/AddCourse/lectureModel')(sequelize, Sequelize);
+db.Section = require('./Admin/AddCourse/sectionModel')(sequelize, Sequelize);
 
-db.addCourse.hasMany(db.section, { foreignKey: "addCourse_id", as: "curriculum", onDelete: "CASCADE" });
-db.section.belongsTo(db.addCourse, { foreignKey: "addCourse_id" });
+db.AddCourse.hasMany(db.Section, { foreignKey: "addCourse_id", as: "curriculum", onDelete: "CASCADE" });
+db.Section.belongsTo(db.AddCourse, { foreignKey: "addCourse_id" });
 
-db.section.hasMany(db.lecture, { foreignKey: "section_id", onDelete: "CASCADE", hooks: true });
-db.lecture.belongsTo(db.section, { foreignKey: "section_id", onDelete: "CASCADE" });
+db.Section.hasMany(db.Lecture, { foreignKey: "section_id", onDelete: "CASCADE"});
+db.Lecture.belongsTo(db.Section, { foreignKey: "section_id", onDelete: "CASCADE" });
 
 module.exports = db;

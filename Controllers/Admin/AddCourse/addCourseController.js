@@ -1,5 +1,4 @@
-const { addCourse, section, lecture } = require('../../../Models');
-const AddCourse = addCourse;
+const { AddCourse, Section, Lecture } = require('../../../Models');
 const { deleteFile, deleteMultiFile } = require("../../../Util/deleteFile")
 
 exports.createAddCourse = async (req, res) => {
@@ -25,10 +24,10 @@ exports.getAddCourse = async (req, res) => {
     try {
         const addCourse = await AddCourse.findAll({
             include: [{
-                model: section,
+                model: Section,
                 as: "curriculum",
                 include: [{
-                    model: lecture,
+                    model: Lecture,
                     as: "lectures",
                 }]
             }]
@@ -51,10 +50,10 @@ exports.deleteAddCourse = async (req, res) => {
             return res.status(400).send({ message: "AddCourse is not present!" });
         };
 
-        const sections = await section.findAll({ where: { addCourse_id: id }, attributes: ["id"] });
+        const sections = await Section.findAll({ where: { addCourse_id: id }, attributes: ["id"] });
         const lectures = [];
         for (let i = 0; i < sections.length; i++) {
-            lectures.push(await lecture.findAll({ where: { section_id: sections[i].id }, attributes: ["file"] }));
+            lectures.push(await Lecture.findAll({ where: { section_id: sections[i].id }, attributes: ["file"] }));
         }
         const fileArray = [];
         for (let i = 0; i < lectures.length; i++) {
@@ -62,7 +61,7 @@ exports.deleteAddCourse = async (req, res) => {
                 fileArray.push(lectures[i][j].file);
             }
         }
-
+        deleteMultiFile(fileArray);
         deleteFile(addCourse.authorImage);
         deleteFile(addCourse.courseImage);
         await addCourse.destroy({ where: { id: id } });

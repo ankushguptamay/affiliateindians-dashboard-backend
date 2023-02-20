@@ -1,16 +1,12 @@
-const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-    class Section extends Model { };
-    Section.init({
+    const Section = sequelize.define("section",{
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
         }
     }, {
-        timestamps: false,
-        sequelize,
-        modelName: "section"
+        timestamps: false
     });
     return Section;
 };

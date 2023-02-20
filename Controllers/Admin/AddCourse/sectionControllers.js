@@ -1,6 +1,5 @@
-const { lecture, section } = require('../../../Models');
-const Section = section;
-
+const { Lecture, Section } = require('../../../Models');
+const { deleteMultiFile } = require("../../../Util/deleteFile")
 
 exports.createCourseSection = async (req, res) => {
     try {
@@ -19,7 +18,8 @@ exports.getSection = async (req, res) => {
     try {
         const section = await Section.findAll({
             include: [{
-                model: lecture
+                model: Lecture,
+                as: "lectures"
             }]
         });
         res.status(200).send({
@@ -39,9 +39,13 @@ exports.deleteSection = async (req, res) => {
         if (!section) {
             return res.status(400).send({ message: "Section is not present!" });
         };
-        const lectures = await lecture.findAll({ where: { section_id: id } });
-        return res.status(400).send(lectures)
-        await Section.destroy({ where: { id: id } });
+        const lectures = await Lecture.findAll({ where: { section_id: id } });
+        const fileArray = [];
+        lectures.map((data) => {
+            fileArray.push(data.file);
+        });
+        deleteMultiFile(fileArray);
+        await section.destroy();
         res.status(200).send({ message: `Section deleted seccessfully! ID: ${id}` });
     } catch (err) {
         console.log(err);

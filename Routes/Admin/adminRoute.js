@@ -71,6 +71,6 @@ router.post("/create-lecture", uploadImageOrPDF.single("lectureFile"), lecture.c
 router.get("/lectures", lecture.getLecture);
 router.delete("/delete-lecture/:id", lecture.deleteLecture);
 router.put("/update-lecture/:id", uploadImageOrPDF.single("lectureFile"), lecture.updateLecture);
-router.put("/delete-lectureFile/:id", lecture.deleteOnlyFile);
+// router.put("/delete-lectureFile/:id", lecture.deleteOnlyFile);
 
 module.exports = router;

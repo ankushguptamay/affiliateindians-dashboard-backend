@@ -1,7 +1,5 @@
-const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-    class AddCourse extends Model { };
-    AddCourse.init({
+    const AddCourse = sequelize.define("addCourse", {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -27,8 +25,6 @@ module.exports = (sequelize, DataTypes) => {
         }
     }, {
         timestamps: false,
-        sequelize,
-        modelName: "addCourse"
     });
     return AddCourse;
 };

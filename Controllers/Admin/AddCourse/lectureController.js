@@ -1,5 +1,5 @@
 const db = require('../../../Models');
-const Lecture = db.lecture;
+const Lecture = db.Lecture;
 const { deleteFile } = require("../../../Util/deleteFile")
 
 exports.createLecture = async (req, res) => {
@@ -43,6 +43,7 @@ exports.deleteLecture = async (req, res) => {
         if (!lecture) {
             return res.status(400).send({ message: "Lecture is not present!" });
         };
+        deleteFile(lecture.file);
         await lecture.destroy();
         res.status(200).send({
             message: `Lecture deleted successfully! Id: ${id}`
@@ -87,22 +88,22 @@ exports.updateLecture = async (req, res) => {
     }
 };
 
-exports.deleteOnlyFile = async (req, res) => {
-    try {
-        let File = null;
-        const id = req.params.id;
-        const lecture = await Lecture.findOne({ where: { id: id } });
-        if (!lecture) {
-            return res.status(400).send({ message: "Lecture is not present!" });
-        }
-        deleteFile(lecture.file);
-        await lecture.update({
-            ...req.body,
-            file: File
-        });
-        res.status(200).send({ message: `Lecture File deleted successfully! ID: ${id}` });
-    } catch (err) {
-        console.log(err);
-        res.status(500).send(err);
-    }
-};
+// exports.deleteOnlyFile = async (req, res) => {
+//     try {
+//         let File = null;
+//         const id = req.params.id;
+//         const lecture = await Lecture.findOne({ where: { id: id } });
+//         if (!lecture) {
+//             return res.status(400).send({ message: "Lecture is not present!" });
+//         }
+//         deleteFile(lecture.file);
+//         await lecture.update({
+//             ...req.body,
+//             file: File
+//         });
+//         res.status(200).send({ message: `Lecture File deleted successfully! ID: ${id}` });
+//     } catch (err) {
+//         console.log(err);
+//         res.status(500).send(err);
+//     }
+// };
