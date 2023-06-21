@@ -1,9 +1,25 @@
 const { AddCourse, Section, Lecture } = require('../../../Models');
 const { deleteFile, deleteMultiFile } = require("../../../Util/deleteFile")
+const axios = require('axios');
 
 exports.createAddCourse = async (req, res) => {
     try {
         const { title, subTitle, categories, authorName } = req.body;
+        // Create video library on bunny
+        const createVideoLibrary = {
+            method: "POST",
+            url: `https://api.bunny.net/videolibrary`,
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                AccessKey: process.env.BUNNY_ACCOUNT_ACCESS_KEY,
+            },
+            data: { name: title }
+        };
+
+        const response = await axios.request(createVideoLibrary);
+        // console.log(response);
+        // Add in database  
         const addCourse = await AddCourse.create({
             title: title,
             subTitle: subTitle,
@@ -11,8 +27,14 @@ exports.createAddCourse = async (req, res) => {
             authorImage: req.files.authorImage[0].path,
             categories: categories,
             courseImage: req.files.courseImage[0].path,
+            BUNNY_VIDEO_LIBRARY_ID: response.data.Id,
+            BUNNY_LIBRARY_API_KEY: response.data.ApiKey,
+            admin_id: req.admin.id
         });
-        res.status(201).send({ message: `AddCourse added successfully! ID: ${addCourse.id}` });
+        res.status(201).send({
+            success: true,
+            message: `AddCourse added successfully! ID: ${addCourse.id}`
+        });
     }
     catch (err) {
         console.log(err);
@@ -23,16 +45,12 @@ exports.createAddCourse = async (req, res) => {
 exports.getAddCourse = async (req, res) => {
     try {
         const addCourse = await AddCourse.findAll({
-            include: [{
-                model: Section,
-                as: "curriculum",
-                include: [{
-                    model: Lecture,
-                    as: "lectures",
-                }]
-            }]
+            where: {
+                admin_id: req.admin.id
+            }
         });
         res.status(200).send({
+            success: true,
             message: "AddCourse fetched successfully!",
             data: addCourse
         });
@@ -42,35 +60,42 @@ exports.getAddCourse = async (req, res) => {
     }
 };
 
-exports.deleteAddCourse = async (req, res) => {
-    try {
-        const id = req.params.id;
-        const addCourse = await AddCourse.findOne({ where: { id: id } });
-        if (!addCourse) {
-            return res.status(400).send({ message: "AddCourse is not present!" });
-        };
+// delete file from bunny video and library
+// exports.deleteAddCourse = async (req, res) => {
+//     try {
+//         const id = req.params.id;
+//         const addCourse = await AddCourse.findOne({ where: { id: id } });
+//         if (!addCourse) {
+//             return res.status(400).send({ message: "AddCourse is not present!" });
+//         };
 
-        const sections = await Section.findAll({ where: { addCourse_id: id }, attributes: ["id"] });
-        const lectures = [];
-        for (let i = 0; i < sections.length; i++) {
-            lectures.push(await Lecture.findAll({ where: { section_id: sections[i].id }, attributes: ["file"] }));
-        }
-        const fileArray = [];
-        for (let i = 0; i < lectures.length; i++) {
-            for (let j = 0; j < lectures[i].length; j++) {
-                fileArray.push(lectures[i][j].file);
-            }
-        }
-        deleteMultiFile(fileArray);
-        deleteFile(addCourse.authorImage);
-        deleteFile(addCourse.courseImage);
-        await addCourse.destroy({ where: { id: id } });
-        res.status(200).send({ message: `AddCourse deleted successfully! ID: ${id}` });
-    } catch (err) {
-        console.log(err);
-        res.status(500).send(err);
-    }
-};
+//         const sections = await Section.findAll({ where: { addCourse_id: id }, attributes: ["id"] });
+//         const lectures = [];
+//         for (let i = 0; i < sections.length; i++) {
+//             lectures.push(await Lecture.findAll({ where: { section_id: sections[i].id }, attributes: ["file", "Thumbnail_URL"] }));
+//         }
+//         const fileArray = [];
+//         const thunbnailArray = [];
+//         for (let i = 0; i < lectures.length; i++) {
+//             for (let j = 0; j < lectures[i].length; j++) {
+//                 if (lectures[i][j].file) {
+//                     fileArray.push(lectures[i][j].file);
+//                 }
+//                 if (lectures[i][j].Thumbnail_URL) {
+//                     thunbnailArray.push(lectures[i][j].Thumbnail_URL);
+//                 }
+//             }
+//         }
+//         deleteMultiFile(fileArray);
+//         deleteFile(addCourse.authorImage);
+//         deleteFile(addCourse.courseImage);
+//         await addCourse.destroy({ where: { id: id } });
+//         res.status(200).send({ message: `AddCourse deleted successfully! ID: ${id}` });
+//     } catch (err) {
+//         console.log(err);
+//         res.status(500).send(err);
+//     }
+// };
 
 exports.updateAddCourse = async (req, res) => {
     try {
@@ -80,7 +105,10 @@ exports.updateAddCourse = async (req, res) => {
         const { title, subTitle, categories, authorName } = req.body;
         const addCourse = await AddCourse.findOne({ where: { id: id } });
         if (!addCourse) {
-            return res.status(400).send({ message: "AddCourse is not present!" });
+            return res.status(400).send({
+                success: false,
+                message: "AddCourse is not present!"
+            });
         }
         if (req.files.authorImage && req.files.courseImage) {
             deleteFile(addCourse.authorImage);
@@ -100,6 +128,7 @@ exports.updateAddCourse = async (req, res) => {
         //     CourseImage = addCourse.courseImage;
         // }
         await addCourse.update({
+            ...addCourse,
             title: title,
             subTitle: subTitle,
             authorName: authorName,
@@ -107,7 +136,10 @@ exports.updateAddCourse = async (req, res) => {
             categories: categories,
             courseImage: CourseImage,
         });
-        res.status(200).send({ message: `AddCourse modified successfully! ID: ${id}` });
+        res.status(200).send({
+            success: true,
+            message: `AddCourse modified successfully! ID: ${id}`
+        });
     } catch (err) {
         console.log(err);
         res.status(500).send(err);
