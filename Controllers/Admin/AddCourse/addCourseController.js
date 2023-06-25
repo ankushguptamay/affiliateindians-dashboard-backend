@@ -39,7 +39,10 @@ exports.createAddCourse = async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
     }
 };
 
@@ -49,7 +52,15 @@ exports.getAddCourseForAdmin = async (req, res) => {
         const addCourse = await AddCourse.findAll({
             where: {
                 admin_id: req.admin.id
-            }
+            },
+            include: [{
+                model: Section,
+                as: "curriculum",
+                attributes: ["id", "sectionName"]
+            }],
+            order: [
+                ['createdAt', 'ASC']
+            ]
         });
         res.status(200).send({
             success: true,
@@ -58,14 +69,21 @@ exports.getAddCourseForAdmin = async (req, res) => {
         });
     } catch (err) {
         console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
     }
 };
 
 // for admin User
 exports.getAddCourseForUser = async (req, res) => {
     try {
-        const addCourse = await AddCourse.findAll();
+        const addCourse = await AddCourse.findAll({
+            order: [
+                ['createdAt', 'ASC']
+            ]
+        });
         res.status(200).send({
             success: true,
             message: "AddCourse fetched successfully!",
@@ -73,7 +91,10 @@ exports.getAddCourseForUser = async (req, res) => {
         });
     } catch (err) {
         console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
     }
 };
 
@@ -99,7 +120,10 @@ exports.getAddCourseById = async (req, res) => {
         });
     } catch (err) {
         console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
     }
 };
 
@@ -136,7 +160,8 @@ exports.getAddCourseById = async (req, res) => {
 //         res.status(200).send({ message: `AddCourse deleted successfully! ID: ${id}` });
 //     } catch (err) {
 //         console.log(err);
-//         res.status(500).send(err);
+//         res.status(500).send({ success: false,
+// err: err.message});
 //     }
 // };
 
@@ -172,7 +197,10 @@ exports.updateAddCourse = async (req, res) => {
         });
     } catch (err) {
         console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
     }
 };
 
@@ -212,7 +240,10 @@ exports.addOrUpdateCourseImage = async (req, res) => {
         res.status(200).send({ message: `AddCourse Image ${message} successfully!` });
     } catch (err) {
         console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
     }
 };
 
@@ -252,7 +283,10 @@ exports.addOrUpdateAuthorImage = async (req, res) => {
         res.status(200).send({ message: `AddCourse Author Image ${message} successfully!` });
     } catch (err) {
         console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
     }
 };
 
@@ -285,7 +319,10 @@ exports.deleteCourseImage = async (req, res) => {
         res.status(200).send({ message: `AddCourse Image deleted successfully!` });
     } catch (err) {
         console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
     }
 };
 
@@ -317,6 +354,9 @@ exports.deleteAuthorImage = async (req, res) => {
         res.status(200).send({ message: `AddCourse Author Image deleted successfully!` });
     } catch (err) {
         console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
     }
 };

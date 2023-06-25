@@ -60,7 +60,7 @@ exports.createLecture = async (req, res) => {
             section_id: section_id,
             addCourse_id: addCourse_id,
             Video_ID: video_id,
-            Iframe_URL:`https://iframe.mediadelivery.net/embed/${addCourse.BUNNY_VIDEO_LIBRARY_ID}/${video_id}`,
+            Iframe_URL: `https://iframe.mediadelivery.net/embed/${addCourse.BUNNY_VIDEO_LIBRARY_ID}/${video_id}`,
             Direct_Play_URL: `https://iframe.mediadelivery.net/play/${addCourse.BUNNY_VIDEO_LIBRARY_ID}/${video_id}`
         });
         res.status(201).send({
@@ -70,7 +70,10 @@ exports.createLecture = async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
     }
 };
 
@@ -133,7 +136,10 @@ exports.addThumbNail = async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
     }
 };
 
@@ -164,7 +170,10 @@ exports.addLectureFile = async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
     }
 };
 
@@ -182,7 +191,10 @@ exports.getLecture = async (req, res) => {
         });
     } catch (err) {
         console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
     }
 };
 
@@ -231,7 +243,10 @@ exports.deleteLecture = async (req, res) => {
         });
     } catch (err) {
         console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
     }
 };
 
@@ -261,6 +276,9 @@ exports.updateLecture = async (req, res) => {
         });
     } catch (err) {
         console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
     }
 };
