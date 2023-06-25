@@ -60,6 +60,7 @@ exports.createLecture = async (req, res) => {
             section_id: section_id,
             addCourse_id: addCourse_id,
             Video_ID: video_id,
+            Iframe_URL:`https://iframe.mediadelivery.net/embed/${addCourse.BUNNY_VIDEO_LIBRARY_ID}/${video_id}`,
             Direct_Play_URL: `https://iframe.mediadelivery.net/play/${addCourse.BUNNY_VIDEO_LIBRARY_ID}/${video_id}`
         });
         res.status(201).send({

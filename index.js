@@ -22,8 +22,7 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use("/admin", require("./Routes/Admin/authAdmin"));
-app.use("/admin/auth", require("./Routes/Admin/adminRoute"));
+app.use("/api/admin", require("./Routes/Admin/adminRoute"));
 // app.use(express.static(__dirname + "/public"));
 
 app.get('/', (req, res) => {

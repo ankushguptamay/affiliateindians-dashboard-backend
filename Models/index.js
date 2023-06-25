@@ -1,7 +1,7 @@
 const dbConfig = require('../Config/db.config.js');
 const { deleteFile } = require("../Util/deleteFile")
 
-const Sequelize = require('sequelize');
+const { Sequelize, QueryInterface } = require('sequelize');
 const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.password, {
     host: dbConfig.host,
     dialect: dbConfig.dialect,
@@ -26,12 +26,13 @@ db.sequelize = sequelize;
 // db.scheduleBooking = require('./Admin/scheduleBooking.js')(sequelize, Sequelize);
 // db.myBooking = require('./Admin/myBooking.js')(sequelize, Sequelize);
 // db.eWallet = require('./Admin/eWallet.js')(sequelize, Sequelize);
-db.admin = require('./Admin/admin')(sequelize, Sequelize);
 
 // Admin AddCourse
+db.admin = require('./Admin/admin')(sequelize, Sequelize);
 db.AddCourse = require('./Admin/AddCourse/addCourseModel')(sequelize, Sequelize);
 db.Lecture = require('./Admin/AddCourse/lectureModel')(sequelize, Sequelize);
 db.Section = require('./Admin/AddCourse/sectionModel')(sequelize, Sequelize);
+// db.migration = require('../Service/migrationAdd.js')(QueryInterface, Sequelize);
 
 db.admin.hasMany(db.AddCourse, { foreignKey: "admin_id" });
 db.AddCourse.belongsTo(db.admin, { foreignKey: "admin_id" });

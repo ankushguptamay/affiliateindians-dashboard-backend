@@ -1,6 +1,7 @@
 const { AddCourse, Section, Lecture } = require('../../../Models');
 const { deleteFile, deleteMultiFile } = require("../../../Util/deleteFile")
 const axios = require('axios');
+const { Op } = require('sequelize');
 
 exports.createAddCourse = async (req, res) => {
     try {
@@ -42,13 +43,55 @@ exports.createAddCourse = async (req, res) => {
     }
 };
 
-exports.getAddCourse = async (req, res) => {
+// for admin panal
+exports.getAddCourseForAdmin = async (req, res) => {
     try {
         const addCourse = await AddCourse.findAll({
             where: {
                 admin_id: req.admin.id
             }
         });
+        res.status(200).send({
+            success: true,
+            message: "AddCourse fetched successfully!",
+            data: addCourse
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+};
+
+// for admin User
+exports.getAddCourseForUser = async (req, res) => {
+    try {
+        const addCourse = await AddCourse.findAll();
+        res.status(200).send({
+            success: true,
+            message: "AddCourse fetched successfully!",
+            data: addCourse
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+};
+
+// for admin User
+exports.getAddCourseById = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const addCourse = await AddCourse.findOne({
+            where: {
+                id: id
+            }
+        });
+        if (!addCourse) {
+            return res.status(400).send({
+                success: false,
+                message: "AddCourse is not present!"
+            });
+        }
         res.status(200).send({
             success: true,
             message: "AddCourse fetched successfully!",
@@ -99,46 +142,33 @@ exports.getAddCourse = async (req, res) => {
 
 exports.updateAddCourse = async (req, res) => {
     try {
-        let AuthorImage;
-        let CourseImage;
         const id = req.params.id;
+        const adminId = req.admin.id;
         const { title, subTitle, categories, authorName } = req.body;
-        const addCourse = await AddCourse.findOne({ where: { id: id } });
+        const addCourse = await AddCourse.findOne({
+            where: {
+                [Op.and]:
+                    [
+                        { id: id }, { admin_id: adminId }
+                    ]
+            }
+        });
         if (!addCourse) {
             return res.status(400).send({
                 success: false,
                 message: "AddCourse is not present!"
             });
         }
-        if (req.files.authorImage && req.files.courseImage) {
-            deleteFile(addCourse.authorImage);
-            deleteFile(addCourse.courseImage);
-            AuthorImage = req.files.authorImage[0].path;
-            CourseImage = req.files.courseImage[0].path;
-        } else if (req.files.authorImage && !req.files.courseImage) {
-            deleteFile(addCourse.authorImage);
-            AuthorImage = req.files.authorImage[0].path;
-            // CourseImage = addCourse.courseImage;
-        } else if (!req.files.authorImage && req.files.courseImage) {
-            deleteFile(addCourse.courseImage);
-            CourseImage = req.files.courseImage[0].path;
-            // AuthorImage = addCourse.authorImage;
-        } // else {
-        //     AuthorImage = addCourse.authorImage;
-        //     CourseImage = addCourse.courseImage;
-        // }
         await addCourse.update({
             ...addCourse,
             title: title,
             subTitle: subTitle,
             authorName: authorName,
-            authorImage: AuthorImage,
-            categories: categories,
-            courseImage: CourseImage,
+            categories: categories
         });
         res.status(200).send({
             success: true,
-            message: `AddCourse modified successfully! ID: ${id}`
+            message: `AddCourse modified successfully!`
         });
     } catch (err) {
         console.log(err);
@@ -146,43 +176,147 @@ exports.updateAddCourse = async (req, res) => {
     }
 };
 
-// exports.deleteOnlyImages = async (req, res) => {
-//     try {
-//         let AuthorImage=null;
-//         let CourseImage=null;
-//         const id = req.params.id;
-//         const addCourse = await AddCourse.findOne({ where: { id: id } });
-//         if (!addCourse) {
-//             return res.status(400).send({ message: "AddCourse is not present!" });
-//         }
-//         if (req.files.authorImage && req.files.courseImage) {
-//             deleteFile(addCourse.authorImage);
-//             deleteFile(addCourse.courseImage);
-//             AuthorImage = req.files.authorImage[0].path;
-//             CourseImage = req.files.courseImage[0].path;
-//         } else if (req.file.authorImage && !req.files.courseImage) {
-//             deleteFile(addCourse.authorImage);
-//             AuthorImage = req.files.authorImage[0].path;
-//             // CourseImage = addCourse.courseImage;
-//         } else if (!req.file.authorImage && req.files.courseImage) {
-//             deleteFile(addCourse.courseImage);
-//             CourseImage = req.files.courseImage[0].path;
-//             // AuthorImage = addCourse.authorImage;
-//         } // else {
-//         //     AuthorImage = addCourse.authorImage;
-//         //     CourseImage = addCourse.courseImage;
-//         // }
-//         await AddCourse.update({
-//             title: title,
-//             subTitle: subTitle,
-//             authorName: authorName,
-//             authorImage: AuthorImage,
-//             categories: categories,
-//             courseImage: CourseImage,
-//         });
-//         res.status(200).send({ message: `AddCourse modified of ID: ${id}` });
-//     } catch (err) {
-//         console.log(err);
-//         res.status(500).send(err);
-//     }
-// };
+exports.addOrUpdateCourseImage = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).send({
+                success: false,
+                message: "Select a Course Image!"
+            });
+        }
+        const id = req.params.id;
+        const adminId = req.admin.id;
+        const addCourse = await AddCourse.findOne({
+            where: {
+                [Op.and]:
+                    [
+                        { id: id }, { admin_id: adminId }
+                    ]
+            }
+        });
+        if (!addCourse) {
+            return res.status(400).send({
+                success: false,
+                message: "AddCourse is not present!"
+            });
+        }
+        let message = "added"
+        if (addCourse.courseImage) {
+            deleteFile(addCourse.courseImage);
+            message = "updated"
+        }
+        await addCourse.update({
+            ...addCourse,
+            courseImage: req.file.path,
+        });
+        res.status(200).send({ message: `AddCourse Image ${message} successfully!` });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+};
+
+exports.addOrUpdateAuthorImage = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).send({
+                success: false,
+                message: "Select a Author Image!"
+            });
+        }
+        const id = req.params.id;
+        const adminId = req.admin.id;
+        const addCourse = await AddCourse.findOne({
+            where: {
+                [Op.and]:
+                    [
+                        { id: id }, { admin_id: adminId }
+                    ]
+            }
+        });
+        if (!addCourse) {
+            return res.status(400).send({
+                success: false,
+                message: "AddCourse is not present!"
+            });
+        }
+        let message = "added"
+        if (addCourse.authorImage) {
+            deleteFile(addCourse.authorImage);
+            message = "updated"
+        }
+        await addCourse.update({
+            ...addCourse,
+            authorImage: req.file.path,
+        });
+        res.status(200).send({ message: `AddCourse Author Image ${message} successfully!` });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+};
+
+
+exports.deleteCourseImage = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const adminId = req.admin.id;
+        const addCourse = await AddCourse.findOne({
+            where: {
+                [Op.and]:
+                    [
+                        { id: id }, { admin_id: adminId }
+                    ]
+            }
+        });
+        if (!addCourse) {
+            return res.status(400).send({
+                success: false,
+                message: "AddCourse is not present!"
+            });
+        }
+        if (addCourse.courseImage) {
+            deleteFile(addCourse.courseImage);
+        }
+        await addCourse.update({
+            ...addCourse,
+            courseImage: null,
+        });
+        res.status(200).send({ message: `AddCourse Image deleted successfully!` });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+};
+
+exports.deleteAuthorImage = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const adminId = req.admin.id;
+        const addCourse = await AddCourse.findOne({
+            where: {
+                [Op.and]:
+                    [
+                        { id: id }, { admin_id: adminId }
+                    ]
+            }
+        });
+        if (!addCourse) {
+            return res.status(400).send({
+                success: false,
+                message: "AddCourse is not present!"
+            });
+        }
+        if (addCourse.authorImage) {
+            deleteFile(addCourse.authorImage);
+        }
+        await addCourse.update({
+            ...addCourse,
+            authorImage: null,
+        });
+        res.status(200).send({ message: `AddCourse Author Image deleted successfully!` });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+};

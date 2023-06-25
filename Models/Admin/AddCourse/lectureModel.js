@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
         videoName: {
             type: DataTypes.STRING
         },
-        file: {
+        filePDF: {
             type: DataTypes.STRING
         },
         text: {
@@ -32,7 +32,10 @@ module.exports = (sequelize, DataTypes) => {
         Video_ID: {
             type: DataTypes.STRING
         },
-        Thumbnail_URL:{
+        Thumbnail_URL: {
+            type: DataTypes.STRING
+        },
+        Iframe_URL: {
             type: DataTypes.STRING
         }
     });

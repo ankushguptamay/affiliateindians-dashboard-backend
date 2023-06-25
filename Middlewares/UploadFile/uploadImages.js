@@ -2,7 +2,7 @@ const multer = require("multer");
 const path = require("path");
 
 const imageFilter = (req, file, cb) => {
-     if (file.mimetype.startsWith("image")) {
+    if (file.mimetype.startsWith("image")) {
         cb(null, true);
     } else {
         cb("Please upload only images.", false);
@@ -11,7 +11,11 @@ const imageFilter = (req, file, cb) => {
 
 const imageStorage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, path.join(`${__dirname}/../Resources/UploadImages`));
+        if (file.fieldname === "authorImage") {
+            cb(null, path.join(`${__dirname}/../../Resource/Course/AuthorImage`));
+        } else if (file.fieldname === "courseImage") {
+            cb(null, path.join(`${__dirname}/../../Resource/Course/CourseImage`));
+        }
     },
     filename: (req, file, cb) => {
         cb(null, `${Date.now()}-${file.originalname}`);

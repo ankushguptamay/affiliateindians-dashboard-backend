@@ -28,6 +28,10 @@ module.exports = (sequelize, DataTypes) => {
         },
         BUNNY_LIBRARY_API_KEY: {
             type: DataTypes.STRING
+        },
+        isPublic: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         }
     });
     return AddCourse;

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { body } = require('express-validator');
 
+const { registerAdmin, loginAdmin } = require("../../Controllers/Admin/authAdmin.controller");
 // const user = require('../../Controllers/Admin/User/user');
 // const advisor = require('../../Controllers/Admin/Advisor/advisor');
 // const member = require('../../Controllers/Admin/Member/member');
@@ -11,15 +12,25 @@ const { body } = require('express-validator');
 // const eWallet = require('../../Controllers/Admin/EWallet/eWallet');
 const section = require('../../Controllers/Admin/AddCourse/sectionControllers');
 const lecture = require('../../Controllers/Admin/AddCourse/lectureController');
-const addCourse = require('../../Controllers/Admin/AddCourse/addCourseController');
+const { createAddCourse, getAddCourseForAdmin, getAddCourseById, updateAddCourse, addOrUpdateAuthorImage, addOrUpdateCourseImage,
+    deleteAuthorImage, deleteCourseImage } = require('../../Controllers/Admin/AddCourse/addCourseController');
 
 //middleware
 const multer = require('multer');
 const upload = multer();
 const { verifyToken } = require('../../Middlewares/varifyToken');
 const { isAdminPresent } = require('../../Middlewares/isAdminPresent');
-const uploadImage = require('../../Middlewares/uploadImages');
-const uploadImageOrPDF = require('../../Middlewares/uploadImageOrPDF');
+const uploadImage = require('../../Middlewares/UploadFile/uploadImages');
+const uploadImageOrPDF = require('../../Middlewares/UploadFile/uploadImageOrPDF');
+
+router.post("/register", [
+    body('email', 'Enter a valid Email').isEmail().exists(),
+    body('password', 'Passward should have atleast six characters!').isLength({ min: 6 }).exists()
+], registerAdmin);
+router.post("/login", [
+    body('email', 'Enter a valid Email').isEmail().exists(),
+    body('password', 'Passward should have atleast six characters!').isLength({ min: 6 }).exists()
+], loginAdmin);
 
 // router.post("/create-users", user.create);
 // router.get("/users", user.findAll);
@@ -60,10 +71,15 @@ const uploadImageOrPDF = require('../../Middlewares/uploadImageOrPDF');
 // router.delete("/delete-eWallets/:id", eWallet.delete);
 // router.put("/update-eWallets/:id", eWallet.update);
 
-router.post("/create-addCourse", verifyToken, isAdminPresent, uploadImage.fields([{ name: 'authorImage', maxCount: 1 }, { name: 'courseImage', maxCount: 1 }]), addCourse.createAddCourse);
-router.get("/addCourses", verifyToken, isAdminPresent, addCourse.getAddCourse);
+router.post("/createAddCourse", verifyToken, isAdminPresent, createAddCourse);
+router.get("/addCourses", verifyToken, isAdminPresent, getAddCourseForAdmin);
+router.get("/getAddCourseById/:id", verifyToken, isAdminPresent, getAddCourseById);
+router.put("/updateAddCourse/:id", verifyToken, isAdminPresent, updateAddCourse);
+router.put("/addOrUpdateAuthorImage/:id", verifyToken, isAdminPresent, uploadImage.single("authorImage"), addOrUpdateAuthorImage);
+router.put("/addOrUpdateCourseImage/:id", verifyToken, isAdminPresent, uploadImage.single("courseImage"), addOrUpdateCourseImage);
+router.delete("/deleteAuthorImage/:id", verifyToken, isAdminPresent, deleteAuthorImage);
+router.delete("/deleteCourseImage/:id", verifyToken, isAdminPresent, deleteCourseImage);
 // router.delete("/delete-addCourse/:id",verifyToken,isAdminPresent, addCourse.deleteAddCourse);
-router.put("/update-addCourse/:id", verifyToken, isAdminPresent, uploadImage.fields([{ name: 'authorImage', maxCount: 1 }, { name: 'courseImage', maxCount: 1 }]), addCourse.updateAddCourse);
 
 router.post("/create-section", verifyToken, isAdminPresent, section.createCourseSection);
 router.get("/sections/:addCourse_id", verifyToken, isAdminPresent, section.getSection);
