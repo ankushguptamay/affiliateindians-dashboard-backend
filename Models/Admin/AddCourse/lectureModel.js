@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
         lessonName: {
             type: DataTypes.STRING
         },
-        filePDF: {
+        PDFile: {
             type: DataTypes.STRING
         },
         text: {
@@ -37,6 +37,10 @@ module.exports = (sequelize, DataTypes) => {
         },
         Iframe_URL: {
             type: DataTypes.STRING
+        },
+        isPublic: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         }
     });
     return Lecture;

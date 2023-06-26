@@ -10,10 +10,11 @@ const { registerAdmin, loginAdmin } = require("../../Controllers/Admin/authAdmin
 // const scheduleBooking = require('../../Controllers/Admin/ScheduleBooking/scheduleBooking');
 // const myBooking = require('../../Controllers/Admin/MyBooking/myBooking');
 // const eWallet = require('../../Controllers/Admin/EWallet/eWallet');
-const section = require('../../Controllers/Admin/AddCourse/sectionControllers');
-const lecture = require('../../Controllers/Admin/AddCourse/lectureController');
+const { createSection, getSection, updateSection, publicSection } = require('../../Controllers/Admin/AddCourse/sectionControllers');
+const { createLecture, uploadVideo, addOrUpdateLectureFile, addOrUpdateThumbNail, getLectureForAdmin, deleteLecture, deleteLectureFile,
+    publicLecture, updateLecture } = require('../../Controllers/Admin/AddCourse/lectureController');
 const { createAddCourse, getAddCourseForAdmin, getAddCourseById, updateAddCourse, addOrUpdateAuthorImage, addOrUpdateCourseImage,
-    deleteAuthorImage, deleteCourseImage } = require('../../Controllers/Admin/AddCourse/addCourseController');
+    deleteAuthorImage, deleteCourseImage, publicAddCourse } = require('../../Controllers/Admin/AddCourse/addCourseController');
 
 //middleware
 const multer = require('multer');
@@ -21,7 +22,7 @@ const upload = multer();
 const { verifyToken } = require('../../Middlewares/varifyToken');
 const { isAdminPresent } = require('../../Middlewares/isAdminPresent');
 const uploadImage = require('../../Middlewares/UploadFile/uploadImages');
-const uploadImageOrPDF = require('../../Middlewares/UploadFile/uploadImageOrPDF');
+const uploadPDF = require('../../Middlewares/UploadFile/uploadPDF');
 
 router.post("/register", [
     body('email', 'Enter a valid Email').isEmail().exists(),
@@ -77,19 +78,25 @@ router.get("/getAddCourseById/:id", verifyToken, isAdminPresent, getAddCourseByI
 router.put("/updateAddCourse/:id", verifyToken, isAdminPresent, updateAddCourse);
 router.put("/addOrUpdateAuthorImage/:id", verifyToken, isAdminPresent, uploadImage.single("authorImage"), addOrUpdateAuthorImage);
 router.put("/addOrUpdateCourseImage/:id", verifyToken, isAdminPresent, uploadImage.single("courseImage"), addOrUpdateCourseImage);
+router.put("/publicAddCourse/:id", verifyToken, isAdminPresent, publicAddCourse);
 router.delete("/deleteAuthorImage/:id", verifyToken, isAdminPresent, deleteAuthorImage);
 router.delete("/deleteCourseImage/:id", verifyToken, isAdminPresent, deleteCourseImage);
 // router.delete("/delete-addCourse/:id",verifyToken,isAdminPresent, addCourse.deleteAddCourse);
 
-router.post("/create-section", verifyToken, isAdminPresent, section.createCourseSection);
-router.get("/sections/:addCourse_id", verifyToken, isAdminPresent, section.getSection);
+router.post("/createSection", verifyToken, isAdminPresent, createSection);
+router.get("/sections/:addCourse_id", verifyToken, isAdminPresent, getSection);
+router.put("/updateSection/:id", verifyToken, isAdminPresent, updateSection);
+router.put("/publicSection/:id", verifyToken, isAdminPresent, publicSection);
 // router.delete("/delete-section/:id",verifyToken, isAdminPresent,section.deleteSection);
 
-router.post("/createLecture", verifyToken, isAdminPresent, upload.single("video"), lecture.createLecture);
-router.put("/addThumbNail/:id", verifyToken, isAdminPresent, uploadImageOrPDF.single("thumbnail"), lecture.addThumbNail);
-router.put("/addLectureFile/:id", verifyToken, isAdminPresent, uploadImageOrPDF.single("lectureFile"), lecture.addLectureFile);
-router.get("/lectures/:section_id", verifyToken, isAdminPresent, lecture.getLecture);
-router.delete("/delete-lecture/:id", verifyToken, isAdminPresent, lecture.deleteLecture);
-router.put("/update-lecture/:id", verifyToken, isAdminPresent, lecture.updateLecture);
+router.post("/createLecture", verifyToken, isAdminPresent, createLecture);
+router.put("/uploadVideo/:id", verifyToken, isAdminPresent, upload.single("video"), uploadVideo);
+router.put("/addOrUpdateThumbNail/:id", verifyToken, isAdminPresent, uploadImage.single("thumbnail"), addOrUpdateThumbNail);
+router.put("/addOrUpdateLectureFile/:id", verifyToken, isAdminPresent, uploadPDF.single("lecturePDFile"), addOrUpdateLectureFile);
+router.get("/lectures/:section_id", verifyToken, isAdminPresent, getLectureForAdmin);
+router.delete("/deleteLecture/:id", verifyToken, isAdminPresent, deleteLecture);
+router.put("/updateLecture/:id", verifyToken, isAdminPresent, updateLecture);
+router.put("/publicLecture/:id", verifyToken, isAdminPresent, publicLecture);
+router.delete("/deleteLectureFile/:id", verifyToken, isAdminPresent, deleteLectureFile);
 
 module.exports = router;

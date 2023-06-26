@@ -8,6 +8,10 @@ module.exports = (sequelize, DataTypes) => {
         sectionName: {
             type: DataTypes.STRING,
             allowNull: false
+        },
+        isPublic: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         }
     });
     return Section;
