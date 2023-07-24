@@ -1,13 +1,15 @@
 const { Op } = require('sequelize');
-const { Lecture, Section } = require('../../../Models');
+const db= require('../../../Models');
+const Section = db.section
+const Lecture = db.lecture;
 const { deleteMultiFile } = require("../../../Util/deleteFile")
 
 exports.createSection = async (req, res) => {
     try {
         await Section.create({
-            addCourse_id: req.body.addCourse_id,
+            courseId: req.body.courseId,
             sectionName: req.body.sectionName,
-            admin_id: req.admin.id
+            adminId: req.admin.id
         });
         res.status(201).send({
             success: true,
@@ -23,18 +25,21 @@ exports.createSection = async (req, res) => {
     }
 };
 
-exports.getSection = async (req, res) => {
+exports.getAllSectionByCourseId = async (req, res) => {
     try {
         const section = await Section.findAll({
             where: {
                 [Op.and]: [
-                    { addCourse_id: req.params.addCourse_id }, { admin_id: req.admin.id }
+                    { courseId: req.params.courseId }, { adminId: req.admin.id }
                 ]
             },
             include: [{
                 model: Lecture,
                 as: "lessons",
-                attributes: ["id", "lessonName"]
+                attributes: ["id", "lessonName"],
+                order: [
+                    ['createdAt', 'ASC']
+                ]
             }],
             order: [
                 ['createdAt', 'ASC']
@@ -89,7 +94,7 @@ exports.updateSection = async (req, res) => {
         const section = await Section.findOne({
             where: {
                 [Op.and]: [
-                    { id: id }, { admin_id: req.admin.id }
+                    { id: id }, { adminId: req.admin.id }
                 ]
             }
         });
@@ -122,7 +127,7 @@ exports.publicSection = async (req, res) => {
         const section = await Section.findOne({
             where: {
                 [Op.and]: [
-                    { id: id }, { admin_id: req.admin.id }
+                    { id: id }, { adminId: req.admin.id }
                 ]
             }
         });
