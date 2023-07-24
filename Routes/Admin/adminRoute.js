@@ -12,7 +12,9 @@ const { createSection, getAllSectionByCourseId, updateSection, publicSection } =
 const { createLecture, getLectureByLectureId, publicLecture, updateLecture } = require('../../Controllers/Admin/AddCourse/lectureController');
 const { createCourse, getCourseForAdmin, updateCourse, addOrUpdateAuthorImage, addOrUpdateCourseImage,
     deleteAuthorImage, deleteCourseImage, publicCourse } = require('../../Controllers/Admin/AddCourse/courseController');
-    const { uploadLectureVideo, deleteLectureVideo } = require('../../Controllers/Admin/AddCourse/lectureVideosController');
+const { uploadLectureVideo, deleteLectureVideo } = require('../../Controllers/Admin/AddCourse/lectureVideosController');
+const { createLectureQuiz, getAllQuizByLectureId, deleteLectureQuiz, updateLectureQuiz } = require('../../Controllers/Admin/AddCourse/lectureQuizController');
+
 
 //middleware
 const multer = require('multer');
@@ -86,5 +88,10 @@ router.put("/publicLecture/:id", verifyToken, isAdminPresent, publicLecture);
 
 router.post("/uploadVideo/:lectureId", verifyToken, isAdminPresent, upload.single("lessonVideo"), uploadLectureVideo);
 router.delete("/deleteVideo/:id", verifyToken, isAdminPresent, deleteLectureVideo);
+
+router.post("/createQuiz", verifyToken, isAdminPresent, createLectureQuiz);
+router.get("/quizs/:lectureId", verifyToken, isAdminPresent, getAllQuizByLectureId);
+router.put("/updateQuiz/:id", verifyToken, isAdminPresent, updateLectureQuiz);
+router.put("/deleteQuiz/:id", verifyToken, isAdminPresent, deleteLectureQuiz);
 
 module.exports = router;
