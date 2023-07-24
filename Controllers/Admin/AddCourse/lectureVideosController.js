@@ -2,7 +2,7 @@ const db = require('../../../Models');
 const Lecture = db.lecture;
 const Course = db.course;
 const LecturesVideo = db.lectureVideo;
-const { deleteFile } = require("../../../Util/deleteFile");
+const { deleteSingleFile } = require("../../../Util/deleteFile");
 const axios = require('axios');
 
 exports.uploadLectureVideo = async (req, res) => {

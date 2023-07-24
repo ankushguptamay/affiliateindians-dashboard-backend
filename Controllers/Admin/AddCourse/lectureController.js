@@ -3,7 +3,7 @@ const Lecture = db.lecture;
 const LecturesFile = db.lectureFile;
 const LecturesVideo = db.lectureVideo;
 const LecturesQuiz = db.lectureQuiz;
-const { deleteFile } = require("../../../Util/deleteFile");
+const { deleteSingleFile } = require("../../../Util/deleteFile");
 const axios = require('axios');
 
 // createLecture lesson name is required
@@ -193,7 +193,7 @@ exports.addOrUpdateThumbNail = async (req, res) => {
             })
             .catch((error) => {
                 // console.log(error);
-                deleteFile(req.file.path);
+                deleteSingleFile(req.file.path);
                 return res.status(400).json({
                     success: false,
                     message: "failed to upload thumbnail! upload again",
@@ -203,7 +203,7 @@ exports.addOrUpdateThumbNail = async (req, res) => {
         // delete existing file
         let message = "added";
         if (lecture.Thumbnail_URL) {
-            deleteFile(lecture.Thumbnail_URL);
+            deleteSingleFile(lecture.Thumbnail_URL);
             message = "updated";
         }
         await lecture.update({
@@ -243,7 +243,7 @@ exports.addOrUpdateLectureFile = async (req, res) => {
         // delete existing file
         let message = "added";
         if (lecture.PDFile) {
-            deleteFile(lecture.PDFile);
+            deleteSingleFile(lecture.PDFile);
             message = "updated";
         }
         await lecture.update({
@@ -277,11 +277,11 @@ exports.deleteLecture = async (req, res) => {
         const addCourse = await AddCourse.findOne({ where: { id: lecture.addCourse_id } });
         // delete lecture file
         if (lecture.PDFile) {
-            deleteFile(lecture.PDFile);
+            deleteSingleFile(lecture.PDFile);
         }
         // delete lecture thumbnail
         if (lecture.Thumbnail_URL) {
-            deleteFile(lecture.Thumbnail_URL);
+            deleteSingleFile(lecture.Thumbnail_URL);
         }
         // delete file from bunny
         const deleteVideo = {
@@ -332,7 +332,7 @@ exports.deleteLectureFile = async (req, res) => {
         };
         // delete file
         if (lecture.PDFile) {
-            deleteFile(lecture.PDFile);
+            deleteSingleFile(lecture.PDFile);
         }
         await lecture.update({
             ...lecture,

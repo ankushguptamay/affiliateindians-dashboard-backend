@@ -1,7 +1,7 @@
 const db = require('../../../Models');
 const Course = db.course;
 const Lecture = db.lecture;
-const { deleteFile, deleteMultiFile } = require("../../../Util/deleteFile")
+const { deleteSingleFile, deleteMultiFile } = require("../../../Util/deleteFile")
 const axios = require('axios');
 const { Op } = require('sequelize');
 
@@ -136,8 +136,8 @@ exports.getCourseForUser = async (req, res) => {
 //             }
 //         }
 //         deleteMultiFile(fileArray);
-//         deleteFile(addCourse.authorImage);
-//         deleteFile(addCourse.courseImage);
+//         deleteSingleFile(addCourse.authorImage);
+//         deleteSingleFile(addCourse.courseImage);
 //         await addCourse.destroy({ where: { id: id } });
 //         res.status(200).send({ message: `AddCourse deleted successfully! ID: ${id}` });
 //     } catch (err) {
@@ -231,7 +231,7 @@ exports.addOrUpdateCourseImage = async (req, res) => {
         // delete file if present
         let message = "added"
         if (course.courseImage) {
-            deleteFile(course.courseImage);
+            deleteSingleFile(course.courseImage);
             message = "updated"
         }
         // update courseImage
@@ -280,7 +280,7 @@ exports.addOrUpdateAuthorImage = async (req, res) => {
         // delete file if present
         let message = "added"
         if (course.authorImage) {
-            deleteFile(course.authorImage);
+            deleteSingleFile(course.authorImage);
             message = "updated"
         }
         // update authorImage
@@ -323,7 +323,7 @@ exports.deleteCourseImage = async (req, res) => {
         }
         // delete file if present
         if (course.courseImage) {
-            deleteFile(course.courseImage);
+            deleteSingleFile(course.courseImage);
         }
         // update courseImage
         await course.update({
@@ -364,7 +364,7 @@ exports.deleteAuthorImage = async (req, res) => {
         }
         // delete file
         if (course.authorImage) {
-            deleteFile(course.authorImage);
+            deleteSingleFile(course.authorImage);
         }
         // update authorImage
         await course.update({
