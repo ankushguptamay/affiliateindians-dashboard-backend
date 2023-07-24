@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const AddCourse = sequelize.define("addCourse", {
+    const Course = sequelize.define("course", {
         id: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
@@ -18,10 +18,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING
         },
         authorImage: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING(1234) 
         },
         courseImage: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING(1234) 
         },
         BUNNY_VIDEO_LIBRARY_ID: {
             type: DataTypes.STRING
@@ -32,7 +32,13 @@ module.exports = (sequelize, DataTypes) => {
         isPublic: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
+        },
+        forWhom: {
+            type: DataTypes.STRING,
+            defaultValue: "paid" // free, or paid
         }
     });
-    return AddCourse;
+    return Course;
 };
+
+// adminId

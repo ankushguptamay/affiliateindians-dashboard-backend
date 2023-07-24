@@ -8,35 +8,14 @@ module.exports = (sequelize, DataTypes) => {
         lessonName: {
             type: DataTypes.STRING
         },
-        PDFile: {
-            type: DataTypes.STRING
-        },
-        text: {
+        codeExample: {
             type: DataTypes.TEXT
         },
-        quiz: {
-            type: DataTypes.STRING
-        },
-        codeExample: {
-            type: DataTypes.STRING
-        },
         customCode: {
-            type: DataTypes.STRING
+            type: DataTypes.TEXT
         },
         richTextEditor: {
             type: DataTypes.TEXT
-        },
-        Direct_Play_URL: {
-            type: DataTypes.STRING
-        },
-        Video_ID: {
-            type: DataTypes.STRING
-        },
-        Thumbnail_URL: {
-            type: DataTypes.STRING
-        },
-        Iframe_URL: {
-            type: DataTypes.STRING
         },
         isPublic: {
             type: DataTypes.BOOLEAN,
@@ -45,3 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     });
     return Lecture;
 };
+
+// sectionId
+// courseId
+// adminId

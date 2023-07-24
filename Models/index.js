@@ -19,7 +19,6 @@ db.Sequelize = Sequelize;
 db.sequelize = sequelize;
 
 // Admin
-// db.user = require('./Admin/user.js')(sequelize, Sequelize);
 // db.advisor = require('./Admin/advisor.js')(sequelize, Sequelize);
 // db.member = require('./Admin/member.js')(sequelize, Sequelize);
 // db.lead = require('./Admin/lead.js')(sequelize, Sequelize);
@@ -29,23 +28,57 @@ db.sequelize = sequelize;
 
 // Admin AddCourse
 db.admin = require('./Admin/admin')(sequelize, Sequelize);
-db.AddCourse = require('./Admin/AddCourse/addCourseModel')(sequelize, Sequelize);
-db.Lecture = require('./Admin/AddCourse/lectureModel')(sequelize, Sequelize);
-db.Section = require('./Admin/AddCourse/sectionModel')(sequelize, Sequelize);
+db.course = require('./Admin/AddCourse/courseModel.js')(sequelize, Sequelize);
+db.lecture = require('./Admin/AddCourse/lectureModel')(sequelize, Sequelize);
+db.section = require('./Admin/AddCourse/sectionModel')(sequelize, Sequelize);
+db.lectureQuiz = require('./Admin/AddCourse/lectureQuizModel.js')(sequelize, Sequelize);
+db.lectureVideo = require('./Admin/AddCourse/lectureVideoModel.js')(sequelize, Sequelize);
+db.lectureFile = require('./Admin/AddCourse/lecturesFileModel.js')(sequelize, Sequelize);
 
-db.admin.hasMany(db.AddCourse, { foreignKey: "admin_id" });
-db.AddCourse.belongsTo(db.admin, { foreignKey: "admin_id" });
+// user
+// db.user = require('./User/user.js')(sequelize, Sequelize);
+// db.userAccountDetail = require('./User/userAccountDetailsModel.js')(sequelize, Sequelize);
 
-db.admin.hasMany(db.Section, { foreignKey: "admin_id" });
-db.Section.belongsTo(db.admin, { foreignKey: "admin_id" });
+// Admin Association
+db.admin.hasMany(db.course, { foreignKey: "adminId" });
+db.course.belongsTo(db.admin, { foreignKey: "adminId" });
 
-db.AddCourse.hasMany(db.Section, { foreignKey: "addCourse_id", as: "sections", onDelete: "CASCADE" });
-db.Section.belongsTo(db.AddCourse, { foreignKey: "addCourse_id", as: "sections", onDelete: "CASCADE" });
+db.admin.hasMany(db.section, { foreignKey: "adminId" });
 
-db.Section.hasMany(db.Lecture, { foreignKey: "section_id", as: "lessons", onDelete: "CASCADE" });
-db.Lecture.belongsTo(db.Section, { foreignKey: "section_id", as: "lessons", onDelete: "CASCADE" });
+db.admin.hasMany(db.lecture, { foreignKey: "adminId" });
 
-db.AddCourse.hasMany(db.Lecture, { foreignKey: "addCourse_id", onDelete: "CASCADE" });
-db.Lecture.belongsTo(db.AddCourse, { foreignKey: "addCourse_id", onDelete: "CASCADE", as: 'addCourse' });
+// Course Association
+db.course.hasMany(db.section, { foreignKey: "courseId", as: "sections", onDelete: "CASCADE" });
+db.section.belongsTo(db.course, { foreignKey: "courseId", as: "parentCourse", onDelete: "CASCADE" });
+
+db.course.hasMany(db.lecture, { foreignKey: "courseId", as: "lessons", onDelete: "CASCADE" });
+db.lecture.belongsTo(db.course, { foreignKey: "courseId", as: "parentCourse", onDelete: "CASCADE" });
+
+db.course.hasMany(db.lectureFile, { foreignKey: "courseId", as: "lectureFiles",  onDelete: "CASCADE" });
+
+db.course.hasMany(db.lectureVideo, { foreignKey: "courseId",as: "lectureVideos",  onDelete: "CASCADE" });
+
+db.course.hasMany(db.lectureQuiz, { foreignKey: "courseId",  as: "lectureQuizs", onDelete: "CASCADE" });
+
+// Section Association
+db.section.hasMany(db.lecture, { foreignKey: "sectionId", as: "lessons", onDelete: "CASCADE" });
+db.lecture.belongsTo(db.section, { foreignKey: "sectionId", as: "parentSection", onDelete: "CASCADE" });
+
+db.section.hasMany(db.lectureFile, { foreignKey: "sectionId", as: "lectureFiles", onDelete: "CASCADE" });
+
+db.section.hasMany(db.lectureVideo, { foreignKey: "sectionId", as: "lectureVideos", onDelete: "CASCADE" });
+
+db.section.hasMany(db.lectureQuiz, { foreignKey: "sectionId", as: "lectureQuizs", onDelete: "CASCADE" });
+
+// Lecture Association
+db.lecture.hasMany(db.lectureFile, { foreignKey: "lectureId", as: "lectureFiles", onDelete: "CASCADE" });
+
+db.lecture.hasMany(db.lectureVideo, { foreignKey: "lectureId", as: "lectureVideos", onDelete: "CASCADE" });
+
+db.lecture.hasMany(db.lectureQuiz, { foreignKey: "lectureId", as: "lectureQuizs", onDelete: "CASCADE" });
+
+// User Association
+// db.user.hasMany(db.userAccountDetail, { foreignKey: "userId" });
+// db.userAccountDetail.belongsTo(db.user, { foreignKey: "userId" });
 
 module.exports = db;

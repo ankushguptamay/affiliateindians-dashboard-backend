@@ -2,6 +2,8 @@ require("dotenv").config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require("cors");
+const authAdmin = require('./Routes/Admin/auhtAdminRoute');
+const admin = require('./Routes/Admin/adminRoute')
 
 const app = express();
 
@@ -19,10 +21,12 @@ db.sequelize.sync()
   });
 
 app.use(cors(corsOptions));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use("/api/admin", require("./Routes/Admin/adminRoute"));
+app.use("/admin/auth", authAdmin);
+app.use("/admin", admin);
 // app.use(express.static(__dirname + "/public"));
 
 app.get('/', (req, res) => {

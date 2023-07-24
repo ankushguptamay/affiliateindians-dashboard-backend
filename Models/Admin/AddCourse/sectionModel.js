@@ -16,3 +16,6 @@ module.exports = (sequelize, DataTypes) => {
     });
     return Section;
 };
+
+// courseId
+// adminId

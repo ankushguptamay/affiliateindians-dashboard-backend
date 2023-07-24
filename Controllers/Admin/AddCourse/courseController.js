@@ -1,9 +1,21 @@
-const { AddCourse, Section, Lecture } = require('../../../Models');
+const db = require('../../../Models');
+const Course = db.course;
+const Lecture = db.lecture;
 const { deleteFile, deleteMultiFile } = require("../../../Util/deleteFile")
 const axios = require('axios');
 const { Op } = require('sequelize');
 
-exports.createAddCourse = async (req, res) => {
+// createCourse in this route Title is required.
+// getCourseForAdmin
+// getCourseForUser
+// updateCourse
+// addOrUpdateCourseImage
+// addOrUpdateAuthorImage
+// deleteCourseImage
+// deleteAuthorImage
+// publicCourse
+
+exports.createCourse = async (req, res) => {
     try {
         const { title, subTitle, categories, authorName } = req.body;
         if (!title) {
@@ -26,19 +38,19 @@ exports.createAddCourse = async (req, res) => {
 
         const response = await axios.request(createVideoLibrary);
         // console.log(response);
-        // Add in database  
-        await AddCourse.create({
+        // Store in database  
+        await Course.create({
             title: title,
             subTitle: subTitle,
             authorName: authorName,
             categories: categories,
             BUNNY_VIDEO_LIBRARY_ID: response.data.Id,
             BUNNY_LIBRARY_API_KEY: response.data.ApiKey,
-            admin_id: req.admin.id
+            adminId: req.admin.id
         });
         res.status(201).send({
             success: true,
-            message: `AddCourse added successfully!`
+            message: `Course added successfully!`
         });
     }
     catch (err) {
@@ -50,26 +62,20 @@ exports.createAddCourse = async (req, res) => {
     }
 };
 
-// for admin panal
-exports.getAddCourseForAdmin = async (req, res) => {
+exports.getCourseForAdmin = async (req, res) => {
     try {
-        const addCourse = await AddCourse.findAll({
+        const course = await Course.findAll({
             where: {
-                admin_id: req.admin.id
+                adminId: req.admin.id
             },
-            include: [{
-                model: Section,
-                as: "sections",
-                attributes: ["id", "sectionName"]
-            }],
             order: [
-                ['createdAt', 'ASC']
+                ['createdAt', 'DESC']
             ]
         });
         res.status(200).send({
             success: true,
-            message: "AddCourse fetched successfully!",
-            data: addCourse
+            message: "Course fetched successfully!",
+            data: course
         });
     } catch (err) {
         console.log(err);
@@ -80,51 +86,20 @@ exports.getAddCourseForAdmin = async (req, res) => {
     }
 };
 
-// for User panel
-exports.getAddCourseForUser = async (req, res) => {
+exports.getCourseForUser = async (req, res) => {
     try {
-        const addCourse = await AddCourse.findAll({
+        const course = await Course.findAll({
             where: {
                 isPublic: true
             },
             order: [
-                ['createdAt', 'ASC']
+                ['createdAt', 'DESC']
             ]
         });
         res.status(200).send({
             success: true,
-            message: "AddCourse fetched successfully!",
-            data: addCourse
-        });
-    } catch (err) {
-        console.log(err);
-        res.status(500).send({
-            success: false,
-            err: err.message
-        });
-    }
-};
-
-// for admin User
-exports.getAddCourseById = async (req, res) => {
-    try {
-        const id = req.params.id;
-        // is add course present
-        const addCourse = await AddCourse.findOne({
-            where: {
-                id: id
-            }
-        });
-        if (!addCourse) {
-            return res.status(400).send({
-                success: false,
-                message: "AddCourse is not present!"
-            });
-        }
-        res.status(200).send({
-            success: true,
-            message: "AddCourse fetched successfully!",
-            data: addCourse
+            message: "Course fetched successfully!",
+            data: course
         });
     } catch (err) {
         console.log(err);
@@ -136,14 +111,14 @@ exports.getAddCourseById = async (req, res) => {
 };
 
 // delete file from bunny video and library
-// exports.deleteAddCourse = async (req, res) => {
+// exports.deleteCourse = async (req, res) => {
 //     try {
 //         const id = req.params.id;
-//         const addCourse = await AddCourse.findOne({ where: { id: id } });
-//         if (!addCourse) {
-//             return res.status(400).send({ message: "AddCourse is not present!" });
+//         const course = await Course.findOne({ where: { id: id } });
+//         if (!course) {
+//             return res.status(400).send({ message: "Course is not present!" });
 //         };
-//         const sections = await Section.findAll({ where: { addCourse_id: id }, attributes: ["id"] });
+//         const sections = await Section.findAll({ where: { courseId: id }, attributes: ["id"] });
 //         const lectures = [];
 //         for (let i = 0; i < sections.length; i++) {
 //             lectures.push(await Lecture.findAll({ where: { section_id: sections[i].id }, attributes: ["file", "Thumbnail_URL"] }));
@@ -172,44 +147,44 @@ exports.getAddCourseById = async (req, res) => {
 //     }
 // };
 
-exports.updateAddCourse = async (req, res) => {
+exports.updateCourse = async (req, res) => {
     try {
         const id = req.params.id;
         const adminId = req.admin.id;
-        const { title, subTitle, categories, authorName } = req.body;
-        // is add course present
-        const addCourse = await AddCourse.findOne({
+        const { title, subTitle, categories, authorName, PlayerKeyColor } = req.body;
+        // is course present
+        const course = await Course.findOne({
             where: {
                 [Op.and]:
                     [
-                        { id: id }, { admin_id: adminId }
+                        { id: id }, { adminId: adminId }
                     ]
             }
         });
-        if (!addCourse) {
+        if (!course) {
             return res.status(400).send({
                 success: false,
-                message: "AddCourse is not present!"
+                message: "Course is not present!"
             });
         }
         // update title name
         const updateVideoLibrary = {
             method: "POST",
-            url: `https://api.bunny.net/videolibrary/${addCourse.BUNNY_VIDEO_LIBRARY_ID}`,
+            url: `https://api.bunny.net/videolibrary/${course.BUNNY_VIDEO_LIBRARY_ID}`,
             headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
                 AccessKey: process.env.BUNNY_ACCOUNT_ACCESS_KEY,
             },
             data: {
-                Name: title
-                // PlayerKeyColor: "#55ff60" // their are more option, check it on bunny 
+                Name: title,
+                PlayerKeyColor:PlayerKeyColor // "#55ff60" their are more option, check it on bunny 
             }
         };
-        const response = await axios.request(updateVideoLibrary);
+        await axios.request(updateVideoLibrary);
         // update in database
-        await addCourse.update({
-            ...addCourse,
+        await course.update({
+            ...course,
             title: title,
             subTitle: subTitle,
             authorName: authorName,
@@ -217,7 +192,7 @@ exports.updateAddCourse = async (req, res) => {
         });
         res.status(200).send({
             success: true,
-            message: `AddCourse modified successfully!`
+            message: `Course modified successfully!`
         });
     } catch (err) {
         console.log(err);
@@ -238,35 +213,35 @@ exports.addOrUpdateCourseImage = async (req, res) => {
         }
         const id = req.params.id;
         const adminId = req.admin.id;
-        // is add course present
-        const addCourse = await AddCourse.findOne({
+        // is course present
+        const course = await Course.findOne({
             where: {
                 [Op.and]:
                     [
-                        { id: id }, { admin_id: adminId }
+                        { id: id }, { adminId: adminId }
                     ]
             }
         });
-        if (!addCourse) {
+        if (!course) {
             return res.status(400).send({
                 success: false,
-                message: "AddCourse is not present!"
+                message: "Course is not present!"
             });
         }
         // delete file if present
         let message = "added"
-        if (addCourse.courseImage) {
-            deleteFile(addCourse.courseImage);
+        if (course.courseImage) {
+            deleteFile(course.courseImage);
             message = "updated"
         }
         // update courseImage
-        await addCourse.update({
-            ...addCourse,
+        await course.update({
+            ...course,
             courseImage: req.file.path,
         });
         res.status(201).send({
             success: true,
-            message: `AddCourse Image ${message} successfully!`
+            message: `Course Image ${message} successfully!`
         });
     } catch (err) {
         console.log(err);
@@ -286,36 +261,36 @@ exports.addOrUpdateAuthorImage = async (req, res) => {
             });
         }
         const id = req.params.id;
-        // is add course present 
+        // is course present 
         const adminId = req.admin.id;
-        const addCourse = await AddCourse.findOne({
+        const course = await Course.findOne({
             where: {
                 [Op.and]:
                     [
-                        { id: id }, { admin_id: adminId }
+                        { id: id }, { adminId: adminId }
                     ]
             }
         });
-        if (!addCourse) {
+        if (!course) {
             return res.status(400).send({
                 success: false,
-                message: "AddCourse is not present!"
+                message: "Course is not present!"
             });
         }
         // delete file if present
         let message = "added"
-        if (addCourse.authorImage) {
-            deleteFile(addCourse.authorImage);
+        if (course.authorImage) {
+            deleteFile(course.authorImage);
             message = "updated"
         }
         // update authorImage
-        await addCourse.update({
-            ...addCourse,
+        await course.update({
+            ...course,
             authorImage: req.file.path,
         });
         res.status(201).send({
             success: true,
-            message: `AddCourse Author Image ${message} successfully!`
+            message: `Course Author Image ${message} successfully!`
         });
     } catch (err) {
         console.log(err);
@@ -331,33 +306,33 @@ exports.deleteCourseImage = async (req, res) => {
     try {
         const id = req.params.id;
         const adminId = req.admin.id;
-        // is add course present
-        const addCourse = await AddCourse.findOne({
+        // is course present
+        const course = await Course.findOne({
             where: {
                 [Op.and]:
                     [
-                        { id: id }, { admin_id: adminId }
+                        { id: id }, { adminId: adminId }
                     ]
             }
         });
-        if (!addCourse) {
+        if (!course) {
             return res.status(400).send({
                 success: false,
-                message: "AddCourse is not present!"
+                message: "Course is not present!"
             });
         }
         // delete file if present
-        if (addCourse.courseImage) {
-            deleteFile(addCourse.courseImage);
+        if (course.courseImage) {
+            deleteFile(course.courseImage);
         }
         // update courseImage
-        await addCourse.update({
-            ...addCourse,
+        await course.update({
+            ...course,
             courseImage: null,
         });
         res.status(200).send({
             success: true,
-            message: `AddCourse Image deleted successfully!`
+            message: `Course Image deleted successfully!`
         });
     } catch (err) {
         console.log(err);
@@ -372,33 +347,33 @@ exports.deleteAuthorImage = async (req, res) => {
     try {
         const id = req.params.id;
         const adminId = req.admin.id;
-        // is add course present
-        const addCourse = await AddCourse.findOne({
+        // is course present
+        const course = await Course.findOne({
             where: {
                 [Op.and]:
                     [
-                        { id: id }, { admin_id: adminId }
+                        { id: id }, { adminId: adminId }
                     ]
             }
         });
-        if (!addCourse) {
+        if (!course) {
             return res.status(400).send({
                 success: false,
-                message: "AddCourse is not present!"
+                message: "Course is not present!"
             });
         }
         // delete file
-        if (addCourse.authorImage) {
-            deleteFile(addCourse.authorImage);
+        if (course.authorImage) {
+            deleteFile(course.authorImage);
         }
         // update authorImage
-        await addCourse.update({
-            ...addCourse,
+        await course.update({
+            ...course,
             authorImage: null,
         });
         res.status(200).send({
             success: true,
-            message: `AddCourse Author Image deleted successfully!`
+            message: `Course Author Image deleted successfully!`
         });
     } catch (err) {
         console.log(err);
@@ -409,28 +384,28 @@ exports.deleteAuthorImage = async (req, res) => {
     }
 };
 
-exports.publicAddCourse = async (req, res) => {
+exports.publicCourse = async (req, res) => {
     try {
         const id = req.params.id;
         const adminId = req.admin.id;
-        // is add course present
-        const addCourse = await AddCourse.findOne({
+        // is course present
+        const course = await Course.findOne({
             where: {
                 [Op.and]:
                     [
-                        { id: id }, { admin_id: adminId }
+                        { id: id }, { adminId: adminId }
                     ]
             }
         });
-        if (!addCourse) {
+        if (!course) {
             return res.status(400).send({
                 success: false,
-                message: "AddCourse is not present!"
+                message: "Course is not present!"
             });
         }
         // update isPublice
-        await addCourse.update({
-            ...addCourse,
+        await course.update({
+            ...course,
             isPublic: true,
         });
         res.status(200).send({

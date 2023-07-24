@@ -1,8 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { body } = require('express-validator');
 
-const { registerAdmin, loginAdmin } = require("../../Controllers/Admin/authAdmin.controller");
 // const user = require('../../Controllers/Admin/User/user');
 // const advisor = require('../../Controllers/Admin/Advisor/advisor');
 // const member = require('../../Controllers/Admin/Member/member');
@@ -13,8 +11,8 @@ const { registerAdmin, loginAdmin } = require("../../Controllers/Admin/authAdmin
 const { createSection, getSection, updateSection, publicSection } = require('../../Controllers/Admin/AddCourse/sectionControllers');
 const { createLecture, uploadVideo, addOrUpdateLectureFile, addOrUpdateThumbNail, getLectureForAdmin, deleteLecture, deleteLectureFile,
     publicLecture, updateLecture } = require('../../Controllers/Admin/AddCourse/lectureController');
-const { createAddCourse, getAddCourseForAdmin, getAddCourseById, updateAddCourse, addOrUpdateAuthorImage, addOrUpdateCourseImage,
-    deleteAuthorImage, deleteCourseImage, publicAddCourse } = require('../../Controllers/Admin/AddCourse/addCourseController');
+const { createCourse, getCourseForAdmin, updateCourse, addOrUpdateAuthorImage, addOrUpdateCourseImage,
+    deleteAuthorImage, deleteCourseImage, publicCourse } = require('../../Controllers/Admin/AddCourse/courseController');
 
 //middleware
 const multer = require('multer');
@@ -23,15 +21,6 @@ const { verifyToken } = require('../../Middlewares/varifyToken');
 const { isAdminPresent } = require('../../Middlewares/isAdminPresent');
 const uploadImage = require('../../Middlewares/UploadFile/uploadImages');
 const uploadPDF = require('../../Middlewares/UploadFile/uploadPDF');
-
-router.post("/register", [
-    body('email', 'Enter a valid Email').isEmail().exists(),
-    body('password', 'Passward should have atleast six characters!').isLength({ min: 6 }).exists()
-], registerAdmin);
-router.post("/login", [
-    body('email', 'Enter a valid Email').isEmail().exists(),
-    body('password', 'Passward should have atleast six characters!').isLength({ min: 6 }).exists()
-], loginAdmin);
 
 // router.post("/create-users", user.create);
 // router.get("/users", user.findAll);
@@ -72,13 +61,12 @@ router.post("/login", [
 // router.delete("/delete-eWallets/:id", eWallet.delete);
 // router.put("/update-eWallets/:id", eWallet.update);
 
-router.post("/createAddCourse", verifyToken, isAdminPresent, createAddCourse);
-router.get("/addCourses", verifyToken, isAdminPresent, getAddCourseForAdmin);
-router.get("/getAddCourseById/:id", verifyToken, isAdminPresent, getAddCourseById);
-router.put("/updateAddCourse/:id", verifyToken, isAdminPresent, updateAddCourse);
+router.post("/createCourse", verifyToken, isAdminPresent, createCourse);
+router.get("/courses", verifyToken, isAdminPresent, getCourseForAdmin);
+router.put("/updateCourse/:id", verifyToken, isAdminPresent, updateCourse);
 router.put("/addOrUpdateAuthorImage/:id", verifyToken, isAdminPresent, uploadImage.single("authorImage"), addOrUpdateAuthorImage);
 router.put("/addOrUpdateCourseImage/:id", verifyToken, isAdminPresent, uploadImage.single("courseImage"), addOrUpdateCourseImage);
-router.put("/publicAddCourse/:id", verifyToken, isAdminPresent, publicAddCourse);
+router.put("/publicCourse/:id", verifyToken, isAdminPresent, publicCourse);
 router.delete("/deleteAuthorImage/:id", verifyToken, isAdminPresent, deleteAuthorImage);
 router.delete("/deleteCourseImage/:id", verifyToken, isAdminPresent, deleteCourseImage);
 // router.delete("/delete-addCourse/:id",verifyToken,isAdminPresent, addCourse.deleteAddCourse);
