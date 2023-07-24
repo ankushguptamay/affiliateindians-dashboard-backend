@@ -1,20 +1,28 @@
-const { AddCourse, Lecture } = require('../../../Models');
+const db = require('../../../Models');
+const Lecture = db.lecture;
+const LecturesFile = db.lectureFile;
+const LecturesVideo = db.lectureVideo;
+const LecturesQuiz = db.lectureQuiz;
 const { deleteFile } = require("../../../Util/deleteFile");
 const axios = require('axios');
 
+// createLecture lesson name is required
+// getLectureByLectureId
+// updateLecture
+// publicLecture
+
 exports.createLecture = async (req, res) => {
     try {
-        const { lessonName, text, quiz, codeExample, customCode, richTextEditor, section_id, addCourse_id } = req.body;
-        if (lessonName && section_id && addCourse_id) {
+        const { lessonName, codeExample, customCode, richTextEditor, sectionId, courseId } = req.body;
+        if (lessonName && sectionId && courseId) {
             await Lecture.create({
                 lessonName: lessonName,
-                text: text,
-                quiz: quiz,
                 codeExample: codeExample,
                 customCode: customCode,
                 richTextEditor: richTextEditor,
-                section_id: section_id,
-                addCourse_id: addCourse_id
+                section_id: sectionId,
+                addCourse_id: courseId,
+                adminId: req.admin.id
             });
             res.status(201).send({
                 success: true,
@@ -23,9 +31,116 @@ exports.createLecture = async (req, res) => {
         } else {
             res.status(400).send({
                 success: false,
-                message: `LessonName, section_id, addCourse_id should present!`
+                message: `LessonName, sectionId, curseId should present!`
             });
         }
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
+
+exports.getLectureByLectureId = async (req, res) => {
+    try {
+        const lectureId = req.params.id;
+        const lecture = await Lecture.findOne({
+            where: {
+                id: lectureId
+            },
+            include: [{
+                model: LecturesFile,
+                as: "lectureFiles",
+                order: [
+                    ['fileName', 'ASC'],
+                    ['createdAt', 'ASC']
+                ]
+            }, {
+                model: LecturesQuiz,
+                as: "lectureQuizs",
+                order: [
+                    ['createdAt', 'DESC']
+                ]
+            }, {
+                model: LecturesVideo,
+                as: "lectureVideos",
+                order: [
+                    ['createdAt', 'ASC']
+                ]
+            }]
+        });
+        if (!lecture) {
+            return res.status(400).send({
+                success: false,
+                message: "Lesson is not present!"
+            });
+        }
+        res.status(200).send({
+            success: true,
+            message: `Lesson fetched successfully!`,
+            data: lecture
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
+
+// update customCode, richTextEditor, codeExample
+exports.updateLecture = async (req, res) => {
+    try {
+        const lectureId = req.params.id;
+        const { codeExample, customCode, richTextEditor } = req.body;
+        const lecture = await Lecture.findOne({ where: { id: lectureId } });
+        if (!lecture) {
+            return res.status(400).send({
+                success: false,
+                message: "Lesson is not present!"
+            });
+        }
+        await lecture.update({
+            ...lecture,
+            codeExample: codeExample,
+            customCode: customCode,
+            richTextEditor: richTextEditor
+        });
+        res.status(200).send({
+            success: true,
+            message: `Lesson modified successfully!`
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
+
+exports.publicLecture = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const lecture = await Lecture.findOne({ where: { id: id } });
+        if (!lecture) {
+            return res.status(400).send({
+                success: false,
+                message: "Lesson is not present!"
+            });
+        };
+        await lecture.update({
+            ...lecture,
+            isPublic: true
+        });
+        res.status(200).send({
+            success: true,
+            message: `Lesson publiced successfully!`
+        });
     }
     catch (err) {
         console.log(err);
@@ -327,39 +442,6 @@ exports.deleteLecture = async (req, res) => {
     }
 };
 
-// update text, quiz, customCode, richTextEditor, codeExample
-exports.updateLecture = async (req, res) => {
-    try {
-        const id = req.params.id;
-        const { text, quiz, codeExample, customCode, richTextEditor } = req.body;
-        const lecture = await Lecture.findOne({ where: { id: id } });
-        if (!lecture) {
-            return res.status(400).send({
-                success: false,
-                message: "Lesson is not present!"
-            });
-        }
-        await lecture.update({
-            ...lecture,
-            text: text,
-            quiz: quiz,
-            codeExample: codeExample,
-            customCode: customCode,
-            richTextEditor: richTextEditor
-        });
-        res.status(200).send({
-            success: true,
-            message: `Lesson modified successfully!`
-        });
-    } catch (err) {
-        console.log(err);
-        res.status(500).send({
-            success: false,
-            err: err.message
-        });
-    }
-};
-
 exports.deleteLectureFile = async (req, res) => {
     try {
         const id = req.params.id;
@@ -381,34 +463,6 @@ exports.deleteLectureFile = async (req, res) => {
         res.status(201).send({
             success: true,
             message: `Lesson's file deleted successfully!`
-        });
-    }
-    catch (err) {
-        console.log(err);
-        res.status(500).send({
-            success: false,
-            err: err.message
-        });
-    }
-};
-
-exports.publicLecture = async (req, res) => {
-    try {
-        const id = req.params.id;
-        const lecture = await Lecture.findOne({ where: { id: id } });
-        if (!lecture) {
-            return res.status(400).send({
-                success: false,
-                message: "Lesson is not present!"
-            });
-        };
-        await lecture.update({
-            ...lecture,
-            isPublic: true
-        });
-        res.status(200).send({
-            success: true,
-            message: `Lesson publiced successfully!`
         });
     }
     catch (err) {

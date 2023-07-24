@@ -9,8 +9,7 @@ const router = express.Router();
 // const myBooking = require('../../Controllers/Admin/MyBooking/myBooking');
 // const eWallet = require('../../Controllers/Admin/EWallet/eWallet');
 const { createSection, getAllSectionByCourseId, updateSection, publicSection } = require('../../Controllers/Admin/AddCourse/sectionControllers');
-const { createLecture, uploadVideo, addOrUpdateLectureFile, addOrUpdateThumbNail, getLectureForAdmin, deleteLecture, deleteLectureFile,
-    publicLecture, updateLecture } = require('../../Controllers/Admin/AddCourse/lectureController');
+const { createLecture, getLectureByLectureId, publicLecture, updateLecture } = require('../../Controllers/Admin/AddCourse/lectureController');
 const { createCourse, getCourseForAdmin, updateCourse, addOrUpdateAuthorImage, addOrUpdateCourseImage,
     deleteAuthorImage, deleteCourseImage, publicCourse } = require('../../Controllers/Admin/AddCourse/courseController');
 
@@ -78,13 +77,11 @@ router.put("/publicSection/:id", verifyToken, isAdminPresent, publicSection);
 // router.delete("/delete-section/:id",verifyToken, isAdminPresent,section.deleteSection);
 
 router.post("/createLecture", verifyToken, isAdminPresent, createLecture);
-router.put("/uploadVideo/:id", verifyToken, isAdminPresent, upload.single("video"), uploadVideo);
-router.put("/addOrUpdateThumbNail/:id", verifyToken, isAdminPresent, uploadImage.single("thumbnail"), addOrUpdateThumbNail);
-router.put("/addOrUpdateLectureFile/:id", verifyToken, isAdminPresent, uploadPDF.single("lecturePDFile"), addOrUpdateLectureFile);
-router.get("/lectures/:section_id", verifyToken, isAdminPresent, getLectureForAdmin);
-router.delete("/deleteLecture/:id", verifyToken, isAdminPresent, deleteLecture);
+// router.put("/uploadVideo/:id", verifyToken, isAdminPresent, upload.single("video"), uploadVideo);
+// router.put("/addOrUpdateThumbNail/:id", verifyToken, isAdminPresent, uploadImage.single("thumbnail"), addOrUpdateThumbNail);
+// router.put("/addOrUpdateLectureFile/:id", verifyToken, isAdminPresent, uploadPDF.single("lecturePDFile"), addOrUpdateLectureFile);
+router.get("/lecture/:id", verifyToken, isAdminPresent, getLectureByLectureId);
 router.put("/updateLecture/:id", verifyToken, isAdminPresent, updateLecture);
 router.put("/publicLecture/:id", verifyToken, isAdminPresent, publicLecture);
-router.delete("/deleteLectureFile/:id", verifyToken, isAdminPresent, deleteLectureFile);
 
 module.exports = router;

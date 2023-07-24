@@ -4,6 +4,10 @@ const Section = db.section
 const Lecture = db.lecture;
 const { deleteMultiFile } = require("../../../Util/deleteFile")
 
+// createSection
+// getAllSectionByCourseId
+// updateSection
+// publicSection
 exports.createSection = async (req, res) => {
     try {
         await Section.create({
