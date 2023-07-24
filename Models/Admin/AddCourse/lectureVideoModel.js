@@ -11,12 +11,15 @@ module.exports = (sequelize, DataTypes) => {
         Video_ID: {
             type: DataTypes.STRING
         },
-        Thumbnail_URL: {
-            type: DataTypes.STRING(1234) 
-        },
         Iframe_URL: {
             type: DataTypes.STRING(1234) 
         },
+        BUNNY_VIDEO_LIBRARY_ID:{
+            type: DataTypes.STRING
+        },
+        BUNNY_LIBRARY_API_KEY:{
+            type: DataTypes.STRING
+        }
        
     });
     return LecturesVideo;

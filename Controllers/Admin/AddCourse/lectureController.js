@@ -53,20 +53,20 @@ exports.getLectureByLectureId = async (req, res) => {
             },
             include: [{
                 model: LecturesFile,
-                as: "lectureFiles",
+                as: "lessonFiles",
                 order: [
                     ['fileName', 'ASC'],
                     ['createdAt', 'ASC']
                 ]
             }, {
                 model: LecturesQuiz,
-                as: "lectureQuizs",
+                as: "lessonQuizs",
                 order: [
                     ['createdAt', 'DESC']
                 ]
             }, {
                 model: LecturesVideo,
-                as: "lectureVideos",
+                as: "lessonVideos",
                 order: [
                     ['createdAt', 'ASC']
                 ]
@@ -140,104 +140,6 @@ exports.publicLecture = async (req, res) => {
         res.status(200).send({
             success: true,
             message: `Lesson publiced successfully!`
-        });
-    }
-    catch (err) {
-        console.log(err);
-        res.status(500).send({
-            success: false,
-            err: err.message
-        });
-    }
-};
-
-exports.uploadVideo = async (req, res) => {
-    try {
-        if (!req.file) {
-            return res.status(400).send({
-                success: false,
-                message: "Select a video!"
-            });
-        }
-        // find lecture
-        const id = req.params.id;
-        const lecture = await Lecture.findOne({
-            where: { id: id },
-            include: [{
-                model: AddCourse,
-                as: 'addCourse'
-            }]
-
-        });
-        if (!lecture) {
-            return res.status(400).send({
-                success: false,
-                message: "Lesson is not present!"
-            });
-        };
-        // upload video to bunny
-        let video_id;
-        const optionsToCreateVideo = {
-            method: "POST",
-            url: `http://video.bunnycdn.com/library/${lecture.addCourse.BUNNY_VIDEO_LIBRARY_ID}/videos/`,
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                AccessKey: lecture.addCourse.BUNNY_LIBRARY_API_KEY,
-            },
-            data: JSON.stringify({ title: lecture.lessonName }),
-        };
-
-        await axios
-            .request(optionsToCreateVideo)
-            .then((response) => {
-                video_id = response.data.guid;
-                const video = req.file.buffer;
-                axios.put(`http://video.bunnycdn.com/library/${lecture.addCourse.BUNNY_VIDEO_LIBRARY_ID}/videos/${video_id}`,
-                    video, {
-                    headers: {
-                        Accept: "application/json",
-                        'Content-Type': 'application/json',
-                        AccessKey: lecture.addCourse.BUNNY_LIBRARY_API_KEY,
-                    }
-                }
-                ).then(result => {
-                    // console.log("result: ", result.data);
-                }, (error) => {
-                    // console.log("error: ", error);
-                })
-            })
-            .catch((error) => {
-                console.log(error);
-                return res.status(400).json({
-                    success: false,
-                    message: "failed to add lecture!",
-                    bunnyMessage: error.message
-                });
-            });
-        // if video is already present then delete existing video
-        let message = "added";
-        if (lecture.Video_id) {
-            const deleteVideo = {
-                method: "DELETE",
-                url: `http://video.bunnycdn.com/library/${lecture.addCourse.BUNNY_VIDEO_LIBRARY_ID}/videos/${lecture.Video_id}`,
-                headers: {
-                    AccessKey: lecture.addCourse.BUNNY_LIBRARY_API_KEY,
-                }
-            };
-            axios.request(deleteVideo);
-            message = "updated";
-        }
-        // add new video in databse
-        await lecture.update({
-            ...lecture,
-            Video_ID: video_id,
-            Iframe_URL: `https://iframe.mediadelivery.net/embed/${addCourse.BUNNY_VIDEO_LIBRARY_ID}/${video_id}`,
-            Direct_Play_URL: `https://iframe.mediadelivery.net/play/${addCourse.BUNNY_VIDEO_LIBRARY_ID}/${video_id}`
-        });
-        res.status(201).send({
-            success: true,
-            message: `Lesson's video ${message} successfully!`
         });
     }
     catch (err) {
@@ -354,30 +256,6 @@ exports.addOrUpdateLectureFile = async (req, res) => {
         });
     }
     catch (err) {
-        console.log(err);
-        res.status(500).send({
-            success: false,
-            err: err.message
-        });
-    }
-};
-
-exports.getLectureForAdmin = async (req, res) => {
-    try {
-        const lecture = await Lecture.findAll({
-            where: {
-                section_id: req.params.section_id
-            },
-            order: [
-                ['createdAt', 'ASC']
-            ]
-        });
-        res.status(200).send({
-            success: true,
-            message: "Lesson fetched successfully!",
-            data: lecture
-        });
-    } catch (err) {
         console.log(err);
         res.status(500).send({
             success: false,

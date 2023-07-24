@@ -12,6 +12,7 @@ const { createSection, getAllSectionByCourseId, updateSection, publicSection } =
 const { createLecture, getLectureByLectureId, publicLecture, updateLecture } = require('../../Controllers/Admin/AddCourse/lectureController');
 const { createCourse, getCourseForAdmin, updateCourse, addOrUpdateAuthorImage, addOrUpdateCourseImage,
     deleteAuthorImage, deleteCourseImage, publicCourse } = require('../../Controllers/Admin/AddCourse/courseController');
+    const { uploadLectureVideo, deleteLectureVideo } = require('../../Controllers/Admin/AddCourse/lectureVideosController');
 
 //middleware
 const multer = require('multer');
@@ -77,11 +78,13 @@ router.put("/publicSection/:id", verifyToken, isAdminPresent, publicSection);
 // router.delete("/delete-section/:id",verifyToken, isAdminPresent,section.deleteSection);
 
 router.post("/createLecture", verifyToken, isAdminPresent, createLecture);
-// router.put("/uploadVideo/:id", verifyToken, isAdminPresent, upload.single("video"), uploadVideo);
 // router.put("/addOrUpdateThumbNail/:id", verifyToken, isAdminPresent, uploadImage.single("thumbnail"), addOrUpdateThumbNail);
 // router.put("/addOrUpdateLectureFile/:id", verifyToken, isAdminPresent, uploadPDF.single("lecturePDFile"), addOrUpdateLectureFile);
 router.get("/lecture/:id", verifyToken, isAdminPresent, getLectureByLectureId);
 router.put("/updateLecture/:id", verifyToken, isAdminPresent, updateLecture);
 router.put("/publicLecture/:id", verifyToken, isAdminPresent, publicLecture);
+
+router.post("/uploadVideo/:lectureId", verifyToken, isAdminPresent, upload.single("lessonVideo"), uploadLectureVideo);
+router.delete("/deleteVideo/:id", verifyToken, isAdminPresent, deleteLectureVideo);
 
 module.exports = router;
