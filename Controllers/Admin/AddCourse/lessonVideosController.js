@@ -2,7 +2,8 @@ const db = require('../../../Models');
 const Lesson = db.lesson;
 const Course = db.course;
 const LessonVideo = db.lessonVideo;
-const { deleteSingleFile } = require("../../../Util/deleteFile");
+const VideoComment = db.videoComment;
+const { deleteSingleFile, deleteMultiFile } = require("../../../Util/deleteFile");
 const axios = require('axios');
 
 // uploadLessonVideo
@@ -136,6 +137,16 @@ exports.deleteLessonVideo = async (req, res) => {
         if (lessonVideo.Thumbnail_URL) {
             deleteSingleFile(lessonVideo.Thumbnail_URL);
         }
+        // delete comment files
+        const comment = await VideoComment.findAll({ where: { lessonVideoId: id } });
+        const fileArray = [];
+        for (let i = 0; i < comment.length; i++) {
+            fileArray.push(comment[i].filePath);
+        }
+        if (fileArray.length > 0) {
+            deleteMultiFile(fileArray);
+        }
+        // delete lesson video
         await lessonVideo.destroy();
         res.status(200).send({
             success: true,
