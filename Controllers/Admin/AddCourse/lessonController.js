@@ -166,6 +166,7 @@ exports.deleteLesson = async (req, res) => {
         // delete associated video
         const video = await LessonVideo.findAll({ lessonId: id });
         const commentFileArray = [];
+        const thumbnailArray = [];
         if (video.length > 0) {
             // delete video from bunny
             for (let i = 0; i < video.length; i++) {
@@ -190,11 +191,16 @@ exports.deleteLesson = async (req, res) => {
                             bunnyMessage: error.message
                         });
                     });
+                thumbnailArray.push(video[i].Thumbnail_URL);
                 const comment = await VideoComment.findAll({ where: { lessonVideoId: video[i].id } });
                 for (let i = 0; i < comment.length; i++) {
                     commentFileArray.push(comment[i].filePath);
                 }
             }
+        }
+        // delete thumbnail
+        if (thumbnailArray.length > 0) {
+            deleteMultiFile(thumbnailArray);
         }
         // delete comment Files
         if (commentFileArray.length > 0) {

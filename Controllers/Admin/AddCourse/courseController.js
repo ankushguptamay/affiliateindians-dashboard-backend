@@ -124,6 +124,7 @@ exports.deleteCourse = async (req, res) => {
         const section = await Section.findAll({ where: { courseId: id } });
         const commentFileArray = [];
         const lessonFileArray = [];
+        const thumbnailArray = [];
         if (section.length > 0) {
             for (let i = 0; i < section.length; i++) {
                 const lesson = await Lesson.findAll({ where: { sectionId: section[i].id } });
@@ -155,6 +156,7 @@ exports.deleteCourse = async (req, res) => {
                                             bunnyMessage: error.message
                                         });
                                     });
+                                thumbnailArray.push(video[i].Thumbnail_URL);
                                 const comment = await VideoComment.findAll({ where: { lessonVideoId: video[i].id } });
                                 for (let i = 0; i < comment.length; i++) {
                                     commentFileArray.push(comment[i].filePath);
@@ -168,6 +170,10 @@ exports.deleteCourse = async (req, res) => {
                     }
                 }
             }
+        }
+        // delete thumbnail
+        if (thumbnailArray.length > 0) {
+            deleteMultiFile(thumbnailArray);
         }
         // delete comment file
         if (commentFileArray.length > 0) {
