@@ -22,8 +22,8 @@ exports.createLesson = async (req, res) => {
                 codeExample: codeExample,
                 customCode: customCode,
                 richTextEditor: richTextEditor,
-                section_id: sectionId,
-                addCourse_id: courseId,
+                sectionId: sectionId,
+                courseId: courseId,
                 adminId: req.admin.id
             });
             res.status(201).send({

@@ -1,7 +1,10 @@
 const { Op } = require('sequelize');
-const db= require('../../../Models');
+const db = require('../../../Models');
 const Section = db.section
 const Lesson = db.lesson;
+const LessonFile = db.lessonFile;
+const LessonVideo = db.lessonVideo;
+const VideoComment = db.videoComment;
 const { deleteMultiFile } = require("../../../Util/deleteFile")
 
 // createSection
@@ -63,34 +66,80 @@ exports.getAllSectionByCourseId = async (req, res) => {
     }
 };
 
-// delete file from buuny
-// exports.deleteSection = async (req, res) => {
-//     try {
-//         const id = req.params.id;
-//         const section = await Section.findOne({ where: { id: id } });
-//         if (!section) {
-//             return res.status(400).send({
-//                 success: false,
-//                 message: "Section is not present!"
-//             });
-//         };
-//         const lesson = await Lesson.findAll({ where: { section_id: id } });
-//         const fileArray = [];
-//         lesson.map((data) => {
-//             fileArray.push(data.file);
-//         });
-//         deleteMultiFile(fileArray);
-//         await section.destroy();
-//         res.status(200).send({
-//             success: true,
-//             message: `Section deleted seccessfully! ID: ${id}`
-//         });
-//     } catch (err) {
-//         console.log(err);
-//         res.status(500).send({ success: false,
-// err: err.message});
-//     }
-// };
+exports.deleteSection = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const section = await Section.findOne({ where: { id: id } });
+        if (!section) {
+            return res.status(400).send({
+                success: false,
+                message: "Section is not present!"
+            });
+        };
+        const lesson = await Lesson.findAll({ where: { sectionId: id } });
+        const commentFileArray = [];
+        const lessonFileArray = [];
+        if (lesson.length > 0) {
+            // delete associated video
+            for (let i = 0; i < lesson.length; i++) {
+                const video = await LessonVideo.findAll({ lessonId: lesson[i].id });
+                if (video.length > 0) {
+                    // delete video from bunny
+                    for (let i = 0; i < video.length; i++) {
+                        const deleteVideo = {
+                            method: "DELETE",
+                            url: `http://video.bunnycdn.com/library/${video[i].BUNNY_VIDEO_LIBRARY_ID}/videos/${video[i].Video_ID}`,
+                            headers: {
+                                AccessKey: video[i].BUNNY_LIBRARY_API_KEY,
+                            }
+                        };
+
+                        await axios
+                            .request(deleteVideo)
+                            .then((response) => {
+                                // console.log("delete: ", response.data);
+                            })
+                            .catch((error) => {
+                                // console.log(error);
+                                return res.status(400).send({
+                                    success: false,
+                                    message: "Delete request of video failed from bunny. try to delete again!",
+                                    bunnyMessage: error.message
+                                });
+                            });
+                        const comment = await VideoComment.findAll({ where: { lessonVideoId: video[i].id } });
+                        for (let i = 0; i < comment.length; i++) {
+                            commentFileArray.push(comment[i].filePath);
+                        }
+                    }
+                }
+                const lessonFile = await LessonFile.findAll({ where: { lessonId: lesson[i].id } });
+                for (let i = 0; i < lessonFile.length; i++) {
+                    lessonFileArray.push(lessonFile[i].filePath);
+                }
+            }
+        }
+        // delete comment Files
+        if (commentFileArray.length > 0) {
+            deleteMultiFile(commentFileArray);
+        }
+        // delete lesson files
+        if (lessonFileArray.length > 0) {
+            deleteMultiFile(lessonFileArray);
+        }
+        await section.destroy();
+        res.status(200).send({
+            success: true,
+            message: `Section deleted seccessfully! ID: ${id}`
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
 
 exports.updateSection = async (req, res) => {
     try {
