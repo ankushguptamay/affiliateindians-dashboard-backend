@@ -8,10 +8,10 @@ const router = express.Router();
 // const scheduleBooking = require('../../Controllers/Admin/ScheduleBooking/scheduleBooking');
 // const myBooking = require('../../Controllers/Admin/MyBooking/myBooking');
 // const eWallet = require('../../Controllers/Admin/EWallet/eWallet');
-const { createSection, getAllSectionByCourseId, updateSection, publicSection } = require('../../Controllers/Admin/AddCourse/sectionControllers');
+const { createSection, getAllSectionByCourseId, updateSection, publicSection, deleteSection } = require('../../Controllers/Admin/AddCourse/sectionControllers');
 const { createLesson, getLessonByLessonId, publicLesson, updateLesson, deleteLesson } = require('../../Controllers/Admin/AddCourse/lessonController');
 const { createCourse, getCourseForAdmin, updateCourse, addOrUpdateAuthorImage, addOrUpdateCourseImage,
-    deleteAuthorImage, deleteCourseImage, publicCourse } = require('../../Controllers/Admin/AddCourse/courseController');
+    deleteAuthorImage, deleteCourseImage, publicCourse, deleteCourse } = require('../../Controllers/Admin/AddCourse/courseController');
 const { uploadLessonVideo, deleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
 const { createLessonQuiz, getAllQuizByLessonId, deleteLessonQuiz, updateLessonQuiz } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
 const { addBanner, updateBanner, addPDF, deletePDF, addResource, deleteResource } = require('../../Controllers/Admin/AddCourse/lessonFileController');
@@ -73,13 +73,13 @@ router.put("/addOrUpdateCourseImage/:id", verifyToken, isAdminPresent, uploadIma
 router.put("/publicCourse/:id", verifyToken, isAdminPresent, publicCourse);
 router.delete("/deleteAuthorImage/:id", verifyToken, isAdminPresent, deleteAuthorImage);
 router.delete("/deleteCourseImage/:id", verifyToken, isAdminPresent, deleteCourseImage);
-// router.delete("/delete-addCourse/:id",verifyToken,isAdminPresent, addCourse.deleteAddCourse);
+router.delete("/deleteCourse/:id", verifyToken, isAdminPresent, deleteCourse);
 
 router.post("/createSection", verifyToken, isAdminPresent, createSection);
 router.get("/sections/:courseId", verifyToken, isAdminPresent, getAllSectionByCourseId);
 router.put("/updateSection/:id", verifyToken, isAdminPresent, updateSection);
 router.put("/publicSection/:id", verifyToken, isAdminPresent, publicSection);
-// router.delete("/delete-section/:id",verifyToken, isAdminPresent,section.deleteSection);
+router.delete("/deleteSection/:id", verifyToken, isAdminPresent, deleteSection);
 
 router.post("/createLesson", verifyToken, isAdminPresent, createLesson);
 router.get("/lesson/:id", verifyToken, isAdminPresent, getLessonByLessonId);

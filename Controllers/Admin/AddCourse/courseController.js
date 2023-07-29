@@ -14,6 +14,7 @@ const { Op } = require('sequelize');
 // deleteCourseImage
 // deleteAuthorImage
 // publicCourse
+// deleteCourse
 
 exports.createCourse = async (req, res) => {
     try {
@@ -54,7 +55,7 @@ exports.createCourse = async (req, res) => {
         });
     }
     catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send({
             success: false,
             err: err.message
@@ -78,7 +79,7 @@ exports.getCourseForAdmin = async (req, res) => {
             data: course
         });
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send({
             success: false,
             err: err.message
@@ -102,7 +103,7 @@ exports.getCourseForUser = async (req, res) => {
             data: course
         });
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send({
             success: false,
             err: err.message
@@ -110,42 +111,93 @@ exports.getCourseForUser = async (req, res) => {
     }
 };
 
-// delete file from bunny video and library
-// exports.deleteCourse = async (req, res) => {
-//     try {
-//         const id = req.params.id;
-//         const course = await Course.findOne({ where: { id: id } });
-//         if (!course) {
-//             return res.status(400).send({ message: "Course is not present!" });
-//         };
-//         const sections = await Section.findAll({ where: { courseId: id }, attributes: ["id"] });
-//         const lectures = [];
-//         for (let i = 0; i < sections.length; i++) {
-//             lectures.push(await Lecture.findAll({ where: { section_id: sections[i].id }, attributes: ["file", "Thumbnail_URL"] }));
-//         }
-//         const fileArray = [];
-//         const thunbnailArray = [];
-//         for (let i = 0; i < lectures.length; i++) {
-//             for (let j = 0; j < lectures[i].length; j++) {
-//                 if (lectures[i][j].file) {
-//                     fileArray.push(lectures[i][j].file);
-//                 }
-//                 if (lectures[i][j].Thumbnail_URL) {
-//                     thunbnailArray.push(lectures[i][j].Thumbnail_URL);
-//                 }
-//             }
-//         }
-//         deleteMultiFile(fileArray);
-//         deleteSingleFile(addCourse.authorImage);
-//         deleteSingleFile(addCourse.courseImage);
-//         await addCourse.destroy({ where: { id: id } });
-//         res.status(200).send({ message: `AddCourse deleted successfully! ID: ${id}` });
-//     } catch (err) {
-//         console.log(err);
-//         res.status(500).send({ success: false,
-// err: err.message});
-//     }
-// };
+exports.deleteCourse = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const course = await Course.findOne({ where: { id: id } });
+        if (!course) {
+            return res.status(400).send({
+                success: false,
+                message: "Course is not present!"
+            });
+        };
+        const section = await Section.findAll({ where: { courseId: id } });
+        const commentFileArray = [];
+        const lessonFileArray = [];
+        if (section.length > 0) {
+            for (let i = 0; i < section.length; i++) {
+                const lesson = await Lesson.findAll({ where: { sectionId: section[i].id } });
+                if (lesson.length > 0) {
+                    // delete associated video
+                    for (let i = 0; i < lesson.length; i++) {
+                        const video = await LessonVideo.findAll({ lessonId: lesson[i].id });
+                        if (video.length > 0) {
+                            // delete video from bunny
+                            for (let i = 0; i < video.length; i++) {
+                                const deleteVideo = {
+                                    method: "DELETE",
+                                    url: `http://video.bunnycdn.com/library/${video[i].BUNNY_VIDEO_LIBRARY_ID}/videos/${video[i].Video_ID}`,
+                                    headers: {
+                                        AccessKey: video[i].BUNNY_LIBRARY_API_KEY,
+                                    }
+                                };
+
+                                await axios
+                                    .request(deleteVideo)
+                                    .then((response) => {
+                                        // console.log("delete: ", response.data);
+                                    })
+                                    .catch((error) => {
+                                        // console.log(error);
+                                        return res.status(400).send({
+                                            success: false,
+                                            message: "Delete request of video failed from bunny. try to delete again!",
+                                            bunnyMessage: error.message
+                                        });
+                                    });
+                                const comment = await VideoComment.findAll({ where: { lessonVideoId: video[i].id } });
+                                for (let i = 0; i < comment.length; i++) {
+                                    commentFileArray.push(comment[i].filePath);
+                                }
+                            }
+                        }
+                        const lessonFile = await LessonFile.findAll({ where: { lessonId: lesson[i].id } });
+                        for (let i = 0; i < lessonFile.length; i++) {
+                            lessonFileArray.push(lessonFile[i].filePath);
+                        }
+                    }
+                }
+            }
+        }
+        // delete comment file
+        if (commentFileArray.length > 0) {
+            deleteMultiFile(commentFileArray);
+        }
+        // delete lesson resource
+        if (lessonFileArray.length > 0) {
+            deleteMultiFile(lessonFileArray);
+        }
+        // delete course image
+        if (course.courseImage) {
+            deleteSingleFile(course.courseImage);
+        }
+        // delete author image
+        if (course.authorImage) {
+            deleteSingleFile(course.authorImage);
+        }
+        await course.destroy();
+        res.status(200).send({
+            success: true,
+            message: `Course deleted successfully!`
+        });
+    } catch (err) {
+        // console.log(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
 
 exports.updateCourse = async (req, res) => {
     try {
@@ -178,7 +230,7 @@ exports.updateCourse = async (req, res) => {
             },
             data: {
                 Name: title,
-                PlayerKeyColor:PlayerKeyColor // "#55ff60" their are more option, check it on bunny 
+                PlayerKeyColor: PlayerKeyColor // "#55ff60" their are more option, check it on bunny 
             }
         };
         await axios.request(updateVideoLibrary);
@@ -195,7 +247,7 @@ exports.updateCourse = async (req, res) => {
             message: `Course modified successfully!`
         });
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send({
             success: false,
             err: err.message
@@ -244,7 +296,7 @@ exports.addOrUpdateCourseImage = async (req, res) => {
             message: `Course Image ${message} successfully!`
         });
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send({
             success: false,
             err: err.message
@@ -293,7 +345,7 @@ exports.addOrUpdateAuthorImage = async (req, res) => {
             message: `Course Author Image ${message} successfully!`
         });
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send({
             success: false,
             err: err.message
@@ -335,7 +387,7 @@ exports.deleteCourseImage = async (req, res) => {
             message: `Course Image deleted successfully!`
         });
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send({
             success: false,
             err: err.message
@@ -376,7 +428,7 @@ exports.deleteAuthorImage = async (req, res) => {
             message: `Course Author Image deleted successfully!`
         });
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send({
             success: false,
             err: err.message
@@ -413,7 +465,7 @@ exports.publicCourse = async (req, res) => {
             message: `Course publiced successfully!`
         });
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send({
             success: false,
             err: err.message
