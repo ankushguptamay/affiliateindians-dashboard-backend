@@ -1,11 +1,11 @@
 const db = require('../../../Models');
-const LecturesQuiz = db.lectureQuiz;
+const LessonQuiz = db.lessonQuiz;
 
-exports.createLectureQuiz = async (req, res) => {
+exports.createLessonQuiz = async (req, res) => {
     try {
         const { quizQuestion, optionA, optionB, optionC, optionD, courseId, sectionId } = req.body;
-        const lectureId = req.params.lectureId;
-        await LecturesQuiz.create({
+        const lessonId = req.params.lessonId;
+        await LessonQuiz.create({
             quizQuestion: quizQuestion,
             optionA: optionA,
             optionB: optionB,
@@ -13,7 +13,7 @@ exports.createLectureQuiz = async (req, res) => {
             optionD: optionD,
             courseId: courseId,
             sectionId: sectionId,
-            lectureId: lectureId,
+            lessonId: lessonId,
         });
         res.status(201).send({
             success: true,
@@ -29,13 +29,11 @@ exports.createLectureQuiz = async (req, res) => {
     }
 };
 
-exports.getAllQuizByLectureId = async (req, res) => {
+exports.getAllQuizByLessonId = async (req, res) => {
     try {
-        const quiz = await LecturesQuiz.findAll({
+        const quiz = await LessonQuiz.findAll({
             where: {
-                [Op.and]: [
-                    { lectureId: req.params.lectureId }
-                ]
+                lessonId: req.params.lessonId
             },
             order: [
                 ['createdAt', 'ASC']
@@ -55,17 +53,17 @@ exports.getAllQuizByLectureId = async (req, res) => {
     }
 };
 
-exports.deleteLectureQuiz = async (req, res) => {
+exports.deleteLessonQuiz = async (req, res) => {
     try {
         const id = req.params.id;
-        const lectureQuiz = await LecturesQuiz.findOne({ where: { id: id } });
-        if (!lectureQuiz) {
+        const lessonQuiz = await LessonQuiz.findOne({ where: { id: id } });
+        if (!lessonQuiz) {
             return res.status(400).send({
                 success: false,
                 message: "Quiz is not present!"
             });
         };
-        await lectureQuiz.destroy();
+        await lessonQuiz.destroy();
         res.status(200).send({
             success: true,
             message: `Lesson Quiz deleted seccessfully! ID!`
@@ -79,19 +77,19 @@ exports.deleteLectureQuiz = async (req, res) => {
     }
 };
 
-exports.updateLectureQuiz = async (req, res) => {
+exports.updateLessonQuiz = async (req, res) => {
     try {
         const id = req.params.id;
         const { quizQuestion, optionA, optionB, optionC, optionD } = req.body;
-        const lectureQuiz = await LecturesQuiz.findOne({ where: { id: id } });
-        if (!lectureQuiz) {
+        const lessonQuiz = await LessonQuiz.findOne({ where: { id: id } });
+        if (!lessonQuiz) {
             return res.status(400).send({
                 success: false,
                 message: "Quiz is not present!"
             });
         };
-        await lectureQuiz.update({
-            ...lectureQuiz,
+        await lessonQuiz.update({
+            ...lessonQuiz,
             quizQuestion: quizQuestion,
             optionA: optionA,
             optionB: optionB,
@@ -100,7 +98,7 @@ exports.updateLectureQuiz = async (req, res) => {
         });
         res.status(200).send({
             success: true,
-            message: `Lecture Quiz updated seccessfully!`
+            message: `Lesson Quiz updated seccessfully!`
         });
     } catch (err) {
         // console.log(err);

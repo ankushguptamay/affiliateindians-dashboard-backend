@@ -1,7 +1,6 @@
 const dbConfig = require('../Config/db.config.js');
-const { deleteFile } = require("../Util/deleteFile")
 
-const Sequelize= require('sequelize');
+const Sequelize = require('sequelize');
 const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.password, {
     host: dbConfig.host,
     dialect: dbConfig.dialect,
@@ -29,11 +28,12 @@ db.sequelize = sequelize;
 // Admin AddCourse
 db.admin = require('./Admin/admin')(sequelize, Sequelize);
 db.course = require('./Admin/AddCourse/courseModel.js')(sequelize, Sequelize);
-db.lecture = require('./Admin/AddCourse/lectureModel')(sequelize, Sequelize);
+db.lesson = require('./Admin/AddCourse/lessonModel.js')(sequelize, Sequelize);
 db.section = require('./Admin/AddCourse/sectionModel')(sequelize, Sequelize);
-db.lectureQuiz = require('./Admin/AddCourse/lectureQuizModel.js')(sequelize, Sequelize);
-db.lectureVideo = require('./Admin/AddCourse/lectureVideoModel.js')(sequelize, Sequelize);
-db.lectureFile = require('./Admin/AddCourse/lecturesFileModel.js')(sequelize, Sequelize);
+db.lessonQuiz = require('./Admin/AddCourse/lessonQuizModel.js')(sequelize, Sequelize);
+db.lessonVideo = require('./Admin/AddCourse/lessonVideoModel.js')(sequelize, Sequelize);
+db.lessonFile = require('./Admin/AddCourse/lessonFileModel.js')(sequelize, Sequelize);
+db.videoComment = require('./Admin/AddCourse/videoCommentModel.js')(sequelize, Sequelize);
 
 // user
 // db.user = require('./User/user.js')(sequelize, Sequelize);
@@ -45,37 +45,46 @@ db.course.belongsTo(db.admin, { foreignKey: "adminId" });
 
 db.admin.hasMany(db.section, { foreignKey: "adminId" });
 
-db.admin.hasMany(db.lecture, { foreignKey: "adminId" });
+db.admin.hasMany(db.lesson, { foreignKey: "adminId" });
 
 // Course Association
 db.course.hasMany(db.section, { foreignKey: "courseId", as: "sections", onDelete: "CASCADE" });
 db.section.belongsTo(db.course, { foreignKey: "courseId", as: "parentCourse", onDelete: "CASCADE" });
 
-db.course.hasMany(db.lecture, { foreignKey: "courseId", as: "lessons", onDelete: "CASCADE" });
-db.lecture.belongsTo(db.course, { foreignKey: "courseId", as: "parentCourse", onDelete: "CASCADE" });
+db.course.hasMany(db.lesson, { foreignKey: "courseId", as: "lessons", onDelete: "CASCADE" });
+db.lesson.belongsTo(db.course, { foreignKey: "courseId", as: "parentCourse", onDelete: "CASCADE" });
 
-db.course.hasMany(db.lectureFile, { foreignKey: "courseId", as: "lessonFiles",  onDelete: "CASCADE" });
+db.course.hasMany(db.lessonFile, { foreignKey: "courseId", as: "lessonFiles", onDelete: "CASCADE" });
 
-db.course.hasMany(db.lectureVideo, { foreignKey: "courseId",as: "lessonVideos",  onDelete: "CASCADE" });
+db.course.hasMany(db.lessonVideo, { foreignKey: "courseId", as: "lessonVideos", onDelete: "CASCADE" });
 
-db.course.hasMany(db.lectureQuiz, { foreignKey: "courseId",  as: "lessonQuizs", onDelete: "CASCADE" });
+db.course.hasMany(db.lessonQuiz, { foreignKey: "courseId", as: "lessonQuizs", onDelete: "CASCADE" });
+
+db.course.hasMany(db.videoComment, { foreignKey: "courseId", as: "videoComment", onDelete: "CASCADE" });
 
 // Section Association
-db.section.hasMany(db.lecture, { foreignKey: "sectionId", as: "lessons", onDelete: "CASCADE" });
-db.lecture.belongsTo(db.section, { foreignKey: "sectionId", as: "parentSection", onDelete: "CASCADE" });
+db.section.hasMany(db.lesson, { foreignKey: "sectionId", as: "lessons", onDelete: "CASCADE" });
+db.lesson.belongsTo(db.section, { foreignKey: "sectionId", as: "parentSection", onDelete: "CASCADE" });
 
-db.section.hasMany(db.lectureFile, { foreignKey: "sectionId", as: "lessonFiles", onDelete: "CASCADE" });
+db.section.hasMany(db.lessonFile, { foreignKey: "sectionId", as: "lessonFiles", onDelete: "CASCADE" });
 
-db.section.hasMany(db.lectureVideo, { foreignKey: "sectionId", as: "lessonVideos", onDelete: "CASCADE" });
+db.section.hasMany(db.lessonVideo, { foreignKey: "sectionId", as: "lessonVideos", onDelete: "CASCADE" });
 
-db.section.hasMany(db.lectureQuiz, { foreignKey: "sectionId", as: "lessonQuizs", onDelete: "CASCADE" });
+db.section.hasMany(db.lessonQuiz, { foreignKey: "sectionId", as: "lessonQuizs", onDelete: "CASCADE" });
 
-// Lecture Association
-db.lecture.hasMany(db.lectureFile, { foreignKey: "lectureId", as: "lessonFiles", onDelete: "CASCADE" });
+db.section.hasMany(db.videoComment, { foreignKey: "sectionId", as: "videoComment", onDelete: "CASCADE" });
 
-db.lecture.hasMany(db.lectureVideo, { foreignKey: "lectureId", as: "lessonVideos", onDelete: "CASCADE" });
+// Lesson Association
+db.lesson.hasMany(db.lessonFile, { foreignKey: "lessonId", as: "lessonFiles", onDelete: "CASCADE" });
 
-db.lecture.hasMany(db.lectureQuiz, { foreignKey: "lectureId", as: "lessonQuizs", onDelete: "CASCADE" });
+db.lesson.hasMany(db.lessonVideo, { foreignKey: "lessonId", as: "lessonVideos", onDelete: "CASCADE" });
+
+db.lesson.hasMany(db.lessonQuiz, { foreignKey: "lessonId", as: "lessonQuizs", onDelete: "CASCADE" });
+
+db.lesson.hasMany(db.videoComment, { foreignKey: "lessonId", as: "videoComment", onDelete: "CASCADE" });
+
+// Video Association
+db.lessonVideo.hasMany(db.videoComment, { foreignKey: "lessonVideoId", as: "videoComment", onDelete: "CASCADE" });
 
 // User Association
 // db.user.hasMany(db.userAccountDetail, { foreignKey: "userId" });

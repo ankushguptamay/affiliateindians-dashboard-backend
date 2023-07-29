@@ -1,30 +1,30 @@
 module.exports = (sequelize, DataTypes) => {
-    const LecturesVideo = sequelize.define("lecturesVideo", {
+    const LessonQuiz = sequelize.define("lessonQuiz", {
         id: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
             primaryKey: true
         },
-        Direct_Play_URL: {
-            type: DataTypes.STRING(1234) 
-        },
-        Video_ID: {
+        quizQuestion: {
             type: DataTypes.STRING
         },
-        Iframe_URL: {
-            type: DataTypes.STRING(1234) 
-        },
-        BUNNY_VIDEO_LIBRARY_ID:{
+        optionA: {
             type: DataTypes.STRING
         },
-        BUNNY_LIBRARY_API_KEY:{
+        optionB: {
+            type: DataTypes.STRING
+        },
+        optionC: {
+            type: DataTypes.STRING
+        },
+        optionD: {
             type: DataTypes.STRING
         }
        
     });
-    return LecturesVideo;
+    return LessonQuiz;
 };
 
 // courseId
 // sectionId
-// lectureId
+// lessonId

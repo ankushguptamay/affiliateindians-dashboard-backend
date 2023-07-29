@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const Lecture = sequelize.define("lecture", {
+    const Lesson = sequelize.define("lesson", {
         id: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
@@ -22,7 +22,7 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: false
         }
     });
-    return Lecture;
+    return Lesson;
 };
 
 // sectionId

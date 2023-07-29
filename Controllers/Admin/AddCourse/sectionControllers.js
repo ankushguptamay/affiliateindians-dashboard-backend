@@ -1,7 +1,7 @@
 const { Op } = require('sequelize');
 const db= require('../../../Models');
 const Section = db.section
-const Lecture = db.lecture;
+const Lesson = db.lesson;
 const { deleteMultiFile } = require("../../../Util/deleteFile")
 
 // createSection
@@ -38,7 +38,7 @@ exports.getAllSectionByCourseId = async (req, res) => {
                 ]
             },
             include: [{
-                model: Lecture,
+                model: Lesson,
                 as: "lessons",
                 attributes: ["id", "lessonName"],
                 order: [
@@ -74,9 +74,9 @@ exports.getAllSectionByCourseId = async (req, res) => {
 //                 message: "Section is not present!"
 //             });
 //         };
-//         const lectures = await Lecture.findAll({ where: { section_id: id } });
+//         const lesson = await Lesson.findAll({ where: { section_id: id } });
 //         const fileArray = [];
-//         lectures.map((data) => {
+//         lesson.map((data) => {
 //             fileArray.push(data.file);
 //         });
 //         deleteMultiFile(fileArray);

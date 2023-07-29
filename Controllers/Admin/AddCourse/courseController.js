@@ -1,6 +1,6 @@
 const db = require('../../../Models');
 const Course = db.course;
-const Lecture = db.lecture;
+const Lesson = db.lesson;
 const { deleteSingleFile, deleteMultiFile } = require("../../../Util/deleteFile")
 const axios = require('axios');
 const { Op } = require('sequelize');

@@ -11,8 +11,8 @@ const imageFilter = (req, file, cb) => {
 
 var storage = multer.diskStorage({
     destination: (req, file, callback) => {
-        if (file.fieldname === "lecturePDFile") {
-            cb(null, path.join(`${__dirname}/../../Resource/Lecture/PDFile`));
+        if (file.fieldname === "lessonPDF") {
+            cb(null, path.join(`${__dirname}/../../Resource/Lesson`));
         }
     },
     filename: (req, file, callback) => {
