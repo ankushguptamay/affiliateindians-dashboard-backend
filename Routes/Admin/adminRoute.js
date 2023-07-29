@@ -9,7 +9,7 @@ const router = express.Router();
 // const myBooking = require('../../Controllers/Admin/MyBooking/myBooking');
 // const eWallet = require('../../Controllers/Admin/EWallet/eWallet');
 const { createSection, getAllSectionByCourseId, updateSection, publicSection } = require('../../Controllers/Admin/AddCourse/sectionControllers');
-const { createLesson, getLessonByLessonId, publicLesson, updateLesson } = require('../../Controllers/Admin/AddCourse/lessonController');
+const { createLesson, getLessonByLessonId, publicLesson, updateLesson, deleteLesson } = require('../../Controllers/Admin/AddCourse/lessonController');
 const { createCourse, getCourseForAdmin, updateCourse, addOrUpdateAuthorImage, addOrUpdateCourseImage,
     deleteAuthorImage, deleteCourseImage, publicCourse } = require('../../Controllers/Admin/AddCourse/courseController');
 const { uploadLessonVideo, deleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
@@ -85,11 +85,12 @@ router.post("/createLesson", verifyToken, isAdminPresent, createLesson);
 router.get("/lesson/:id", verifyToken, isAdminPresent, getLessonByLessonId);
 router.put("/updateLesson/:id", verifyToken, isAdminPresent, updateLesson);
 router.put("/publicLesson/:id", verifyToken, isAdminPresent, publicLesson);
+router.delete("/deleteLesson/:id", verifyToken, isAdminPresent, deleteLesson);
 
 router.post("/uploadVideo/:lessonId", verifyToken, isAdminPresent, upload.single("lessonVideo"), uploadLessonVideo);
 router.put("/addOrUpdateThumbNail/:id", verifyToken, isAdminPresent, uploadImage.single("thumbnail"), addOrUpdateThumbNail);
 router.get("/videos/:lessonId", verifyToken, isAdminPresent, getAllVideoByLessonId);
-// router.delete("/deleteVideo/:id", verifyToken, isAdminPresent, deleteLessonVideo);
+router.delete("/deleteVideo/:id", verifyToken, isAdminPresent, deleteLessonVideo);
 
 router.post("/createQuiz/:lessonId", verifyToken, isAdminPresent, createLessonQuiz);
 router.get("/quizs/:lessonId", verifyToken, isAdminPresent, getAllQuizByLessonId);
