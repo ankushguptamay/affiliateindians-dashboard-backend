@@ -16,7 +16,7 @@ exports.addCommentForAdmin = async (req, res) => {
         const lessonVideoId = req.params.lessonVideoId;
         if (req.files.length > 0) {
             const files = req.files;
-            for (let i = 0; i < files; i++) {
+            for (let i = 0; i < files.length; i++) {
                 await VideoComment.create({
                     commenterName: commenterName,
                     approvalStatus: true,
@@ -93,7 +93,7 @@ exports.addCommentForUser = async (req, res) => {
         const lessonVideoId = req.params.lessonVideoId;
         if (req.files.length > 0) {
             const files = req.files;
-            for (let i = 0; i < files; i++) {
+            for (let i = 0; i < files.length; i++) {
                 await VideoComment.create({
                     commenterName: commenterName,
                     mimeType: files[i].mimetype,

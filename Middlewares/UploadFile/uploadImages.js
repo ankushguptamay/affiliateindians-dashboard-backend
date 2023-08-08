@@ -12,13 +12,13 @@ const imageFilter = (req, file, cb) => {
 const imageStorage = multer.diskStorage({
     destination: (req, file, cb) => {
         if (file.fieldname === "authorImage") {
-            cb(null, path.join(`${__dirname}/../../Resource/Course`));
+            cb(null, path.join(`${__dirname}/../../Resources/Course`));
         } else if (file.fieldname === "courseImage") {
-            cb(null, path.join(`${__dirname}/../../Resource/Course`));
+            cb(null, path.join(`${__dirname}/../../Resources/Course`));
         } else if (file.fieldname === "thumbnail") {
-            cb(null, path.join(`${__dirname}/../../Resource/Lesson`));
+            cb(null, path.join(`${__dirname}/../../Resources/Lesson`));
         } else if (file.fieldname === "lessonBanner") {
-            cb(null, path.join(`${__dirname}/../../Resource/Lesson`));
+            cb(null, path.join(`${__dirname}/../../Resources/Lesson`));
         }
     },
     filename: (req, file, cb) => {

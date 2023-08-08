@@ -28,6 +28,9 @@ module.exports = (sequelize, Sequelize) => {
       },
       pinCode: {
         type: Sequelize.INTEGER,
+      },
+      password: {
+        type: DataTypes.STRING,
       }
     });
     return User;

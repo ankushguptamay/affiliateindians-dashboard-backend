@@ -36,7 +36,8 @@ db.lessonFile = require('./Admin/AddCourse/lessonFileModel.js')(sequelize, Seque
 db.videoComment = require('./Admin/AddCourse/videoCommentModel.js')(sequelize, Sequelize);
 
 // user
-// db.user = require('./User/user.js')(sequelize, Sequelize);
+db.user = require('./User/user.js')(sequelize, Sequelize);
+db.user_tag = require('./User/user_TagModel.js')(sequelize, Sequelize);
 // db.userAccountDetail = require('./User/userAccountDetailsModel.js')(sequelize, Sequelize);
 
 // Admin Association
@@ -86,7 +87,14 @@ db.lesson.hasMany(db.videoComment, { foreignKey: "lessonId", as: "videoComment",
 // Video Association
 db.lessonVideo.hasMany(db.videoComment, { foreignKey: "lessonVideoId", as: "videoComment", onDelete: "CASCADE" });
 
-// User Association
+// User Association with userTag
+db.user.hasMany(db.user_tag, { foreignKey: "userId" });
+db.user_tag.belongsTo(db.user, { foreignKey: "userId" });
+
+// Tag Association with userTag
+db.tag.hasMany(db.user_tag, { foreignKey: "tagId" });
+db.user_tag.belongsTo(db.tag, { foreignKey: "tagId" });
+
 // db.user.hasMany(db.userAccountDetail, { foreignKey: "userId" });
 // db.userAccountDetail.belongsTo(db.user, { foreignKey: "userId" });
 

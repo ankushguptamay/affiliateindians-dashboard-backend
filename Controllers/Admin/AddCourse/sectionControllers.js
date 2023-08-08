@@ -8,9 +8,11 @@ const VideoComment = db.videoComment;
 const { deleteMultiFile } = require("../../../Util/deleteFile")
 
 // createSection
-// getAllSectionByCourseId
+// getAllSectionByCourseId for admin
 // updateSection
 // publicSection
+// deleteSection
+
 exports.createSection = async (req, res) => {
     try {
         await Section.create({
@@ -20,7 +22,7 @@ exports.createSection = async (req, res) => {
         });
         res.status(201).send({
             success: true,
-            message: `section added successfully! ID!`
+            message: `section added successfully!`
         });
     }
     catch (err) {

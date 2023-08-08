@@ -46,7 +46,7 @@ exports.uploadLessonVideo = async (req, res) => {
                 "Content-Type": "application/json",
                 AccessKey: lesson.parentCourse.BUNNY_LIBRARY_API_KEY,
             },
-            data: JSON.stringify({ title: lesson.lessonName }),
+            data: JSON.stringify({ title: req.file.originalname }),
         };
 
         await axios

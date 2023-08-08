@@ -14,9 +14,9 @@ const filter = (req, file, cb) => {
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
         if (file.fieldname === "lessonResource") {
-            cb(null, path.join(`${__dirname}/../../Resource/Lesson`));
+            cb(null, path.join(`${__dirname}/../../Resources/Lesson`));
         } else if (file.fieldname === "commentFile") {
-            cb(null, path.join(`${__dirname}/../../Resource/Lesson`));
+            cb(null, path.join(`${__dirname}/../../Resources/Lesson`));
         }
     },
     filename: (req, file, callback) => {
