@@ -5,13 +5,19 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: DataTypes.UUIDV4,
             primaryKey: true
         },
-        fileName: {
+        file_FieldName: {
             type: DataTypes.STRING // resourse, pdf Viewer, banner Image
         },
-        filePath: {
+        file_Path: {
             type: DataTypes.STRING(1234) 
         },
-        mimeType: {
+        file_MimeType: {
+            type: DataTypes.STRING
+        },
+        file_OriginalName: {
+            type: DataTypes.STRING
+        },
+        file_FileName: {
             type: DataTypes.STRING
         }
        

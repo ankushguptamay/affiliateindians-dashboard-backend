@@ -13,9 +13,11 @@ exports.addBanner = async (req, res) => {
         const { courseId, sectionId } = req.body;
         const lessonId = req.params.lessonId;
         await LessonFile.create({
-            fileName: req.file.fieldname,
-            filePath: req.file.path,
-            mimeType: req.file.mimetype,
+            file_FieldName: req.file.fieldname,
+            file_Path: req.file.path,
+            file_MimeType: req.file.mimetype,
+            file_OriginalName: req.file.originalname,
+            file_FileName: req.file.filename,
             courseId: courseId,
             sectionId: sectionId,
             lessonId: lessonId,
@@ -54,14 +56,16 @@ exports.updateBanner = async (req, res) => {
                 message: "Banner not found!"
             })
         }
-        if (lessonFile.filePath) {
-            deleteSingleFile(lessonFile.filePath);
+        if (lessonFile.file_Path) {
+            deleteSingleFile(lessonFile.file_Path);
         }
         await lessonFile.update({
             ...lessonFile,
-            fileName: req.file.fieldname,
-            filePath: req.file.path,
-            mimeType: req.file.mimetype
+            file_FieldName: req.file.fieldname,
+            file_Path: req.file.path,
+            file_MimeType: req.file.mimetype,
+            file_OriginalName: req.file.originalname,
+            file_FileName: req.file.filename
         });
         res.status(201).send({
             success: true,
@@ -82,17 +86,19 @@ exports.addPDF = async (req, res) => {
         if (req.files.length <= 0) {
             return res.status(400).send({
                 success: false,
-                message: "Select a atleast one PDF!"
+                message: "Select atleast one PDF!"
             });
         }
         const { courseId, sectionId } = req.body;
         const lessonId = req.params.lessonId;
-        const fileArray = (req.files).map((file) => { return file.path });
+        const fileArray = req.files;
         for (let i = 0; i < fileArray.length; i++) {
             await LessonFile.create({
-                fileName: "lessonPDF",
-                filePath: fileArray[i],
-                mimeType: "application/pdf",
+                file_FieldName: fileArray[i].fieldname,
+                file_Path: fileArray[i].path,
+                file_MimeType: fileArray[i].mimetype,
+                file_OriginalName: fileArray[i].originalname,
+                file_FileName: fileArray[i].filename,
                 courseId: courseId,
                 sectionId: sectionId,
                 lessonId: lessonId,
@@ -127,8 +133,8 @@ exports.deletePDF = async (req, res) => {
                 message: "PDF not found!"
             })
         }
-        if (lessonFile.filePath) {
-            deleteSingleFile(lessonFile.filePath);
+        if (lessonFile.file_Path) {
+            deleteSingleFile(lessonFile.file_Path);
         }
         await lessonFile.destroy();
         res.status(201).send({
@@ -150,7 +156,7 @@ exports.addResource = async (req, res) => {
         if (req.files.length <= 0) {
             return res.status(400).send({
                 success: false,
-                message: "Select a atleast one File!"
+                message: "Select atleast one File!"
             });
         }
         const { courseId, sectionId } = req.body;
@@ -158,9 +164,11 @@ exports.addResource = async (req, res) => {
         const fileArray = req.files;
         for (let i = 0; i < fileArray.length; i++) {
             await LessonFile.create({
-                fileName: fileArray[i].fieldname,
-                filePath: fileArray[i].path,
-                mimeType: fileArray[i].mimetype,
+                file_FieldName: fileArray[i].fieldname,
+                file_Path: fileArray[i].path,
+                file_MimeType: fileArray[i].mimetype,
+                file_OriginalName: fileArray[i].originalname,
+                file_FileName: fileArray[i].filename,
                 courseId: courseId,
                 sectionId: sectionId,
                 lessonId: lessonId,
@@ -195,8 +203,8 @@ exports.deleteResource = async (req, res) => {
                 message: "Resource not found!"
             })
         }
-        if (lessonFile.filePath) {
-            deleteSingleFile(lessonFile.filePath);
+        if (lessonFile.file_Path) {
+            deleteSingleFile(lessonFile.file_Path);
         }
         await lessonFile.destroy();
         res.status(201).send({

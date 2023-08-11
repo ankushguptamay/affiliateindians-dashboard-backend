@@ -1,6 +1,9 @@
 const db = require('../../../Models');
 const Course = db.course;
 const Lesson = db.lesson;
+const LessonFile = db.lessonFile;
+const LessonVideo = db.lessonVideo;
+const VideoComment = db.videoComment;
 const { deleteSingleFile, deleteMultiFile } = require("../../../Util/deleteFile")
 const axios = require('axios');
 const { Op } = require('sequelize');
@@ -165,7 +168,7 @@ exports.deleteCourse = async (req, res) => {
                         }
                         const lessonFile = await LessonFile.findAll({ where: { lessonId: lesson[i].id } });
                         for (let i = 0; i < lessonFile.length; i++) {
-                            lessonFileArray.push(lessonFile[i].filePath);
+                            lessonFileArray.push(lessonFile[i].file_Path);
                         }
                     }
                 }

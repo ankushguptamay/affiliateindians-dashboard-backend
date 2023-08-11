@@ -119,7 +119,7 @@ exports.deleteSection = async (req, res) => {
                 }
                 const lessonFile = await LessonFile.findAll({ where: { lessonId: lesson[i].id } });
                 for (let i = 0; i < lessonFile.length; i++) {
-                    lessonFileArray.push(lessonFile[i].filePath);
+                    lessonFileArray.push(lessonFile[i].file_Path);
                 }
             }
         }

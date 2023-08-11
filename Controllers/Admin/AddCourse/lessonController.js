@@ -210,7 +210,7 @@ exports.deleteLesson = async (req, res) => {
         const lessonFileArray = [];
         const lessonFile = await LessonFile.findAll({ where: { lessonId: id } });
         for (let i = 0; i < lessonFile.length; i++) {
-            lessonFileArray.push(lessonFile[i].filePath);
+            lessonFileArray.push(lessonFile[i].file_Path);
         }
         if (lessonFileArray.length > 0) {
             deleteMultiFile(lessonFileArray);
