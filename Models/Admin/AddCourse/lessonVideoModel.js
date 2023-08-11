@@ -6,24 +6,30 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true
         },
         Direct_Play_URL: {
-            type: DataTypes.STRING(1234) 
+            type: DataTypes.STRING(1234)
         },
         Video_ID: {
             type: DataTypes.STRING
         },
         Iframe_URL: {
-            type: DataTypes.STRING(1234) 
+            type: DataTypes.STRING(1234)
         },
-        Thumbnail_URL:{
-            type: DataTypes.STRING(1234) 
+        Thumbnail_Path: {
+            type: DataTypes.STRING(1234)
         },
-        BUNNY_VIDEO_LIBRARY_ID:{
+        Thumbnail_OriginalName: {
             type: DataTypes.STRING
         },
-        BUNNY_LIBRARY_API_KEY:{
+        Thumbnail_FileName: {
+            type: DataTypes.STRING
+        },
+        BUNNY_VIDEO_LIBRARY_ID: {
+            type: DataTypes.STRING
+        },
+        BUNNY_LIBRARY_API_KEY: {
             type: DataTypes.STRING
         }
-       
+
     });
     return LessonVideo;
 };

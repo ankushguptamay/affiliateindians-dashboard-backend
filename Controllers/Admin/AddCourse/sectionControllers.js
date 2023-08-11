@@ -110,7 +110,7 @@ exports.deleteSection = async (req, res) => {
                                     bunnyMessage: error.message
                                 });
                             });
-                        thumbnailArray.push(video[i].Thumbnail_URL);
+                        thumbnailArray.push(video[i].Thumbnail_Path);
                         const comment = await VideoComment.findAll({ where: { lessonVideoId: video[i].id } });
                         for (let i = 0; i < comment.length; i++) {
                             commentFileArray.push(comment[i].filePath);

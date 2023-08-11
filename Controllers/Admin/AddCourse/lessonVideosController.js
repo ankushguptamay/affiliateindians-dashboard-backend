@@ -134,8 +134,8 @@ exports.deleteLessonVideo = async (req, res) => {
                 });
             });
         // delete lesson from database
-        if (lessonVideo.Thumbnail_URL) {
-            deleteSingleFile(lessonVideo.Thumbnail_URL);
+        if (lessonVideo.Thumbnail_Path) {
+            deleteSingleFile(lessonVideo.Thumbnail_Path);
         }
         // delete comment files
         const comment = await VideoComment.findAll({ where: { lessonVideoId: id } });
@@ -207,13 +207,15 @@ exports.addOrUpdateThumbNail = async (req, res) => {
             });
         // delete existing file
         let message = "added";
-        if (lessonVideo.Thumbnail_URL) {
-            deleteSingleFile(lessonVideo.Thumbnail_URL);
+        if (lessonVideo.Thumbnail_Path) {
+            deleteSingleFile(lessonVideo.Thumbnail_Path);
             message = "updated";
         }
         await lessonVideo.update({
             ...lessonVideo,
-            Thumbnail_URL: req.file.path
+            Thumbnail_Path: req.file.path,
+            Thumbnail_OriginalName: req.file.originalname,
+            Thumbnail_FileName: req.file.filename
         });
         res.status(201).send({
             success: true,
