@@ -184,12 +184,12 @@ exports.deleteCourse = async (req, res) => {
             deleteMultiFile(lessonFileArray);
         }
         // delete course image
-        if (course.courseImage) {
-            deleteSingleFile(course.courseImage);
+        if (course.courseImagePath) {
+            deleteSingleFile(course.courseImagePath);
         }
         // delete author image
-        if (course.authorImage) {
-            deleteSingleFile(course.authorImage);
+        if (course.authorImagePath) {
+            deleteSingleFile(course.authorImagePath);
         }
         await course.destroy();
         res.status(200).send({
@@ -288,14 +288,16 @@ exports.addOrUpdateCourseImage = async (req, res) => {
         }
         // delete file if present
         let message = "added"
-        if (course.courseImage) {
-            deleteSingleFile(course.courseImage);
+        if (course.courseImagePath) {
+            deleteSingleFile(course.courseImagePath);
             message = "updated"
         }
         // update courseImage
         await course.update({
             ...course,
-            courseImage: req.file.path,
+            courseImagePath: req.file.path,
+            courseImageFileName: req.file.filename,
+            courseImageOriginalName: req.file.originalname
         });
         res.status(201).send({
             success: true,
@@ -337,14 +339,16 @@ exports.addOrUpdateAuthorImage = async (req, res) => {
         }
         // delete file if present
         let message = "added"
-        if (course.authorImage) {
-            deleteSingleFile(course.authorImage);
+        if (course.authorImagePath) {
+            deleteSingleFile(course.authorImagePath);
             message = "updated"
         }
         // update authorImage
         await course.update({
             ...course,
-            authorImage: req.file.path,
+            authorImageOriginalName: req.file.originalname,
+            authorImageFileName: req.file.filename,
+            authorImagePath: req.file.path
         });
         res.status(201).send({
             success: true,
@@ -380,13 +384,15 @@ exports.deleteCourseImage = async (req, res) => {
             });
         }
         // delete file if present
-        if (course.courseImage) {
-            deleteSingleFile(course.courseImage);
+        if (course.courseImagePath) {
+            deleteSingleFile(course.courseImagePath);
         }
         // update courseImage
         await course.update({
             ...course,
-            courseImage: null,
+            courseImageOriginalName: null,
+            courseImageFileName: null,
+            courseImagePath: null,
         });
         res.status(200).send({
             success: true,
@@ -421,13 +427,15 @@ exports.deleteAuthorImage = async (req, res) => {
             });
         }
         // delete file
-        if (course.authorImage) {
-            deleteSingleFile(course.authorImage);
+        if (course.authorImagePath) {
+            deleteSingleFile(course.authorImagePath);
         }
         // update authorImage
         await course.update({
             ...course,
-            authorImage: null,
+            authorImageOriginalName: null,
+            authorImageFileName: null,
+            authorImagePath: null,
         });
         res.status(200).send({
             success: true,

@@ -1,37 +1,37 @@
-module.exports = (sequelize, Sequelize) => {
-    const User = sequelize.define("user", {
-      id: {
-        type: Sequelize.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-      },
-      name: {
-        type: Sequelize.STRING,
-      },
-      email: {
-        type: Sequelize.STRING,
-      },
-      mobileNumber: {
-        type: Sequelize.INTEGER,
-      },
-      address: {
-        type: Sequelize.STRING,
-      },
-      city: {
-        type: Sequelize.STRING,
-      },
-      state: {
-        type: Sequelize.STRING,
-      },
-      country: {
-        type: Sequelize.STRING,
-      },
-      pinCode: {
-        type: Sequelize.INTEGER,
-      },
-      password: {
-        type: DataTypes.STRING,
-      }
-    });
-    return User;
+module.exports = (sequelize, DataTypes) => {
+  const User = sequelize.define("user", {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true
+    },
+    name: {
+      type: DataTypes.STRING,
+    },
+    email: {
+      type: DataTypes.STRING,
+    },
+    mobileNumber: {
+      type: DataTypes.STRING,
+    },
+    address: {
+      type: DataTypes.STRING,
+    },
+    city: {
+      type: DataTypes.STRING,
+    },
+    state: {
+      type: DataTypes.STRING,
+    },
+    country: {
+      type: DataTypes.STRING,
+    },
+    pinCode: {
+      type: DataTypes.INTEGER,
+    },
+    password: {
+      type: DataTypes.STRING,
+    }
+  });
+  return User;
 };

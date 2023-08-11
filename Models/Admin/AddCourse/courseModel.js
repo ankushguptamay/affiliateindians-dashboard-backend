@@ -17,10 +17,22 @@ module.exports = (sequelize, DataTypes) => {
         authorName: {
             type: DataTypes.STRING
         },
-        authorImage: {
-            type: DataTypes.STRING(1234) 
+        authorImageOriginalName: {
+            type: DataTypes.STRING 
         },
-        courseImage: {
+        authorImageFileName: {
+            type: DataTypes.STRING 
+        },
+        authorImagePath: {
+            type: DataTypes.STRING(1234)
+        },
+        courseImageOriginalName: {
+            type: DataTypes.STRING
+        },
+        courseImageFileName: {
+            type: DataTypes.STRING
+        },
+        courseImagePath: {
             type: DataTypes.STRING(1234) 
         },
         BUNNY_VIDEO_LIBRARY_ID: {
