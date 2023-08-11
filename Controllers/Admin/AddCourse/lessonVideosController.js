@@ -141,7 +141,7 @@ exports.deleteLessonVideo = async (req, res) => {
         const comment = await VideoComment.findAll({ where: { lessonVideoId: id } });
         const fileArray = [];
         for (let i = 0; i < comment.length; i++) {
-            fileArray.push(comment[i].filePath);
+            fileArray.push(comment[i].file_Path);
         }
         if (fileArray.length > 0) {
             deleteMultiFile(fileArray);

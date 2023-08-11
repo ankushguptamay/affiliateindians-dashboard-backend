@@ -21,7 +21,9 @@ exports.addCommentForAdmin = async (req, res) => {
                     commenterName: commenterName,
                     approvalStatus: true,
                     mimeType: files[i].mimetype,
-                    filePath: files[i].path,
+                    file_Path: files[i].path,
+                    file_OriginalName:files[i].originalname,
+                    file_FileName:files[i].filename,
                     commenterId: req.admin.id,
                     courseId: courseId,
                     sectionId: sectionId,
@@ -69,8 +71,8 @@ exports.deleteCommentForAdmin = async (req, res) => {
                 message: "Comment not found!"
             })
         }
-        if (comment.filePath) {
-            deleteSingleFile(comment.filePath);
+        if (comment.file_Path) {
+            deleteSingleFile(comment.file_Path);
         }
         await comment.destroy();
         res.status(201).send({
@@ -97,7 +99,9 @@ exports.addCommentForUser = async (req, res) => {
                 await VideoComment.create({
                     commenterName: commenterName,
                     mimeType: files[i].mimetype,
-                    filePath: files[i].path,
+                    file_Path: files[i].path,
+                    file_OriginalName:files[i].originalname,
+                    file_FileName:files[i].filename,
                     commenterId: req.user.id,
                     courseId: courseId,
                     sectionId: sectionId,
@@ -144,8 +148,8 @@ exports.deleteCommentForUser = async (req, res) => {
                 message: "Comment not found!"
             })
         }
-        if (comment.filePath) {
-            deleteSingleFile(comment.filePath);
+        if (comment.file_Path) {
+            deleteSingleFile(comment.file_Path);
         }
         await comment.destroy();
         res.status(201).send({

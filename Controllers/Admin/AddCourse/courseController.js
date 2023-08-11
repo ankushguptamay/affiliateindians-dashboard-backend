@@ -162,7 +162,7 @@ exports.deleteCourse = async (req, res) => {
                                 thumbnailArray.push(video[i].Thumbnail_Path);
                                 const comment = await VideoComment.findAll({ where: { lessonVideoId: video[i].id } });
                                 for (let i = 0; i < comment.length; i++) {
-                                    commentFileArray.push(comment[i].filePath);
+                                    commentFileArray.push(comment[i].file_Path);
                                 }
                             }
                         }

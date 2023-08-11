@@ -5,8 +5,14 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: DataTypes.UUIDV4,
             primaryKey: true
         },
-        filePath: {
+        file_Path: {
             type: DataTypes.STRING(1234)
+        },
+        file_OriginalName: {
+            type: DataTypes.STRING
+        },
+        file_FileName: {
+            type: DataTypes.STRING
         },
         message: {
             type: DataTypes.TEXT
