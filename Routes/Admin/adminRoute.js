@@ -12,11 +12,12 @@ const { createSection, getAllSectionByCourseId, updateSection, publicSection, de
 const { createLesson, getLessonByLessonId, publicLesson, updateLesson, deleteLesson } = require('../../Controllers/Admin/AddCourse/lessonController');
 const { createCourse, getCourseForAdmin, updateCourse, addOrUpdateAuthorImage, addOrUpdateCourseImage,
     deleteAuthorImage, deleteCourseImage, publicCourse, deleteCourse } = require('../../Controllers/Admin/AddCourse/courseController');
-const { uploadLessonVideo, deleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail,purgeURL } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
+const { uploadLessonVideo, deleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail, purgeURL } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
 const { createLessonQuiz, getAllQuizByLessonId, deleteLessonQuiz, updateLessonQuiz } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
 const { addBanner, updateBanner, addPDF, deletePDF, addResource, deleteResource } = require('../../Controllers/Admin/AddCourse/lessonFileController');
 const { addCommentForAdmin, approveComment, deleteCommentForAdmin, getCommentForAdmin } = require('../../Controllers/Admin/AddCourse/videoCommentController');
 const { bulkRegisterUserAndCreateCourseAndAssign } = require('../../Controllers/User/user_courseController');
+const { findAllUser  } = require("../../Controllers/User/user");
 
 //middleware
 const multer = require('multer');
@@ -110,6 +111,7 @@ router.get("/comment/:lessonVideoId", verifyAdminToken, isAdminPresent, getComme
 router.delete("/deleteComment/:id", verifyAdminToken, isAdminPresent, deleteCommentForAdmin);
 router.put("/approveComment/:id", verifyAdminToken, isAdminPresent, approveComment);
 
+router.get("/findAllUser", verifyAdminToken, isAdminPresent, findAllUser);
 
 router.get("/purgeURL", purgeURL);
 router.post("/bulkRegister", verifyAdminToken, isAdminPresent, bulkRegisterUserAndCreateCourseAndAssign);

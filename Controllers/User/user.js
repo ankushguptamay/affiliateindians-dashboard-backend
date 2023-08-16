@@ -1,5 +1,7 @@
 const db = require('../../Models');
 const User = db.user;
+const User_Course = db.user_course;
+const Course = db.course;
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -149,11 +151,47 @@ exports.findUser = async (req, res) => {
 
 exports.findAllUser = async (req, res) => {
     try {
-        const users = await User.findAll();
+        const users = await User.findAll({
+            include: [{
+                model: User_Course,
+                as: "user_courses"
+            }]
+        });
+        let OneCount = 0;
+        let TwoCount = 0;
+        let ThreeCount = 0;
+        let FourCount = 0;
+        let FiveCount = 0;
+        let SixCount = 0;
+        let SevenCount = 0;
+        let EightCount = 0;
+        for (let i = 0; i < users.length; i++) {
+            const course = users[i].user_courses;
+            // console.log(course);
+            if (course.length === 1) {
+                OneCount = OneCount + 1;
+            } else if (course.length === 2) {
+                TwoCount = TwoCount + 1;
+            } else if (course.length === 3) {
+                ThreeCount = ThreeCount + 1;
+            } else if (course.length === 4) {
+                FourCount = FourCount + 1;
+            } else if (course.length === 5) {
+                FiveCount = FiveCount + 1;
+            } else if (course.length === 6) {
+                SixCount = SixCount + 1;
+            } else if (course.length === 7) {
+                SevenCount = SevenCount + 1;
+            } else if (course.length === 8) {
+                EightCount = EightCount + 1;
+            }
+        }
+
+        const data = `${OneCount} One, ${TwoCount} Two, ${ThreeCount} Three, ${FourCount} Four, ${FiveCount} Five, ${SixCount} Six, ${SevenCount} Seven, ${EightCount} Eight`;
         res.status(200).send({
             success: true,
             message: `All User fetched successfully!`,
-            data: users
+            data: data
         });
     } catch (err) {
         console.log(err);

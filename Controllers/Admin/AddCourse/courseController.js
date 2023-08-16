@@ -28,6 +28,14 @@ exports.createCourse = async (req, res) => {
                 message: "Course title should be present!"
             });
         }
+        //Always unique title
+        const isCourse = await Course.findOne({ where: { title: title } });
+        if (isCourse) {
+            return res.status(400).send({
+                success: false,
+                message: "This course title is already present!"
+            })
+        }
         // Create video library on bunny
         const createVideoLibrary = {
             method: "POST",

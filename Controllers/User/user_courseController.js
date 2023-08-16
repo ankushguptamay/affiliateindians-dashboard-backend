@@ -1,12 +1,22 @@
 const fs = require('fs');
 const db = require('../../Models');
+const bcrypt = require('bcryptjs');
 const User_Course = db.user_course;
 const Course = db.course;
 const User = db.user;
 
+// SUPER AFFILIATE MEMBERSHIP
+// AFFILIATE INDIANS BUSINESS BUILDER CHALLENGE
+// 3 STEP HIGH TICKET AFFILIATE SYSTEM
+// EXPERT MEMBERSHIP
+// YOUR BONUSES
+// BEGINNER MEMBERSHIP
+// PRO MEMBERSHIP
+// CLICKBANK MASTERY
+
 const getData = () => {
     return new Promise(async (resolve, reject) => {
-        fs.readFile(__dirname + "/../../data.json", function (err, data) {
+        fs.readFile(__dirname + "/../../Data/SAM.json", function (err, data) {
             if (err) {
                 reject(err);
             } else {
@@ -18,101 +28,45 @@ const getData = () => {
 
 exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
     try {
-        const data = await getData();
-        const obj = [];
-        for (let i = 0; i < data.length; i++) {
-            const courseArray = (data[i].course).split(',');
-            if (courseArray.length > 1) {
-                for (let j = 0; j < courseArray.length; j++) {
-                    obj.push({
-                        name: data[i].name,
-                        email: data[i].email,
-                        createdAt: data[i].created_at,
-                        status: (data[i].status).length <= 1 ? null : data[i].status,
-                        course: courseArray[j].length <= 1 ? null : courseArray[j],
-                        city: (data[i].city).length <= 1 ? null : data[i].city,
-                        state: (data[i].state).length <= 1 ? null : data[i].state,
-                        country: (data[i].country).length <= 1 ? null : data[i].country,
-                        mobileNumber: (data[i].Phone).length <= 1 ? null : data[i].Phone
-                    });
-                }
-            } else if (courseArray.length === 1) {
-                obj.push({
-                    name: data[i].name,
-                    email: data[i].email,
-                    createdAt: data[i].created_at,
-                    status: (data[i].status).length <= 1 ? null : data[i].status,
-                    course: courseArray[0].length <= 1 ? null : courseArray[0],
-                    city: (data[i].city).length <= 1 ? null : data[i].city,
-                    state: (data[i].state).length <= 1 ? null : data[i].state,
-                    country: (data[i].country).length <= 1 ? null : data[i].country,
-                    mobileNumber: (data[i].Phone).length <= 1 ? null : data[i].Phone
-                });
-            } else {
-                obj.push({
-                    name: data[i].name,
-                    email: data[i].email,
-                    createdAt: data[i].created_at,
-                    status: (data[i].status).length <= 1 ? null : data[i].status,
-                    course: null,
-                    city: (data[i].city).length <= 1 ? null : data[i].city,
-                    state: (data[i].state).length <= 1 ? null : data[i].state,
-                    country: (data[i].country).length <= 1 ? null : data[i].country,
-                    mobileNumber: (data[i].Phone).length <= 1 ? null : data[i].Phone
-                });
-            }
-        }
+        const obj = await getData();
+        let newRegister = 0;
+        let oldRegister = 0;
+        const Title = 'SUPER AFFILIATE MEMBERSHIP';
         for (let i = 0; i < obj.length; i++) {
             const isUser = await User.findOne({ where: { email: obj[i].email } });
             if (!isUser) {
+                const salt = await bcrypt.genSalt(10);
+                const bcPassword = await bcrypt.hash(`${(obj[i].email).slice(0, 8)}`, salt);
+                newRegister = parseInt(newRegister) + 1;
+                const country = (obj[i].country).length <= 1 ? null : obj[i].country;
+                const joinTime = (obj[i].joined_at).length <= 1 ? null : obj[i].joined_at;
                 const user = await User.create({
-                    name: obj[i].name,
+                    name: obj[i].fullname,
                     email: obj[i].email,
-                    mobileNumber: obj[i].mobileNumber,
-                    password: `${(obj[i].email).slice(0, 8)}`,
-                    // address: obj[i].address,
-                    city: obj[i].city,
-                    state: obj[i].state,
-                    country: obj[i].country,
-                    // pinCode: obj[i].pinCode,
-                    createdAt: obj[i].createdAt
+                    password: bcPassword,
+                    createdAt: joinTime,
+                    country: country
                 });
-                if (obj[i].course) {
-                    const isCourse = await Course.findOne({ where: { title: obj[i].course } });
-                    if (!isCourse) {
-                        const course = await Course.create({ title: obj[i].course, adminId: req.admin.id });
-                        const isUserCourse = await User_Course.findOne({ where: { courseId: course.id, userId: user.id } });
-                        if (!isUserCourse) {
-                            await User_Course.create({ courseId: course.id, userid: user.id });
-                        }
-                    } else {
-                        const isUserCourse = await User_Course.findOne({ where: { courseId: isCourse.id, userId: user.id } });
-                        if (!isUserCourse) {
-                            await User_Course.create({ courseId: isCourse.id, userId: user.id });
-                        }
-                    }
+                const isCourse = await Course.findOne({ where: { title: Title } });
+                const isUserCourse = await User_Course.findOne({ where: { courseId: isCourse.id, userId: user.id } });
+                if (!isUserCourse) {
+                    await User_Course.create({ courseId: isCourse.id, userId: user.id });
                 }
+
             } else {
-                if (obj[i].course) {
-                    const isCourse = await Course.findOne({ where: { title: obj[i].course } });
-                    if (!isCourse) {
-                        const course = await Course.create({ title: obj[i].course, adminId: req.admin.id });
-                        const isUserCourse = await User_Course.findOne({ where: { courseId: course.id, userId: isUser.id } });
-                        if (!isUserCourse) {
-                            await User_Course.create({ courseId: course.id, userid: isUser.id });
-                        }
-                    } else {
-                        const isUserCourse = await User_Course.findOne({ where: { courseId: isCourse.id, userId: isUser.id } });
-                        if (!isUserCourse) {
-                            await User_Course.create({ courseId: isCourse.id, userId: isUser.id });
-                        }
-                    }
+                oldRegister = parseInt(oldRegister) + 1;
+                const isCourse = await Course.findOne({ where: { title: Title } });
+                const isUserCourse = await User_Course.findOne({ where: { courseId: isCourse.id, userId: isUser.id } });
+                if (!isUserCourse) {
+                    await User_Course.create({ courseId: isCourse.id, userId: isUser.id });
                 }
+
+
             }
         }
         res.status(201).send({
             success: true,
-            message: `User added successfully!`
+            message: `User added with ${Title} successfully! ${newRegister} new register and ${oldRegister} old register!`
         });
     }
     catch (err) {

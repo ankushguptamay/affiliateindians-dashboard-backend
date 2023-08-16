@@ -45,9 +45,12 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.BOOLEAN,
             defaultValue: false
         },
-        forWhom: {
-            type: DataTypes.STRING,
-            defaultValue: "paid" // free, or paid
+        isPaid: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: true
+        },
+        tag: {
+            type: DataTypes.STRING
         }
     });
     return Course;

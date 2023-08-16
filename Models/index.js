@@ -87,12 +87,12 @@ db.lesson.hasMany(db.videoComment, { foreignKey: "lessonId", as: "videoComment",
 // Video Association
 db.lessonVideo.hasMany(db.videoComment, { foreignKey: "lessonVideoId", as: "videoComment", onDelete: "CASCADE" });
 
-// User Association with userTag
-db.user.hasMany(db.user_course, { foreignKey: "userId" });
+// User Association with user_course
+db.user.hasMany(db.user_course, { foreignKey: "userId", as: "user_courses" });
 db.user_course.belongsTo(db.user, { foreignKey: "userId" });
 
-// Tag Association with userTag
-db.course.hasMany(db.user_course, { foreignKey: "courseId" });
+// course Association with userTag
+db.course.hasMany(db.user_course, { foreignKey: "courseId", as: "user_courses" });
 db.user_course.belongsTo(db.course, { foreignKey: "courseId" });
 
 // db.user.hasMany(db.userAccountDetail, { foreignKey: "userId" });
