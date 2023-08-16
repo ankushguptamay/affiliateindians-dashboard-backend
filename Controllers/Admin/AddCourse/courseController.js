@@ -47,8 +47,8 @@ exports.createCourse = async (req, res) => {
             },
             data: { name: title }
         };
-
         const response = await axios.request(createVideoLibrary);
+        console.log(response);
         // console.log(response);
         // Store in database  
         await Course.create({
@@ -69,7 +69,7 @@ exports.createCourse = async (req, res) => {
         // console.log(err);
         res.status(500).send({
             success: false,
-            err: err.message
+            err: err
         });
     }
 };
