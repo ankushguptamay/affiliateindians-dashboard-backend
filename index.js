@@ -12,7 +12,7 @@ var corsOptions = {
 };
 
 const db = require('./Models');
-db.sequelize.sync({ force: true })
+db.sequelize.sync()
   .then(() => {
     console.log('Database is synced');
   })
@@ -25,9 +25,10 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// app.use(express.static(__dirname + "/public"));
+
 app.use("/api/admin", admin);
 app.use("/api/superAdmin", superAdmin);
-// app.use(express.static(__dirname + "/public"));
 
 app.get('/', (req, res) => {
   res.send('Hello World!');

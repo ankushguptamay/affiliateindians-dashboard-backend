@@ -14,7 +14,7 @@ const uploadImageAndPDF = require('../../Middlewares/UploadFile/uploadImageAndPD
 
 // Route
 // Super Admin 
-router.post("/register", registerAdmin);
+// router.post("/register", registerAdmin);
 router.post("/login", loginAdmin);
 
 

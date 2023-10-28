@@ -5,38 +5,38 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 //register Super Admin
-exports.registerAdmin = async (req, res) => {
-    // Validate body
-    const { error } = suparAdminRegistration(req.body);
-    if (error) {
-        return res.status(400).send(error.details[0].message);
-    }
-    try {
-        const { email, password } = req.body;
-        const isAdmin = await Admin.findOne({ where: { email: email } });
-        if (isAdmin) {
-            return res.status(400).send({
-                success: false,
-                message: "Admin already registered"
-            });
-        }
-        const salt = await bcrypt.genSalt(10);
-        const bcPassword = await bcrypt.hash(password, salt);
+// exports.registerAdmin = async (req, res) => {
+//     // Validate body
+//     const { error } = suparAdminRegistration(req.body);
+//     if (error) {
+//         return res.status(400).send(error.details[0].message);
+//     }
+//     try {
+//         const { email, password } = req.body;
+//         const isAdmin = await Admin.findOne({ where: { email: email } });
+//         if (isAdmin) {
+//             return res.status(400).send({
+//                 success: false,
+//                 message: "Admin already registered"
+//             });
+//         }
+//         const salt = await bcrypt.genSalt(10);
+//         const bcPassword = await bcrypt.hash(password, salt);
 
-        await Admin.create({
-            email: email,
-            password: bcPassword,
-            adminTag: 'SUPERADMIN'
-        });
-        res.status(201).send({
-            success: true,
-            message: "Admin registered successfully"
-        });
-    }
-    catch (err) {
-        res.status(500).send({ message: err.message });
-    }
-};
+//         await Admin.create({
+//             email: email,
+//             password: bcPassword,
+//             adminTag: 'SUPERADMIN'
+//         });
+//         res.status(201).send({
+//             success: true,
+//             message: "Admin registered successfully"
+//         });
+//     }
+//     catch (err) {
+//         res.status(500).send({ message: err.message });
+//     }
+// };
 
 //Login Super Admin
 exports.loginAdmin = async (req, res) => {
