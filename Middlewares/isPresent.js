@@ -1,5 +1,6 @@
 const db = require('../Models');
 const Admin = db.admin;
+const User = db.user;
 
 exports.isAdmin = async (req, res, next) => {
     try {
@@ -43,6 +44,26 @@ exports.isSuperAdmin = async (req, res, next) => {
         });
         if (!isAdmin) {
             return res.status(400).send({ message: "Super Admin is not present!" });
+        };
+        next();
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+}
+
+exports.isUser = async (req, res, next) => {
+    try {
+        const email = req.user.email;
+        const id = req.user.id;
+        const isUser = await User.findOne({
+            where: {
+                id: id,
+                email: email
+            }
+        });
+        if (!isUser) {
+            return res.status(400).send({ message: "User is not present!" });
         };
         next();
     } catch (err) {

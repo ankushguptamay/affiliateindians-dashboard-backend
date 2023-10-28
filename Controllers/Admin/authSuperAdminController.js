@@ -84,7 +84,7 @@ exports.loginAdmin = async (req, res) => {
             email: isAdmin.email,
             adminTag: isAdmin.adminTag
         }
-        const authToken = jwt.sign(data, process.env.JWT_SECRET_KEY);
+        const authToken = jwt.sign(data, process.env.JWT_SECRET_KEY_ADMIN);
         res.status(201).send({
             success: true,
             message: "Admin LogedIn successfully",
