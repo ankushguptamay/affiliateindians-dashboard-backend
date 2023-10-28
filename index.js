@@ -2,8 +2,8 @@ require("dotenv").config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require("cors");
-const authAdmin = require('./Routes/Admin/auhtAdminRoute');
 const admin = require('./Routes/Admin/adminRoute')
+const superAdmin = require('./Routes/Admin/superAdminRoute')
 
 const app = express();
 
@@ -12,7 +12,7 @@ var corsOptions = {
 };
 
 const db = require('./Models');
-db.sequelize.sync()
+db.sequelize.sync({ force: true })
   .then(() => {
     console.log('Database is synced');
   })
@@ -25,8 +25,8 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use("/admin/auth", authAdmin);
-app.use("/admin", admin);
+app.use("/api/admin", admin);
+app.use("/api/superAdmin", superAdmin);
 // app.use(express.static(__dirname + "/public"));
 
 app.get('/', (req, res) => {

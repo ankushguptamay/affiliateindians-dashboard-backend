@@ -46,12 +46,13 @@ exports.createLesson = async (req, res) => {
     }
 };
 
-exports.getLessonByLessonId = async (req, res) => {
+exports.getLessonByLessonIdForAdmin = async (req, res) => {
     try {
         const lessonId = req.params.id;
         const lesson = await Lesson.findOne({
             where: {
-                id: lessonId
+                id: lessonId,
+                 adminId: req.admin.id
             },
             include: [{
                 model: LessonFile,
@@ -94,41 +95,46 @@ exports.getLessonByLessonId = async (req, res) => {
     }
 };
 
-// update customCode, richTextEditor, codeExample
-exports.updateLesson = async (req, res) => {
-    try {
-        const lessonId = req.params.id;
-        const { codeExample, customCode, richTextEditor } = req.body;
-        const lesson = await Lesson.findOne({ where: { id: lessonId } });
-        if (!lesson) {
-            return res.status(400).send({
-                success: false,
-                message: "Lesson is not present!"
-            });
-        }
-        await lesson.update({
-            ...lesson,
-            codeExample: codeExample,
-            customCode: customCode,
-            richTextEditor: richTextEditor
-        });
-        res.status(200).send({
-            success: true,
-            message: `Lesson modified successfully!`
-        });
-    } catch (err) {
-        console.log(err);
-        res.status(500).send({
-            success: false,
-            err: err.message
-        });
-    }
-};
+// // update customCode, richTextEditor, codeExample
+// exports.updateLesson = async (req, res) => {
+//     try {
+//         const lessonId = req.params.id;
+//         const { codeExample, customCode, richTextEditor } = req.body;
+//         const lesson = await Lesson.findOne({ where: { id: lessonId } });
+//         if (!lesson) {
+//             return res.status(400).send({
+//                 success: false,
+//                 message: "Lesson is not present!"
+//             });
+//         }
+//         await lesson.update({
+//             ...lesson,
+//             codeExample: codeExample,
+//             customCode: customCode,
+//             richTextEditor: richTextEditor
+//         });
+//         res.status(200).send({
+//             success: true,
+//             message: `Lesson modified successfully!`
+//         });
+//     } catch (err) {
+//         console.log(err);
+//         res.status(500).send({
+//             success: false,
+//             err: err.message
+//         });
+//     }
+// };
 
 exports.publicLesson = async (req, res) => {
     try {
         const id = req.params.id;
-        const lesson = await Lesson.findOne({ where: { id: id } });
+        const lesson = await Lesson.findOne({
+            where: {
+                id: id,
+                adminId: req.admin.id
+            }
+        });
         if (!lesson) {
             return res.status(400).send({
                 success: false,
@@ -153,79 +159,79 @@ exports.publicLesson = async (req, res) => {
     }
 };
 
-exports.deleteLesson = async (req, res) => {
-    try {
-        const id = req.params.id;
-        const lesson = await Lesson.findOne({ where: { id: id } });
-        if (!lesson) {
-            return res.status(400).send({
-                success: false,
-                message: "Lesson is not present!"
-            });
-        };
-        // delete associated video
-        const video = await LessonVideo.findAll({ lessonId: id });
-        const commentFileArray = [];
-        const thumbnailArray = [];
-        if (video.length > 0) {
-            // delete video from bunny
-            for (let i = 0; i < video.length; i++) {
-                const deleteVideo = {
-                    method: "DELETE",
-                    url: `http://video.bunnycdn.com/library/${video[i].BUNNY_VIDEO_LIBRARY_ID}/videos/${video[i].Video_ID}`,
-                    headers: {
-                        AccessKey: video[i].BUNNY_LIBRARY_API_KEY,
-                    }
-                };
+// exports.deleteLesson = async (req, res) => {
+//     try {
+//         const id = req.params.id;
+//         const lesson = await Lesson.findOne({ where: { id: id } });
+//         if (!lesson) {
+//             return res.status(400).send({
+//                 success: false,
+//                 message: "Lesson is not present!"
+//             });
+//         };
+//         // delete associated video
+//         const video = await LessonVideo.findAll({ lessonId: id });
+//         const commentFileArray = [];
+//         const thumbnailArray = [];
+//         if (video.length > 0) {
+//             // delete video from bunny
+//             for (let i = 0; i < video.length; i++) {
+//                 const deleteVideo = {
+//                     method: "DELETE",
+//                     url: `http://video.bunnycdn.com/library/${video[i].BUNNY_VIDEO_LIBRARY_ID}/videos/${video[i].Video_ID}`,
+//                     headers: {
+//                         AccessKey: video[i].BUNNY_LIBRARY_API_KEY,
+//                     }
+//                 };
 
-                await axios
-                    .request(deleteVideo)
-                    .then((response) => {
-                        // console.log("delete: ", response.data);
-                    })
-                    .catch((error) => {
-                        // console.log(error);
-                        return res.status(400).send({
-                            success: false,
-                            message: "Delete request of video failed from bunny. try to delete again!",
-                            bunnyMessage: error.message
-                        });
-                    });
-                thumbnailArray.push(video[i].Thumbnail_Path);
-                const comment = await VideoComment.findAll({ where: { lessonVideoId: video[i].id } });
-                for (let i = 0; i < comment.length; i++) {
-                    commentFileArray.push(comment[i].file_Path);
-                }
-            }
-        }
-        // delete thumbnail
-        if (thumbnailArray.length > 0) {
-            deleteMultiFile(thumbnailArray);
-        }
-        // delete comment Files
-        if (commentFileArray.length > 0) {
-            deleteMultiFile(commentFileArray);
-        }
-        // delete lesson files
-        const lessonFileArray = [];
-        const lessonFile = await LessonFile.findAll({ where: { lessonId: id } });
-        for (let i = 0; i < lessonFile.length; i++) {
-            lessonFileArray.push(lessonFile[i].file_Path);
-        }
-        if (lessonFileArray.length > 0) {
-            deleteMultiFile(lessonFileArray);
-        }
-        // delete lesson from database
-        await lesson.destroy();
-        res.status(200).send({
-            success: true,
-            message: `Lesson deleted successfully!`
-        });
-    } catch (err) {
-        console.log(err);
-        res.status(500).send({
-            success: false,
-            err: err.message
-        });
-    }
-};
+//                 await axios
+//                     .request(deleteVideo)
+//                     .then((response) => {
+//                         // console.log("delete: ", response.data);
+//                     })
+//                     .catch((error) => {
+//                         // console.log(error);
+//                         return res.status(400).send({
+//                             success: false,
+//                             message: "Delete request of video failed from bunny. try to delete again!",
+//                             bunnyMessage: error.message
+//                         });
+//                     });
+//                 thumbnailArray.push(video[i].Thumbnail_Path);
+//                 const comment = await VideoComment.findAll({ where: { lessonVideoId: video[i].id } });
+//                 for (let i = 0; i < comment.length; i++) {
+//                     commentFileArray.push(comment[i].file_Path);
+//                 }
+//             }
+//         }
+//         // delete thumbnail
+//         if (thumbnailArray.length > 0) {
+//             deleteMultiFile(thumbnailArray);
+//         }
+//         // delete comment Files
+//         if (commentFileArray.length > 0) {
+//             deleteMultiFile(commentFileArray);
+//         }
+//         // delete lesson files
+//         const lessonFileArray = [];
+//         const lessonFile = await LessonFile.findAll({ where: { lessonId: id } });
+//         for (let i = 0; i < lessonFile.length; i++) {
+//             lessonFileArray.push(lessonFile[i].file_Path);
+//         }
+//         if (lessonFileArray.length > 0) {
+//             deleteMultiFile(lessonFileArray);
+//         }
+//         // delete lesson from database
+//         await lesson.destroy();
+//         res.status(200).send({
+//             success: true,
+//             message: `Lesson deleted successfully!`
+//         });
+//     } catch (err) {
+//         console.log(err);
+//         res.status(500).send({
+//             success: false,
+//             err: err.message
+//         });
+//     }
+// };

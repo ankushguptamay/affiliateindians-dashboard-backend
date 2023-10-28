@@ -1,119 +1,86 @@
 const express = require("express");
 const router = express.Router();
 
-// const user = require('../../Controllers/Admin/User/user');
-// const advisor = require('../../Controllers/Admin/Advisor/advisor');
-// const member = require('../../Controllers/Admin/Member/member');
-// const lead = require('../../Controllers/Admin/Lead/lead');
-// const scheduleBooking = require('../../Controllers/Admin/ScheduleBooking/scheduleBooking');
-// const myBooking = require('../../Controllers/Admin/MyBooking/myBooking');
-// const eWallet = require('../../Controllers/Admin/EWallet/eWallet');
-const { createSection, getAllSectionByCourseId, updateSection, publicSection, deleteSection } = require('../../Controllers/Admin/AddCourse/sectionControllers');
-const { createLesson, getLessonByLessonId, publicLesson, updateLesson, deleteLesson } = require('../../Controllers/Admin/AddCourse/lessonController');
+const { registerAdmin, loginAdmin } = require('../../Controllers/Admin/authAdminController');
+
+// Master
+const { getTemplate } = require('../../Controllers/Admin/Master/templateController');
+
+// Course
+const { createSection, getAllSectionByCourseIdForAdmin, updateSection, publicSection, deleteSection } = require('../../Controllers/Admin/AddCourse/sectionControllers');
+const { createLesson, getLessonByLessonIdForAdmin, publicLesson, updateLesson, deleteLesson } = require('../../Controllers/Admin/AddCourse/lessonController');
 const { createCourse, getCourseForAdmin, updateCourse, addOrUpdateAuthorImage, addOrUpdateCourseImage,
     deleteAuthorImage, deleteCourseImage, publicCourse, deleteCourse } = require('../../Controllers/Admin/AddCourse/courseController');
 const { uploadLessonVideo, deleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail, purgeURL } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
 const { createLessonQuiz, getAllQuizByLessonId, deleteLessonQuiz, updateLessonQuiz } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
 const { addBanner, updateBanner, addPDF, deletePDF, addResource, deleteResource } = require('../../Controllers/Admin/AddCourse/lessonFileController');
 const { addCommentForAdmin, approveComment, deleteCommentForAdmin, getCommentForAdmin } = require('../../Controllers/Admin/AddCourse/videoCommentController');
-const { bulkRegisterUserAndCreateCourseAndAssign } = require('../../Controllers/User/user_courseController');
-const { findAllUser  } = require("../../Controllers/User/user");
+// Teacher
+const { registerTeacher } = require("../../Controllers/Admin/Teacher/teacherController");
 
 //middleware
 const multer = require('multer');
 const upload = multer();
 const { verifyAdminToken } = require('../../Middlewares/varifyToken');
-const { isAdminPresent } = require('../../Middlewares/isAdminPresent');
+const { isAdmin } = require('../../Middlewares/isPresent');
 const uploadImage = require('../../Middlewares/UploadFile/uploadImages');
 const uploadPDF = require('../../Middlewares/UploadFile/uploadPDF');
 const uploadImageAndPDF = require('../../Middlewares/UploadFile/uploadImageAndPDF');
 
-// router.post("/create-users", user.create);
-// router.get("/users", user.findAll);
-// router.delete("/delete-users/:id", user.delete);
-// router.put("/update-users/:id", user.update);
 
-// router.post("/create-advisors", verifyToken, isAdminPresent, uploadImage.single("advisorImage"), [
-//     body('email', 'Enter a valid Email').isEmail().exists()
-// ], advisor.createAdvisor);
-// router.get("/advisors", verifyToken, isAdminPresent, advisor.getAllAdvisor);
-// router.delete("/delete-advisors/:id", verifyToken, isAdminPresent, advisor.deleteAdvisor);
-// router.put("/update-advisors/:id", verifyToken, isAdminPresent, uploadImage.single("advisorImage"), [
-//     body('email', 'Enter a valid Email').isEmail().optional()
-// ], advisor.updateAdvisor);
+// Admin
+router.post("/register", registerAdmin);
+router.post("/login", loginAdmin);
 
-// router.post("/create-members", member.create);
-// router.get("/members", member.findAll);
-// router.delete("/delete-members/:id", member.delete);
-// router.put("/update-members/:id", member.update);
+// Master
+router.get("/templates", verifyAdminToken, isAdmin, getTemplate);
 
-// router.post("/create-leads", lead.create);
-// router.get("/leads", lead.findAll);
-// router.delete("/delete-leads/:id", lead.delete);
-// router.put("/update-leads/:id", lead.update);
+// Teacher
+// router.post("/registerTeacher", verifyAdminToken, isAdmin, registerTeacher);
 
-// router.post("/create-scheduleBookings", scheduleBooking.create);
-// router.get("/scheduleBookings", scheduleBooking.findAll);
-// router.delete("/delete-scheduleBookings/:id", scheduleBooking.delete);
-// router.put("/update-scheduleBookings/:id", scheduleBooking.update);
+// Course
+router.post("/createCourse", verifyAdminToken, isAdmin, createCourse);
+router.get("/courses", verifyAdminToken, isAdmin, getCourseForAdmin);
+// router.put("/updateCourse/:id", verifyAdminToken, isAdmin, updateCourse);
+router.put("/addOrUpdateAuthorImage/:id", verifyAdminToken, isAdmin, uploadImage.single("authorImage"), addOrUpdateAuthorImage);
+router.put("/addOrUpdateCourseImage/:id", verifyAdminToken, isAdmin, uploadImage.single("courseImage"), addOrUpdateCourseImage);
+router.put("/publicCourse/:id", verifyAdminToken, isAdmin, publicCourse);
+router.delete("/deleteAuthorImage/:id", verifyAdminToken, isAdmin, deleteAuthorImage);
+router.delete("/deleteCourseImage/:id", verifyAdminToken, isAdmin, deleteCourseImage);
+// router.delete("/deleteCourse/:id", verifyAdminToken, isAdmin, deleteCourse);
 
-// router.post("/create-myBookings", myBooking.create);
-// router.get("/myBookings", myBooking.findAll);
-// router.delete("/delete-myBookings/:id", myBooking.delete);
-// router.put("/update-myBookings/:id", myBooking.update);
+router.post("/createSection", verifyAdminToken, isAdmin, createSection);
+router.get("/sections/:courseId", verifyAdminToken, isAdmin, getAllSectionByCourseIdForAdmin);
+// router.put("/updateSection/:id", verifyAdminToken, isAdmin, updateSection);
+router.put("/publicSection/:id", verifyAdminToken, isAdmin, publicSection);
+// router.delete("/deleteSection/:id", verifyAdminToken, isAdmin, deleteSection);
 
-// router.post("/create-eWallets", eWallet.create);
-// router.get("/eWallets", eWallet.findAll);
-// router.delete("/delete-eWallets/:id", eWallet.delete);
-// router.put("/update-eWallets/:id", eWallet.update);
+router.post("/createLesson", verifyAdminToken, isAdmin, createLesson);
+router.get("/lesson/:id", verifyAdminToken, isAdmin, getLessonByLessonIdForAdmin);
+// router.put("/updateLesson/:id", verifyAdminToken, isAdmin, updateLesson);
+router.put("/publicLesson/:id", verifyAdminToken, isAdmin, publicLesson);
+// router.delete("/deleteLesson/:id", verifyAdminToken, isAdmin, deleteLesson);
 
-router.post("/createCourse", verifyAdminToken, isAdminPresent, createCourse);
-router.get("/courses", verifyAdminToken, isAdminPresent, getCourseForAdmin);
-router.put("/updateCourse/:id", verifyAdminToken, isAdminPresent, updateCourse);
-router.put("/addOrUpdateAuthorImage/:id", verifyAdminToken, isAdminPresent, uploadImage.single("authorImage"), addOrUpdateAuthorImage);
-router.put("/addOrUpdateCourseImage/:id", verifyAdminToken, isAdminPresent, uploadImage.single("courseImage"), addOrUpdateCourseImage);
-router.put("/publicCourse/:id", verifyAdminToken, isAdminPresent, publicCourse);
-router.delete("/deleteAuthorImage/:id", verifyAdminToken, isAdminPresent, deleteAuthorImage);
-router.delete("/deleteCourseImage/:id", verifyAdminToken, isAdminPresent, deleteCourseImage);
-router.delete("/deleteCourse/:id", verifyAdminToken, isAdminPresent, deleteCourse);
+router.post("/uploadVideo/:lessonId", verifyAdminToken, isAdmin, upload.single("lessonVideo"), uploadLessonVideo);
+router.put("/addOrUpdateThumbNail/:id", verifyAdminToken, isAdmin, uploadImage.single("thumbnail"), addOrUpdateThumbNail);
+router.get("/videos/:lessonId", verifyAdminToken, isAdmin, getAllVideoByLessonId);
+router.delete("/deleteVideo/:id", verifyAdminToken, isAdmin, deleteLessonVideo);
 
-router.post("/createSection", verifyAdminToken, isAdminPresent, createSection);
-router.get("/sections/:courseId", verifyAdminToken, isAdminPresent, getAllSectionByCourseId);
-router.put("/updateSection/:id", verifyAdminToken, isAdminPresent, updateSection);
-router.put("/publicSection/:id", verifyAdminToken, isAdminPresent, publicSection);
-router.delete("/deleteSection/:id", verifyAdminToken, isAdminPresent, deleteSection);
+router.post("/createQuiz/:lessonId", verifyAdminToken, isAdmin, createLessonQuiz);
+router.get("/quizs/:lessonId", verifyAdminToken, isAdmin, getAllQuizByLessonId);
+router.put("/updateQuiz/:id", verifyAdminToken, isAdmin, updateLessonQuiz);
+router.delete("/deleteQuiz/:id", verifyAdminToken, isAdmin, deleteLessonQuiz);
 
-router.post("/createLesson", verifyAdminToken, isAdminPresent, createLesson);
-router.get("/lesson/:id", verifyAdminToken, isAdminPresent, getLessonByLessonId);
-router.put("/updateLesson/:id", verifyAdminToken, isAdminPresent, updateLesson);
-router.put("/publicLesson/:id", verifyAdminToken, isAdminPresent, publicLesson);
-router.delete("/deleteLesson/:id", verifyAdminToken, isAdminPresent, deleteLesson);
+router.post("/addBanner/:lessonId", verifyAdminToken, isAdmin, uploadImage.single("lessonBanner"), addBanner);
+router.post("/addPDF/:lessonId", verifyAdminToken, isAdmin, uploadPDF.array("lessonPDF", 10), addPDF);
+router.post("/addResource/:lessonId", verifyAdminToken, isAdmin, uploadImageAndPDF.array("lessonResource", 10), addResource);
+router.delete("/deletePDF/:id", verifyAdminToken, isAdmin, deletePDF);
+router.put("/updateBanner/:id", verifyAdminToken, isAdmin, uploadImage.single("lessonBanner"), updateBanner);
+router.delete("/deleteResource/:id", verifyAdminToken, isAdmin, deleteResource);
 
-router.post("/uploadVideo/:lessonId", verifyAdminToken, isAdminPresent, upload.single("lessonVideo"), uploadLessonVideo);
-router.put("/addOrUpdateThumbNail/:id", verifyAdminToken, isAdminPresent, uploadImage.single("thumbnail"), addOrUpdateThumbNail);
-router.get("/videos/:lessonId", verifyAdminToken, isAdminPresent, getAllVideoByLessonId);
-router.delete("/deleteVideo/:id", verifyAdminToken, isAdminPresent, deleteLessonVideo);
-
-router.post("/createQuiz/:lessonId", verifyAdminToken, isAdminPresent, createLessonQuiz);
-router.get("/quizs/:lessonId", verifyAdminToken, isAdminPresent, getAllQuizByLessonId);
-router.put("/updateQuiz/:id", verifyAdminToken, isAdminPresent, updateLessonQuiz);
-router.delete("/deleteQuiz/:id", verifyAdminToken, isAdminPresent, deleteLessonQuiz);
-
-router.post("/addBanner/:lessonId", verifyAdminToken, isAdminPresent, uploadImage.single("lessonBanner"), addBanner);
-router.post("/addPDF/:lessonId", verifyAdminToken, isAdminPresent, uploadPDF.array("lessonPDF", 10), addPDF);
-router.post("/addResource/:lessonId", verifyAdminToken, isAdminPresent, uploadImageAndPDF.array("lessonResource", 10), addResource);
-router.delete("/deletePDF/:id", verifyAdminToken, isAdminPresent, deletePDF);
-router.put("/updateBanner/:id", verifyAdminToken, isAdminPresent, uploadImage.single("lessonBanner"), updateBanner);
-router.delete("/deleteResource/:id", verifyAdminToken, isAdminPresent, deleteResource);
-
-router.post("/addComment/:lessonVideoId", verifyAdminToken, isAdminPresent, uploadImageAndPDF.array("commentFile", 10), addCommentForAdmin);
-router.get("/comment/:lessonVideoId", verifyAdminToken, isAdminPresent, getCommentForAdmin);
-router.delete("/deleteComment/:id", verifyAdminToken, isAdminPresent, deleteCommentForAdmin);
-router.put("/approveComment/:id", verifyAdminToken, isAdminPresent, approveComment);
-
-router.get("/findAllUser", verifyAdminToken, isAdminPresent, findAllUser);
-
-router.get("/purgeURL", purgeURL);
-router.post("/bulkRegister", verifyAdminToken, isAdminPresent, bulkRegisterUserAndCreateCourseAndAssign);
+router.post("/addComment/:lessonVideoId", verifyAdminToken, isAdmin, uploadImageAndPDF.array("commentFile", 10), addCommentForAdmin);
+router.get("/comment/:lessonVideoId", verifyAdminToken, isAdmin, getCommentForAdmin);
+router.delete("/deleteComment/:id", verifyAdminToken, isAdmin, deleteCommentForAdmin);
+router.put("/approveComment/:id", verifyAdminToken, isAdmin, approveComment);
 
 module.exports = router;

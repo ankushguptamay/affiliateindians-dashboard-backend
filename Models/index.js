@@ -25,8 +25,10 @@ db.sequelize = sequelize;
 // db.myBooking = require('./Admin/myBooking.js')(sequelize, Sequelize);
 // db.eWallet = require('./Admin/eWallet.js')(sequelize, Sequelize);
 
-// Admin AddCourse
+// Admin
 db.admin = require('./Admin/admin')(sequelize, Sequelize);
+
+// Admin AddCourse
 db.course = require('./Admin/AddCourse/courseModel.js')(sequelize, Sequelize);
 db.lesson = require('./Admin/AddCourse/lessonModel.js')(sequelize, Sequelize);
 db.section = require('./Admin/AddCourse/sectionModel')(sequelize, Sequelize);
@@ -35,18 +37,31 @@ db.lessonVideo = require('./Admin/AddCourse/lessonVideoModel.js')(sequelize, Seq
 db.lessonFile = require('./Admin/AddCourse/lessonFileModel.js')(sequelize, Sequelize);
 db.videoComment = require('./Admin/AddCourse/videoCommentModel.js')(sequelize, Sequelize);
 
+// Teacher
+db.teacher = require('./Admin/Teacher/teacherModel.js')(sequelize, Sequelize);
+
+// Admin AddCourse
+db.template = require('./Admin/Master/templateModel.js')(sequelize, Sequelize);
+
 // user
 db.user = require('./User/user.js')(sequelize, Sequelize);
 db.user_course = require('./User/user_CourseModel.js')(sequelize, Sequelize);
 // db.userAccountDetail = require('./User/userAccountDetailsModel.js')(sequelize, Sequelize);
 
-// Admin Association
+// Admin Course Association
 db.admin.hasMany(db.course, { foreignKey: "adminId" });
 db.course.belongsTo(db.admin, { foreignKey: "adminId" });
 
 db.admin.hasMany(db.section, { foreignKey: "adminId" });
 
 db.admin.hasMany(db.lesson, { foreignKey: "adminId" });
+
+// Admin Master Association
+db.admin.hasMany(db.template, { foreignKey: "superAdminId" });
+
+// Admin Teacher Association
+db.admin.hasMany(db.teacher, { foreignKey: "adminId", as: "teacher" });
+db.teacher.belongsTo(db.admin, { foreignKey: "adminId", as: "admin" })
 
 // Course Association
 db.course.hasMany(db.section, { foreignKey: "courseId", as: "sections", onDelete: "CASCADE" });
@@ -89,11 +104,11 @@ db.lessonVideo.hasMany(db.videoComment, { foreignKey: "lessonVideoId", as: "vide
 
 // User Association with user_course
 db.user.hasMany(db.user_course, { foreignKey: "userId", as: "user_courses" });
-db.user_course.belongsTo(db.user, { foreignKey: "userId" });
+db.user_course.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 
 // course Association with userTag
 db.course.hasMany(db.user_course, { foreignKey: "courseId", as: "user_courses" });
-db.user_course.belongsTo(db.course, { foreignKey: "courseId" });
+db.user_course.belongsTo(db.course, { foreignKey: "courseId", as: "course" });
 
 // db.user.hasMany(db.userAccountDetail, { foreignKey: "userId" });
 // db.userAccountDetail.belongsTo(db.user, { foreignKey: "userId" });

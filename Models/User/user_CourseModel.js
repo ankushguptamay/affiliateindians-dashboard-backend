@@ -5,6 +5,8 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true
     }
+  }, {
+    paranoid: true
   });
   return User_Course;
 };

@@ -255,26 +255,26 @@ exports.getAllVideoByLessonId = async (req, res) => {
     }
 };
 
-exports.purgeURL = async (req, res) => {
-    try {
-        const response = axios.get('https://api.bunny.net/purge?url=https://vz-6731cad9-a20.b-cdn.net/embed/143408/8e246425-d4f3-464c-be48-cebead0fd48f&async=false',
-            {
-                headers: {
-                    Accept: "application/json",
-                    'Content-Type': 'application/json',
-                    AccessKey: process.env.BUNNY_ACCOUNT_ACCESS_KEY,
-                }
-            });
-        res.status(200).send({
-            success: true,
-            message: "Video fetched successfully!",
-            data: response
-        });
-    } catch (err) {
-        // console.log(err);
-        res.status(500).send({
-            success: false,
-            err: err
-        });
-    }
-};
+// exports.purgeURL = async (req, res) => {
+//     try {
+//         const response = axios.get('https://api.bunny.net/purge?url=https://vz-6731cad9-a20.b-cdn.net/embed/143408/8e246425-d4f3-464c-be48-cebead0fd48f&async=false',
+//             {
+//                 headers: {
+//                     Accept: "application/json",
+//                     'Content-Type': 'application/json',
+//                     AccessKey: process.env.BUNNY_ACCOUNT_ACCESS_KEY,
+//                 }
+//             });
+//         res.status(200).send({
+//             success: true,
+//             message: "Video fetched successfully!",
+//             data: response
+//         });
+//     } catch (err) {
+//         // console.log(err);
+//         res.status(500).send({
+//             success: false,
+//             err: err
+//         });
+//     }
+// };

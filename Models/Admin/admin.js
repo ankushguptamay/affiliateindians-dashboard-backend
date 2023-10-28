@@ -11,6 +11,15 @@ module.exports = (sequelize, DataTypes) => {
     password: {
       type: DataTypes.STRING,
     },
+    adminTag: {
+      type: DataTypes.STRING,
+      validate: {
+        isIn: [['SUPERADMIN', 'ADMIN']]
+      },
+      defaultValue: 'ADMIN'
+    }
+  }, {
+    paranoid: true
   });
   return Admin;
 };

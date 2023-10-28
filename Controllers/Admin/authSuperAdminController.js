@@ -1,13 +1,13 @@
 const db = require('../../Models');
 const Admin = db.admin;
-const { adminLogin, adminRegistration } = require("../../Middlewares/Validate/validateAdmin");
+const { suparAdminRegistration, superAdminLogin } = require("../../Middlewares/Validate/validateSuperAdmin");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-//register Admin
+//register Super Admin
 exports.registerAdmin = async (req, res) => {
     // Validate body
-    const { error } = adminRegistration(req.body);
+    const { error } = suparAdminRegistration(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
     }
@@ -25,7 +25,8 @@ exports.registerAdmin = async (req, res) => {
 
         await Admin.create({
             email: email,
-            password: bcPassword
+            password: bcPassword,
+            adminTag: 'SUPERADMIN'
         });
         res.status(201).send({
             success: true,
@@ -37,16 +38,16 @@ exports.registerAdmin = async (req, res) => {
     }
 };
 
-//Login Admin
+//Login Super Admin
 exports.loginAdmin = async (req, res) => {
     // Validate body
-    const { error } = adminLogin(req.body);
+    const { error } = superAdminLogin(req.body);
     if (error) {
         return res.status(400).send(error.details[0].message);
     }
     try {
         const { email, password } = req.body;
-        const isAdmin = await Admin.findOne({ where: { email: email } });
+        const isAdmin = await Admin.findOne({ where: { email: email, adminTag: 'SUPERADMIN' } });
         if (!isAdmin) {
             return res.status(400).send({
                 success: false,
