@@ -1,6 +1,6 @@
 const dbConfig = require('../Config/db.config.js');
 
-const Sequelize = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.password, {
     host: dbConfig.host,
     dialect: dbConfig.dialect,
@@ -13,6 +13,8 @@ const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.passw
 });
 
 const db = {};
+
+const queryInterface = sequelize.getQueryInterface();
 
 db.Sequelize = Sequelize;
 db.sequelize = sequelize;
@@ -112,5 +114,7 @@ db.user_course.belongsTo(db.course, { foreignKey: "courseId", as: "course" });
 
 // db.user.hasMany(db.userAccountDetail, { foreignKey: "userId" });
 // db.userAccountDetail.belongsTo(db.user, { foreignKey: "userId" });
+
+queryInterface.addColumn("admins", "name", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 module.exports = db;

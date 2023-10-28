@@ -12,7 +12,13 @@ const jwt = require('jsonwebtoken');
 //         return res.status(400).send(error.details[0].message);
 //     }
 //     try {
-//         const { email, password } = req.body;
+//         const { email, password, name, confirmPassword } = req.body;
+//         if (password !== confirmPassword) {
+//             return res.status(400).send({
+//                 success: false,
+//                 message: "Password should be match!"
+//             });
+//         }
 //         const isAdmin = await Admin.findOne({ where: { email: email } });
 //         if (isAdmin) {
 //             return res.status(400).send({
@@ -24,6 +30,7 @@ const jwt = require('jsonwebtoken');
 //         const bcPassword = await bcrypt.hash(password, salt);
 
 //         await Admin.create({
+//             name: name,
 //             email: email,
 //             password: bcPassword,
 //             adminTag: 'SUPERADMIN'
@@ -38,7 +45,7 @@ const jwt = require('jsonwebtoken');
 //     }
 // };
 
-//Login Super Admin
+// Login Super Admin
 exports.loginAdmin = async (req, res) => {
     // Validate body
     const { error } = superAdminLogin(req.body);
@@ -46,8 +53,19 @@ exports.loginAdmin = async (req, res) => {
         return res.status(400).send(error.details[0].message);
     }
     try {
-        const { email, password } = req.body;
-        const isAdmin = await Admin.findOne({ where: { email: email, adminTag: 'SUPERADMIN' } });
+        const { email, password, confirmPassword } = req.body;
+        if (password !== confirmPassword) {
+            return res.status(400).send({
+                success: false,
+                message: "Password should be match!"
+            });
+        }
+        const isAdmin = await Admin.findOne({
+            where: {
+                email: email,
+                adminTag: 'SUPERADMIN'
+            }
+        });
         if (!isAdmin) {
             return res.status(400).send({
                 success: false,

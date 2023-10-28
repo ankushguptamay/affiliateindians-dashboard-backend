@@ -12,7 +12,13 @@ exports.registerAdmin = async (req, res) => {
         return res.status(400).send(error.details[0].message);
     }
     try {
-        const { email, password } = req.body;
+        const { email, password, name, confirmPassword } = req.body;
+        if (password !== confirmPassword) {
+            return res.status(400).send({
+                success: false,
+                message: "Password should be match!"
+            });
+        }
         const isAdmin = await Admin.findOne({ where: { email: email } });
         if (isAdmin) {
             return res.status(400).send({
@@ -24,6 +30,7 @@ exports.registerAdmin = async (req, res) => {
         const bcPassword = await bcrypt.hash(password, salt);
 
         await Admin.create({
+            name: name,
             email: email,
             password: bcPassword
         });
@@ -45,7 +52,13 @@ exports.loginAdmin = async (req, res) => {
         return res.status(400).send(error.details[0].message);
     }
     try {
-        const { email, password } = req.body;
+        const { email, password, confirmPassword } = req.body;
+        if (password !== confirmPassword) {
+            return res.status(400).send({
+                success: false,
+                message: "Password should be match!"
+            });
+        }
         const isAdmin = await Admin.findOne({ where: { email: email } });
         if (!isAdmin) {
             return res.status(400).send({
