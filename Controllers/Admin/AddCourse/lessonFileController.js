@@ -1,5 +1,7 @@
+const { Op } = require('sequelize');
 const db = require('../../../Models');
 const LessonFile = db.lessonFile;
+const Lesson = db.lesson;
 const { deleteSingleFile } = require("../../../Util/deleteFile");
 
 exports.addBanner = async (req, res) => {
@@ -10,16 +12,16 @@ exports.addBanner = async (req, res) => {
                 message: "Select a Banner!"
             });
         }
-        const { courseId, sectionId } = req.body;
         const lessonId = req.params.lessonId;
+        const lesson = await Lesson.findOne({ where: { id: lessonId } });
         await LessonFile.create({
             file_FieldName: req.file.fieldname,
             file_Path: req.file.path,
             file_MimeType: req.file.mimetype,
             file_OriginalName: req.file.originalname,
             file_FileName: req.file.filename,
-            courseId: courseId,
-            sectionId: sectionId,
+            courseId: lesson.courseId,
+            sectionId: lesson.sectionId,
             lessonId: lessonId,
             adminId: req.admin.id
         });
@@ -46,17 +48,21 @@ exports.updateBanner = async (req, res) => {
             });
         }
         const id = req.params.id;
+        const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
         const lessonFile = await LessonFile.findOne({
             where: {
-                id: id,
-                adminId: req.admin.id
+                [Op.and]: condition
             }
         });
         if (!lessonFile) {
             return res.status(400).send({
                 success: false,
                 message: "Banner not found!"
-            })
+            });
         }
         if (lessonFile.file_Path) {
             deleteSingleFile(lessonFile.file_Path);
@@ -91,8 +97,8 @@ exports.addPDF = async (req, res) => {
                 message: "Select atleast one PDF!"
             });
         }
-        const { courseId, sectionId } = req.body;
         const lessonId = req.params.lessonId;
+        const lesson = await Lesson.findOne({ where: { id: lessonId } });
         const fileArray = req.files;
         for (let i = 0; i < fileArray.length; i++) {
             await LessonFile.create({
@@ -101,8 +107,8 @@ exports.addPDF = async (req, res) => {
                 file_MimeType: fileArray[i].mimetype,
                 file_OriginalName: fileArray[i].originalname,
                 file_FileName: fileArray[i].filename,
-                courseId: courseId,
-                sectionId: sectionId,
+                courseId: lesson.courseId,
+                sectionId: lesson.sectionId,
                 lessonId: lessonId,
                 adminId: req.admin.id
             });
@@ -121,26 +127,29 @@ exports.addPDF = async (req, res) => {
     }
 };
 
-exports.deletePDF = async (req, res) => {
+exports.hardDeletePDF = async (req, res) => {
     try {
-
         const id = req.params.id;
+        const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
         const lessonFile = await LessonFile.findOne({
             where: {
-                id: id,
-                adminId: req.admin.id
+                [Op.and]: condition
             }
         });
         if (!lessonFile) {
             return res.status(400).send({
                 success: false,
                 message: "PDF not found!"
-            })
+            });
         }
         if (lessonFile.file_Path) {
             deleteSingleFile(lessonFile.file_Path);
         }
-        await lessonFile.destroy();
+        await lessonFile.destroy({ force: true });
         res.status(201).send({
             success: true,
             message: `Lesson's PDF deleted successfully!`
@@ -163,8 +172,8 @@ exports.addResource = async (req, res) => {
                 message: "Select atleast one File!"
             });
         }
-        const { courseId, sectionId } = req.body;
         const lessonId = req.params.lessonId;
+        const lesson = await Lesson.findOne({ where: { id: lessonId } });
         const fileArray = req.files;
         for (let i = 0; i < fileArray.length; i++) {
             await LessonFile.create({
@@ -173,8 +182,8 @@ exports.addResource = async (req, res) => {
                 file_MimeType: fileArray[i].mimetype,
                 file_OriginalName: fileArray[i].originalname,
                 file_FileName: fileArray[i].filename,
-                courseId: courseId,
-                sectionId: sectionId,
+                courseId: lesson.courseId,
+                sectionId: lesson.sectionId,
                 lessonId: lessonId,
                 adminId: req.admin.id
             });
@@ -193,26 +202,30 @@ exports.addResource = async (req, res) => {
     }
 };
 
-exports.deleteResource = async (req, res) => {
+exports.hardDeleteResource = async (req, res) => {
     try {
 
         const id = req.params.id;
+        const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
         const lessonFile = await LessonFile.findOne({
             where: {
-                id: id,
-                adminId: req.admin.id
+                [Op.and]: condition
             }
         });
         if (!lessonFile) {
             return res.status(400).send({
                 success: false,
                 message: "Resource not found!"
-            })
+            });
         }
         if (lessonFile.file_Path) {
             deleteSingleFile(lessonFile.file_Path);
         }
-        await lessonFile.destroy();
+        await lessonFile.destroy({ force: true });
         res.status(201).send({
             success: true,
             message: `Lesson's Resource deleted successfully!`
