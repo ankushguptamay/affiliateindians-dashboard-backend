@@ -69,12 +69,6 @@ exports.login = async (req, res) => {
         if (error) {
             return res.status(400).send(error.details[0].message);
         }
-        if (req.body.password !== req.body.confirmPassword) {
-            return res.status(400).send({
-                success: false,
-                message: "Password should be match!"
-            });
-        }
         const { email, password } = req.body;
         const isUser = await User.findOne({
             where: {

@@ -37,3 +37,4 @@ module.exports = (sequelize, DataTypes) => {
 // courseId
 // sectionId
 // lessonId
+// adminId

@@ -85,7 +85,8 @@ exports.uploadLessonVideo = async (req, res) => {
             sectionId: sectionId,
             lessonId: lessonId,
             BUNNY_VIDEO_LIBRARY_ID: lesson.parentCourse.BUNNY_VIDEO_LIBRARY_ID,
-            BUNNY_LIBRARY_API_KEY: lesson.parentCourse.BUNNY_LIBRARY_API_KEY
+            BUNNY_LIBRARY_API_KEY: lesson.parentCourse.BUNNY_LIBRARY_API_KEY,
+            adminId: req.admin.id
         });
         res.status(201).send({
             success: true,
@@ -104,7 +105,12 @@ exports.uploadLessonVideo = async (req, res) => {
 exports.deleteLessonVideo = async (req, res) => {
     try {
         const id = req.params.id;
-        const lessonVideo = await LessonVideo.findOne({ where: { id: id } });
+        const lessonVideo = await LessonVideo.findOne({
+            where: {
+                id: id,
+                adminId: req.admin.id
+            }
+        });
         if (!lessonVideo) {
             return res.status(400).send({
                 success: false,
@@ -171,7 +177,10 @@ exports.addOrUpdateThumbNail = async (req, res) => {
         }
         const id = req.params.id;
         const lessonVideo = await LessonVideo.findOne({
-            where: { id: id },
+            where: {
+                id: id,
+                adminId: req.admin.id
+            },
         });
         if (!lessonVideo) {
             return res.status(400).send({

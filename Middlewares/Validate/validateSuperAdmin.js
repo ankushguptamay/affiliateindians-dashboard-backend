@@ -22,8 +22,7 @@ exports.superAdminLogin = (data) => {
             // .regex(RegExp(pattern))
             .required()
             .min(8)
-            .max(8),
-        confirmPassword: joi.string().required()
+            .max(8)
     })//.options({ allowUnknown: true });
     return schema.validate(data);
 }

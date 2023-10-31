@@ -53,13 +53,7 @@ exports.loginAdmin = async (req, res) => {
         return res.status(400).send(error.details[0].message);
     }
     try {
-        const { email, password, confirmPassword } = req.body;
-        if (password !== confirmPassword) {
-            return res.status(400).send({
-                success: false,
-                message: "Password should be match!"
-            });
-        }
+        const { email, password } = req.body;
         const isAdmin = await Admin.findOne({
             where: {
                 email: email,

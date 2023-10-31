@@ -58,6 +58,12 @@ db.admin.hasMany(db.section, { foreignKey: "adminId" });
 
 db.admin.hasMany(db.lesson, { foreignKey: "adminId" });
 
+db.admin.hasMany(db.lessonQuiz, { foreignKey: "adminId" });
+
+db.admin.hasMany(db.lessonVideo, { foreignKey: "adminId" });
+
+db.admin.hasMany(db.lessonFile, { foreignKey: "adminId" });
+
 // Admin Master Association
 db.admin.hasMany(db.template, { foreignKey: "superAdminId" });
 

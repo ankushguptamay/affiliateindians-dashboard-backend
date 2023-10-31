@@ -14,6 +14,7 @@ exports.createLessonQuiz = async (req, res) => {
             courseId: courseId,
             sectionId: sectionId,
             lessonId: lessonId,
+            adminId: req.admin.id
         });
         res.status(201).send({
             success: true,
@@ -56,7 +57,12 @@ exports.getAllQuizByLessonId = async (req, res) => {
 exports.deleteLessonQuiz = async (req, res) => {
     try {
         const id = req.params.id;
-        const lessonQuiz = await LessonQuiz.findOne({ where: { id: id } });
+        const lessonQuiz = await LessonQuiz.findOne({
+            where: {
+                id: id,
+                adminId: req.admin.id
+            }
+        });
         if (!lessonQuiz) {
             return res.status(400).send({
                 success: false,
@@ -81,7 +87,12 @@ exports.updateLessonQuiz = async (req, res) => {
     try {
         const id = req.params.id;
         const { quizQuestion, optionA, optionB, optionC, optionD } = req.body;
-        const lessonQuiz = await LessonQuiz.findOne({ where: { id: id } });
+        const lessonQuiz = await LessonQuiz.findOne({
+            where: {
+                id: id,
+                adminId: req.admin.id
+            }
+        });
         if (!lessonQuiz) {
             return res.status(400).send({
                 success: false,

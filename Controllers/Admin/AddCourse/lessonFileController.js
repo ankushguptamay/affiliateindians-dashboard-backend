@@ -21,6 +21,7 @@ exports.addBanner = async (req, res) => {
             courseId: courseId,
             sectionId: sectionId,
             lessonId: lessonId,
+            adminId: req.admin.id
         });
         res.status(201).send({
             success: true,
@@ -47,7 +48,8 @@ exports.updateBanner = async (req, res) => {
         const id = req.params.id;
         const lessonFile = await LessonFile.findOne({
             where: {
-                id: id
+                id: id,
+                adminId: req.admin.id
             }
         });
         if (!lessonFile) {
@@ -102,6 +104,7 @@ exports.addPDF = async (req, res) => {
                 courseId: courseId,
                 sectionId: sectionId,
                 lessonId: lessonId,
+                adminId: req.admin.id
             });
         }
         res.status(201).send({
@@ -124,7 +127,8 @@ exports.deletePDF = async (req, res) => {
         const id = req.params.id;
         const lessonFile = await LessonFile.findOne({
             where: {
-                id: id
+                id: id,
+                adminId: req.admin.id
             }
         });
         if (!lessonFile) {
@@ -172,6 +176,7 @@ exports.addResource = async (req, res) => {
                 courseId: courseId,
                 sectionId: sectionId,
                 lessonId: lessonId,
+                adminId: req.admin.id
             });
         }
         res.status(201).send({
@@ -194,7 +199,8 @@ exports.deleteResource = async (req, res) => {
         const id = req.params.id;
         const lessonFile = await LessonFile.findOne({
             where: {
-                id: id
+                id: id,
+                adminId: req.admin.id
             }
         });
         if (!lessonFile) {
