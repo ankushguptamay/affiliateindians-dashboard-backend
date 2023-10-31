@@ -2,6 +2,7 @@ const db = require('../../Models');
 const User = db.user;
 const User_Course = db.user_course;
 const Course = db.course;
+const UserWallet = db.userWallet;
 const { userRegistration, userLogin, changePassword } = require("../../Middlewares/Validate/validateUser");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -52,6 +53,10 @@ exports.create = async (req, res) => {
             pinCode: req.body.pinCode,
             password: bcPassword
         });
+        // Creating Wallet
+        await UserWallet.create({
+            userId: user.id
+        });
         const data = {
             id: isUser.id,
             email: isUser.email
@@ -64,8 +69,7 @@ exports.create = async (req, res) => {
         });
     }
     catch (err) {
-        console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({ message: err.message });
     }
 };
 
@@ -107,8 +111,7 @@ exports.login = async (req, res) => {
         });
     }
     catch (err) {
-        console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({ message: err.message });
     }
 };
 
@@ -157,8 +160,7 @@ exports.changePassword = async (req, res) => {
         });
     }
     catch (err) {
-        console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({ message: err.message });
     }
 };
 
@@ -181,8 +183,7 @@ exports.findUser = async (req, res) => {
             data: user
         });
     } catch (err) {
-        console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({ message: err.message });
     }
 };
 
@@ -202,8 +203,7 @@ exports.findUser = async (req, res) => {
 //             message: `User deleted successfully!`
 //         });
 //     } catch (err) {
-//         console.log(err);
-//         res.status(500).send(err);
+//        res.status(500).send({ message: err.message });
 //     }
 // };
 
@@ -232,8 +232,7 @@ exports.findUser = async (req, res) => {
 //             message: `User updated successfully!`
 //         });
 //     } catch (err) {
-//         console.log(err);
-//         res.status(500).send(err);
+//           res.status(500).send({ message: err.message });
 //     }
 // };
 
@@ -299,8 +298,7 @@ exports.findUserForSuperAdmin = async (req, res) => {
             data: user
         });
     } catch (err) {
-        console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({ message: err.message });
     }
 };
 
@@ -390,7 +388,6 @@ exports.findUserForAdmin = async (req, res) => {
             data: user
         });
     } catch (err) {
-        console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({ message: err.message });
     }
 };

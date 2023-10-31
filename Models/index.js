@@ -48,6 +48,7 @@ db.template = require('./Admin/Master/templateModel.js')(sequelize, Sequelize);
 // user
 db.user = require('./User/user.js')(sequelize, Sequelize);
 db.user_course = require('./User/user_CourseModel.js')(sequelize, Sequelize);
+db.userWallet = require('./User/walletModel.js')(sequelize, Sequelize);
 // db.userAccountDetail = require('./User/userAccountDetailsModel.js')(sequelize, Sequelize);
 
 // Admin Course Association
@@ -118,9 +119,20 @@ db.user_course.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 db.course.hasMany(db.user_course, { foreignKey: "courseId", as: "user_courses" });
 db.user_course.belongsTo(db.course, { foreignKey: "courseId", as: "course" });
 
+// User Association with wallet
+db.user.hasMany(db.userWallet, { foreignKey: "userId", as: "wallet" });
+db.userWallet.belongsTo(db.user, { foreignKey: "userId", as: "user" });
+
 // db.user.hasMany(db.userAccountDetail, { foreignKey: "userId" });
 // db.userAccountDetail.belongsTo(db.user, { foreignKey: "userId" });
 
-// queryInterface.addColumn("users", "joinThrough", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("user_courses", "amount", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("user_courses", "currency", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("user_courses", "receipt", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("user_courses", "razorpayOrderId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("user_courses", "razorpayPaymentId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("user_courses", "razorpayTime", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("user_courses", "status", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("user_courses", "verify", { type: DataTypes.BOOLEAN, defaultValue: false }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 module.exports = db;

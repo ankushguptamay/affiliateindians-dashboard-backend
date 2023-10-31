@@ -2,6 +2,7 @@ const fs = require('fs');
 const db = require('../../Models');
 const bcrypt = require('bcryptjs');
 const User_Course = db.user_course;
+const UserWallet = db.userWallet;
 const Course = db.course;
 const User = db.user;
 
@@ -46,6 +47,10 @@ exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
                     password: bcPassword,
                     createdAt: joinTime,
                     country: country
+                });
+                // Creating Wallet
+                await UserWallet.create({
+                    userId: user.id
                 });
                 const isCourse = await Course.findOne({ where: { title: Title } });
                 const isUserCourse = await User_Course.findOne({ where: { courseId: isCourse.id, userId: user.id } });
