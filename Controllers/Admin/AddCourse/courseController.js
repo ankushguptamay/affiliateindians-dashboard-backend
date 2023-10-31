@@ -1,5 +1,6 @@
 const db = require('../../../Models');
 const Course = db.course;
+const User_Course = db.user_course;
 const Lesson = db.lesson;
 const LessonFile = db.lessonFile;
 const LessonVideo = db.lessonVideo;
@@ -29,7 +30,12 @@ exports.createCourse = async (req, res) => {
         }
         const { title } = req.body;
         // Always unique title
-        const isCourse = await Course.findOne({ where: { title: title.toUpperCase() } });
+        const isCourse = await Course.findOne({
+            where: {
+                title: title.toUpperCase()
+            },
+            paranoid: false
+        });
         if (isCourse) {
             return res.status(400).send({
                 success: false,
@@ -71,9 +77,38 @@ exports.createCourse = async (req, res) => {
 
 exports.getCourseForAdmin = async (req, res) => {
     try {
-        const course = await Course.findAll({
+        const { page, limit, search } = req.query;
+        // Pagination
+        const recordLimit = parseInt(limit) || 10;
+        let offSet = 0;
+        let currentPage = 1;
+        if (page) {
+            offSet = (parseInt(page) - 1) * recordLimit;
+            currentPage = parseInt(page);
+        }
+        // Search 
+        const condition = [{ adminId: req.admin.id }];
+        if (search) {
+            condition.push({
+                [Op.or]: [
+                    { title: { [Op.substring]: search } },
+                    { categories: { [Op.substring]: search } },
+                    { authorName: { [Op.substring]: search } }
+                ]
+            })
+        }
+        // Count All Course
+        const totalCourse = await Course.count({
             where: {
-                adminId: req.admin.id
+                [Op.and]: condition
+            }
+        });
+        // All Course
+        const course = await Course.findAll({
+            limit: recordLimit,
+            offset: offSet,
+            where: {
+                [Op.and]: condition
             },
             order: [
                 ['createdAt', 'DESC']
@@ -82,6 +117,8 @@ exports.getCourseForAdmin = async (req, res) => {
         res.status(200).send({
             success: true,
             message: "Course fetched successfully!",
+            totalPage: Math.ceil(totalCourse / recordLimit),
+            currentPage: currentPage,
             data: course
         });
     } catch (err) {
@@ -93,10 +130,79 @@ exports.getCourseForAdmin = async (req, res) => {
     }
 };
 
-exports.getCourseForUser = async (req, res) => {
+exports.getAllCourse = async (req, res) => {
     try {
+        const { page, limit, search } = req.query;
+        // Pagination
+        const recordLimit = parseInt(limit) || 10;
+        let offSet = 0;
+        let currentPage = 1;
+        if (page) {
+            offSet = (parseInt(page) - 1) * recordLimit;
+            currentPage = parseInt(page);
+        }
+        // Search 
+        const condition = [];
+        if (req.user) {
+            condition.push({ isPublic: true });
+        }
+        if (search) {
+            condition.push({
+                [Op.or]: [
+                    { title: { [Op.substring]: search } },
+                    { categories: { [Op.substring]: search } },
+                    { authorName: { [Op.substring]: search } }
+                ]
+            })
+        }
+        // Count All Course
+        const totalCourse = await Course.count({
+            where: {
+                [Op.and]: condition
+            }
+        });
+        // All Course
+        const course = await Course.findAll({
+            limit: recordLimit,
+            offset: offSet,
+            where: {
+                [Op.and]: condition
+            },
+            order: [
+                ['createdAt', 'DESC']
+            ]
+        });
+        res.status(200).send({
+            success: true,
+            message: "Course fetched successfully!",
+            totalPage: Math.ceil(totalCourse / recordLimit),
+            currentPage: currentPage,
+            data: course
+        });
+    } catch (err) {
+        // console.log(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
+
+exports.getUsersCourse = async (req, res) => {
+    try {
+        const purchase = await User_Course.findAll({
+            where: {
+                userId: req.user.id
+            }
+        });
+        const courseId = [];
+        for (let i = 0; i < purchase.length; i++) {
+            courseId.push(purchase[i].courseId);
+        }
+        // All Course
         const course = await Course.findAll({
             where: {
+                id: courseId,
                 isPublic: true
             },
             order: [
@@ -277,13 +383,14 @@ exports.addOrUpdateCourseImage = async (req, res) => {
         }
         const id = req.params.id;
         const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
         // is course present
         const course = await Course.findOne({
             where: {
-                [Op.and]:
-                    [
-                        { id: id }, { adminId: adminId }
-                    ]
+                [Op.and]: condition
             }
         });
         if (!course) {
@@ -327,14 +434,15 @@ exports.addOrUpdateAuthorImage = async (req, res) => {
             });
         }
         const id = req.params.id;
-        // is course present 
         const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
+        // is course present 
         const course = await Course.findOne({
             where: {
-                [Op.and]:
-                    [
-                        { id: id }, { adminId: adminId }
-                    ]
+                [Op.and]: condition
             }
         });
         if (!course) {
@@ -374,13 +482,14 @@ exports.deleteCourseImage = async (req, res) => {
     try {
         const id = req.params.id;
         const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
         // is course present
         const course = await Course.findOne({
             where: {
-                [Op.and]:
-                    [
-                        { id: id }, { adminId: adminId }
-                    ]
+                [Op.and]: condition
             }
         });
         if (!course) {
@@ -417,13 +526,14 @@ exports.deleteAuthorImage = async (req, res) => {
     try {
         const id = req.params.id;
         const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
         // is course present
         const course = await Course.findOne({
             where: {
-                [Op.and]:
-                    [
-                        { id: id }, { adminId: adminId }
-                    ]
+                [Op.and]: condition
             }
         });
         if (!course) {
@@ -460,13 +570,14 @@ exports.publicCourse = async (req, res) => {
     try {
         const id = req.params.id;
         const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
         // is course present
         const course = await Course.findOne({
             where: {
-                [Op.and]:
-                    [
-                        { id: id }, { adminId: adminId }
-                    ]
+                [Op.and]: condition
             }
         });
         if (!course) {

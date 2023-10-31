@@ -2,6 +2,7 @@ const { Op } = require('sequelize');
 const db = require('../../../Models');
 const Section = db.section
 const Lesson = db.lesson;
+const User_Course = db.user_course;
 const LessonFile = db.lessonFile;
 const LessonVideo = db.lessonVideo;
 const VideoComment = db.videoComment;
@@ -36,11 +37,58 @@ exports.createSection = async (req, res) => {
 
 exports.getAllSectionByCourseIdForAdmin = async (req, res) => {
     try {
+        const condition = [{ courseId: req.params.courseId }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: req.admin.id });
+        }
         const section = await Section.findAll({
             where: {
-                [Op.and]: [
-                    { courseId: req.params.courseId }, { adminId: req.admin.id }
+                [Op.and]: condition
+            },
+            include: [{
+                model: Lesson,
+                as: "lessons",
+                attributes: ["id", "lessonName"],
+                order: [
+                    ['createdAt', 'ASC']
                 ]
+            }],
+            order: [
+                ['createdAt', 'ASC']
+            ]
+        });
+        res.status(200).send({
+            success: true,
+            message: "section fetched successfully!",
+            data: section
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
+
+exports.getAllSectionByCourseIdForUser = async (req, res) => {
+    try {
+        const isPurchase = await User_Course.findOne({
+            where: {
+                courseId: req.params.courseId,
+                userId: req.user.id
+            }
+        });
+        if (!isPurchase) {
+            return res.status(400).send({
+                success: false,
+                message: "Purchase this course!"
+            });
+        }
+        const section = await Section.findAll({
+            where: {
+                courseId: req.params.courseId,
+                isPublic: true
             },
             include: [{
                 model: Lesson,
@@ -185,12 +233,14 @@ exports.getAllSectionByCourseIdForAdmin = async (req, res) => {
 exports.publicSection = async (req, res) => {
     try {
         const id = req.params.id;
+        const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
         const section = await Section.findOne({
             where: {
-                [Op.and]: [
-                    { id: id },
-                    { adminId: req.admin.id }
-                ]
+                [Op.and]: condition
             }
         });
         if (!section) {

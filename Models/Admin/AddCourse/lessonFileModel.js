@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING // resourse, pdf Viewer, banner Image
         },
         file_Path: {
-            type: DataTypes.STRING(1234) 
+            type: DataTypes.STRING(1234)
         },
         file_MimeType: {
             type: DataTypes.STRING
@@ -20,7 +20,9 @@ module.exports = (sequelize, DataTypes) => {
         file_FileName: {
             type: DataTypes.STRING
         }
-       
+
+    }, {
+        paranoid: true
     });
     return LessonFile;
 };

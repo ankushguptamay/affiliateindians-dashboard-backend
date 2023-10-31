@@ -18,10 +18,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING
         },
         authorImageOriginalName: {
-            type: DataTypes.STRING 
+            type: DataTypes.STRING
         },
         authorImageFileName: {
-            type: DataTypes.STRING 
+            type: DataTypes.STRING
         },
         authorImagePath: {
             type: DataTypes.STRING(1234)
@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING
         },
         courseImagePath: {
-            type: DataTypes.STRING(1234) 
+            type: DataTypes.STRING(1234)
         },
         BUNNY_VIDEO_LIBRARY_ID: {
             type: DataTypes.STRING
@@ -52,6 +52,8 @@ module.exports = (sequelize, DataTypes) => {
         tag: {
             type: DataTypes.STRING
         }
+    }, {
+        paranoid: true
     });
     return Course;
 };

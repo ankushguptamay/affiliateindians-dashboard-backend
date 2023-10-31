@@ -30,6 +30,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING
         }
 
+    }, {
+        paranoid: true
     });
     return LessonVideo;
 };

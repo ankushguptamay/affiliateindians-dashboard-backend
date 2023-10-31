@@ -20,7 +20,9 @@ module.exports = (sequelize, DataTypes) => {
         optionD: {
             type: DataTypes.STRING
         }
-       
+
+    }, {
+        paranoid: true
     });
     return LessonQuiz;
 };

@@ -3,6 +3,7 @@ const Lesson = db.lesson;
 const LessonFile = db.lessonFile;
 const LessonVideo = db.lessonVideo;
 const LessonQuiz = db.lessonQuiz;
+const User_Course = db.user_course;
 const VideoComment = db.videoComment;
 const { deleteSingleFile, deleteMultiFile } = require("../../../Util/deleteFile");
 const axios = require('axios');
@@ -51,8 +52,7 @@ exports.getLessonByLessonIdForAdmin = async (req, res) => {
         const lessonId = req.params.id;
         const lesson = await Lesson.findOne({
             where: {
-                id: lessonId,
-                adminId: req.admin.id
+                id: lessonId
             },
             include: [{
                 model: LessonFile,
@@ -79,6 +79,67 @@ exports.getLessonByLessonIdForAdmin = async (req, res) => {
             return res.status(400).send({
                 success: false,
                 message: "Lesson is not present!"
+            });
+        }
+        res.status(200).send({
+            success: true,
+            message: `Lesson fetched successfully!`,
+            data: lesson
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
+
+exports.getLessonByLessonIdForUser = async (req, res) => {
+    try {
+        const lessonId = req.params.id;
+        const lesson = await Lesson.findOne({
+            where: {
+                id: lessonId,
+                isPublic: true
+            },
+            include: [{
+                model: LessonFile,
+                as: "lessonFiles",
+                order: [
+                    ['fileName', 'ASC'],
+                    ['createdAt', 'ASC']
+                ]
+            }, {
+                model: LessonQuiz,
+                as: "lessonQuizs",
+                order: [
+                    ['createdAt', 'DESC']
+                ]
+            }, {
+                model: LessonVideo,
+                as: "lessonVideos",
+                order: [
+                    ['createdAt', 'ASC']
+                ]
+            }]
+        });
+        if (!lesson) {
+            return res.status(400).send({
+                success: false,
+                message: "Lesson is not present!"
+            });
+        }
+        const isPurchase = await User_Course.findOne({
+            where: {
+                courseId: lesson.courseId,
+                userId: req.user.id
+            }
+        });
+        if (!isPurchase) {
+            return res.status(400).send({
+                success: false,
+                message: "Purchase this course!"
             });
         }
         res.status(200).send({
@@ -129,10 +190,14 @@ exports.getLessonByLessonIdForAdmin = async (req, res) => {
 exports.publicLesson = async (req, res) => {
     try {
         const id = req.params.id;
+        const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
         const lesson = await Lesson.findOne({
             where: {
-                id: id,
-                adminId: req.admin.id
+                [Op.and]: condition
             }
         });
         if (!lesson) {
@@ -151,7 +216,6 @@ exports.publicLesson = async (req, res) => {
         });
     }
     catch (err) {
-        console.log(err);
         res.status(500).send({
             success: false,
             err: err.message
