@@ -9,7 +9,7 @@ const { createLesson, getLessonByLessonIdForAdmin, publicLesson } = require('../
 const { createCourse, getCourseForAdmin, getAllCourse, addOrUpdateAuthorImage, addOrUpdateCourseImage,
     deleteAuthorImage, deleteCourseImage, publicCourse, } = require('../../Controllers/Admin/AddCourse/courseController');
 const { uploadLessonVideo, deleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail, purgeURL } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
-const { createLessonQuiz, getAllQuizByLessonId, deleteLessonQuiz, updateLessonQuiz } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
+const { createLessonQuiz, getAllQuizByLessonId, hardDeleteLessonQuiz, updateLessonQuiz } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
 const { addBanner, updateBanner, addPDF, hardDeletePDF, addResource, hardDeleteResource } = require('../../Controllers/Admin/AddCourse/lessonFileController');
 const { addCommentForAdmin, approveComment, deleteCommentForAdmin, getCommentForAdmin } = require('../../Controllers/Admin/AddCourse/videoCommentController');
 
@@ -51,5 +51,10 @@ router.post("/addResource/:lessonId", verifyAdminToken, isSuperAdmin, uploadImag
 router.delete("/hardDeletePDF/:id", verifyAdminToken, isSuperAdmin, hardDeletePDF);
 router.put("/updateBanner/:id", verifyAdminToken, isSuperAdmin, uploadImage.single("lessonBanner"), updateBanner);
 router.delete("/hardDeleteResource/:id", verifyAdminToken, isSuperAdmin, hardDeleteResource);
+// Quiz
+router.post("/createQuiz/:lessonId", verifyAdminToken, isSuperAdmin, createLessonQuiz);
+router.get("/quizs/:lessonId", verifyAdminToken, isSuperAdmin, getAllQuizByLessonId);
+router.put("/updateQuiz/:id", verifyAdminToken, isSuperAdmin, updateLessonQuiz);
+router.delete("/hardDeleteQuiz/:id", verifyAdminToken, isSuperAdmin, hardDeleteLessonQuiz);
 
 module.exports = router;

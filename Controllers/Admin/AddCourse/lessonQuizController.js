@@ -1,18 +1,21 @@
+const { Op } = require('sequelize');
 const db = require('../../../Models');
 const LessonQuiz = db.lessonQuiz;
+const Lesson = db.lesson;
 
 exports.createLessonQuiz = async (req, res) => {
     try {
-        const { quizQuestion, optionA, optionB, optionC, optionD, courseId, sectionId } = req.body;
+        const { quizQuestion, optionA, optionB, optionC, optionD } = req.body;
         const lessonId = req.params.lessonId;
+        const lesson = await Lesson.findOne({ where: { id: lessonId } });
         await LessonQuiz.create({
             quizQuestion: quizQuestion,
             optionA: optionA,
             optionB: optionB,
             optionC: optionC,
             optionD: optionD,
-            courseId: courseId,
-            sectionId: sectionId,
+            courseId: lesson.courseId,
+            sectionId: lesson.sectionId,
             lessonId: lessonId,
             adminId: req.admin.id
         });
@@ -54,13 +57,17 @@ exports.getAllQuizByLessonId = async (req, res) => {
     }
 };
 
-exports.deleteLessonQuiz = async (req, res) => {
+exports.hardDeleteLessonQuiz = async (req, res) => {
     try {
         const id = req.params.id;
+        const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
         const lessonQuiz = await LessonQuiz.findOne({
             where: {
-                id: id,
-                adminId: req.admin.id
+                [Op.and]: condition
             }
         });
         if (!lessonQuiz) {
@@ -69,7 +76,7 @@ exports.deleteLessonQuiz = async (req, res) => {
                 message: "Quiz is not present!"
             });
         };
-        await lessonQuiz.destroy();
+        await lessonQuiz.destroy({ force: true });
         res.status(200).send({
             success: true,
             message: `Lesson Quiz deleted seccessfully! ID!`
@@ -86,11 +93,15 @@ exports.deleteLessonQuiz = async (req, res) => {
 exports.updateLessonQuiz = async (req, res) => {
     try {
         const id = req.params.id;
+        const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
         const { quizQuestion, optionA, optionB, optionC, optionD } = req.body;
         const lessonQuiz = await LessonQuiz.findOne({
             where: {
-                id: id,
-                adminId: req.admin.id
+                [Op.and]: condition
             }
         });
         if (!lessonQuiz) {
