@@ -26,7 +26,9 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// app.use(express.static(__dirname + "/public"));
+app.use('/courseFile', express.static('./Resources/Course'));
+app.use('/lessonFile', express.static('./Resources/Lesson'));
+app.use('/masterFile', express.static('./Resources/Master'));
 
 app.use("/api/admin", admin);
 app.use("/api/superAdmin", superAdmin);
