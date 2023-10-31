@@ -27,12 +27,12 @@ exports.create = async (req, res) => {
                 message: "Password should be match!"
             });
         }
-        const user = await User.findOne({
+        const isUser = await User.findOne({
             where: {
                 email: req.body.email
             }
         });
-        if (user) {
+        if (isUser) {
             return res.status(400).send({
                 success: false,
                 message: "User is present! Login.."
@@ -40,7 +40,7 @@ exports.create = async (req, res) => {
         }
         const salt = await bcrypt.genSalt(10);
         const bcPassword = await bcrypt.hash(req.body.password, salt);
-        await User.create({
+        const user = await User.create({
             name: req.body.name,
             email: req.body.email,
             mobileNumber: req.body.mobileNumber,
@@ -51,9 +51,15 @@ exports.create = async (req, res) => {
             pinCode: req.body.pinCode,
             password: bcPassword
         });
+        const data = {
+            id: isUser.id,
+            email: isUser.email
+        }
+        const authToken = jwt.sign(data, process.env.JWT_SECRET_KEY_USER);
         res.status(201).send({
             success: true,
-            message: `User added successfully!`
+            message: `User added successfully!`,
+            authToken: authToken
         });
     }
     catch (err) {

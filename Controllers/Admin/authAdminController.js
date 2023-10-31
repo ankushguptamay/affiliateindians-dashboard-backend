@@ -29,14 +29,21 @@ exports.registerAdmin = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const bcPassword = await bcrypt.hash(password, salt);
 
-        await Admin.create({
+        const admin = await Admin.create({
             name: name,
             email: email,
             password: bcPassword
         });
+        const data = {
+            id: admin.id,
+            email: admin.email,
+            adminTag: admin.adminTag
+        }
+        const authToken = jwt.sign(data, process.env.JWT_SECRET_KEY_ADMIN);
         res.status(201).send({
             success: true,
-            message: "Admin registered successfully"
+            message: "Admin registered successfully",
+            authToken: authToken
         });
     }
     catch (err) {

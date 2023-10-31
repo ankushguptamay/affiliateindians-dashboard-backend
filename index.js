@@ -13,7 +13,7 @@ var corsOptions = {
 };
 
 const db = require('./Models');
-db.sequelize.sync({ force: true })
+db.sequelize.sync()
   .then(() => {
     console.log('Database is synced');
   })
