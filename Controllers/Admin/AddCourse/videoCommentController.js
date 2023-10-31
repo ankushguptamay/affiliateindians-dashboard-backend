@@ -1,5 +1,8 @@
+const { Op } = require('sequelize');
 const db = require('../../../Models');
 const VideoComment = db.videoComment;
+const LessonVideo = db.lessonVideo;
+const Course = db.course;
 const { deleteSingleFile } = require("../../../Util/deleteFile");
 
 // addCommentForAdmin
@@ -12,8 +15,9 @@ const { deleteSingleFile } = require("../../../Util/deleteFile");
 
 exports.addCommentForAdmin = async (req, res) => {
     try {
-        const { commenterName, courseId, sectionId, lessonId, message } = req.body;
+        const { commenterName, message } = req.body;
         const lessonVideoId = req.params.lessonVideoId;
+        const video = await LessonVideo.findOne({ where: { id: lessonVideoId } });
         if (req.files.length > 0) {
             const files = req.files;
             for (let i = 0; i < files.length; i++) {
@@ -22,12 +26,12 @@ exports.addCommentForAdmin = async (req, res) => {
                     approvalStatus: true,
                     mimeType: files[i].mimetype,
                     file_Path: files[i].path,
-                    file_OriginalName:files[i].originalname,
-                    file_FileName:files[i].filename,
+                    file_OriginalName: files[i].originalname,
+                    file_FileName: files[i].filename,
                     commenterId: req.admin.id,
-                    courseId: courseId,
-                    sectionId: sectionId,
-                    lessonId: lessonId,
+                    courseId: video.courseId,
+                    sectionId: video.sectionId,
+                    lessonId: video.lessonId,
                     lessonVideoId: lessonVideoId
                 });
             }
@@ -37,9 +41,9 @@ exports.addCommentForAdmin = async (req, res) => {
                 approvalStatus: true,
                 message: message,
                 commenterId: req.admin.id,
-                courseId: courseId,
-                sectionId: sectionId,
-                lessonId: lessonId,
+                courseId: video.courseId,
+                sectionId: video.sectionId,
+                lessonId: video.lessonId,
                 lessonVideoId: lessonVideoId
             });
         }
@@ -57,7 +61,7 @@ exports.addCommentForAdmin = async (req, res) => {
     }
 };
 
-exports.deleteCommentForAdmin = async (req, res) => {
+exports.hardDeleteCommentForAdmin = async (req, res) => {
     try {
         const id = req.params.id;
         const comment = await VideoComment.findOne({
@@ -71,10 +75,22 @@ exports.deleteCommentForAdmin = async (req, res) => {
                 message: "Comment not found!"
             })
         }
+        if (req.admin.adminTag === "ADMIN") {
+            const findCourse = await Course.findOne({
+                id: comment.courseId,
+                adminId: req.admin.id
+            });
+            if (!findCourse) {
+                return res.status(400).send({
+                    success: true,
+                    message: `You can not delete this comment!`
+                });
+            }
+        }
         if (comment.file_Path) {
             deleteSingleFile(comment.file_Path);
         }
-        await comment.destroy();
+        await comment.destroy({ force: true });
         res.status(201).send({
             success: true,
             message: `Comment deleted successfully!`
@@ -91,8 +107,9 @@ exports.deleteCommentForAdmin = async (req, res) => {
 
 exports.addCommentForUser = async (req, res) => {
     try {
-        const { commenterName, courseId, sectionId, lessonId, message } = req.body;
+        const { commenterName, message } = req.body;
         const lessonVideoId = req.params.lessonVideoId;
+        const video = await LessonVideo.findOne({ where: { id: lessonVideoId } });
         if (req.files.length > 0) {
             const files = req.files;
             for (let i = 0; i < files.length; i++) {
@@ -100,12 +117,12 @@ exports.addCommentForUser = async (req, res) => {
                     commenterName: commenterName,
                     mimeType: files[i].mimetype,
                     file_Path: files[i].path,
-                    file_OriginalName:files[i].originalname,
-                    file_FileName:files[i].filename,
+                    file_OriginalName: files[i].originalname,
+                    file_FileName: files[i].filename,
                     commenterId: req.user.id,
-                    courseId: courseId,
-                    sectionId: sectionId,
-                    lessonId: lessonId,
+                    courseId: video.courseId,
+                    sectionId: video.sectionId,
+                    lessonId: video.lessonId,
                     lessonVideoId: lessonVideoId
                 });
             }
@@ -114,9 +131,9 @@ exports.addCommentForUser = async (req, res) => {
                 commenterName: commenterName,
                 message: message,
                 commenterId: req.user.id,
-                courseId: courseId,
-                sectionId: sectionId,
-                lessonId: lessonId,
+                courseId: video.courseId,
+                sectionId: video.sectionId,
+                lessonId: video.lessonId,
                 lessonVideoId: lessonVideoId
             });
         }
@@ -134,12 +151,13 @@ exports.addCommentForUser = async (req, res) => {
     }
 };
 
-exports.deleteCommentForUser = async (req, res) => {
+exports.hardDeleteCommentForUser = async (req, res) => {
     try {
         const id = req.params.id;
         const comment = await VideoComment.findOne({
             where: {
-                id: id, commenterId: req.user.id
+                id: id,
+                commenterId: req.user.id
             }
         });
         if (!comment) {
@@ -151,7 +169,7 @@ exports.deleteCommentForUser = async (req, res) => {
         if (comment.file_Path) {
             deleteSingleFile(comment.file_Path);
         }
-        await comment.destroy();
+        await comment.destroy({ force: true });
         res.status(201).send({
             success: true,
             message: `Comment deleted successfully!`
@@ -171,7 +189,8 @@ exports.getCommentForUser = async (req, res) => {
         const lessonVideoId = req.params.lessonVideoId;
         const comment = await VideoComment.findAll({
             where: {
-                approvalStatus: true, lessonVideoId: lessonVideoId
+                approvalStatus: true,
+                lessonVideoId: lessonVideoId
             }
         });
         res.status(201).send({
@@ -192,7 +211,11 @@ exports.getCommentForUser = async (req, res) => {
 exports.getCommentForAdmin = async (req, res) => {
     try {
         const lessonVideoId = req.params.lessonVideoId;
-        const comment = await VideoComment.findAll({ where: { lessonVideoId: lessonVideoId } });
+        const comment = await VideoComment.findAll({
+            where: {
+                lessonVideoId: lessonVideoId
+            }
+        });
         res.status(201).send({
             success: true,
             message: `Comment Fetched successfully!`,
@@ -213,7 +236,8 @@ exports.approveComment = async (req, res) => {
         const id = req.params.id;
         const comment = await VideoComment.findOne({
             where: {
-                approvalStatus: false, id: id
+                approvalStatus: false,
+                id: id
             }
         });
         if (!comment) {
@@ -221,6 +245,18 @@ exports.approveComment = async (req, res) => {
                 success: false,
                 message: "Comment dose not exist!"
             })
+        }
+        if (req.admin.adminTag === "ADMIN") {
+            const findCourse = await Course.findOne({
+                id: comment.courseId,
+                adminId: req.admin.id
+            });
+            if (!findCourse) {
+                return res.status(400).send({
+                    success: true,
+                    message: `You can not approve this comment!`
+                });
+            }
         }
         await comment.update({
             ...comment,

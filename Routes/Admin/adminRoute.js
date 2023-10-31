@@ -14,7 +14,7 @@ const { createCourse, getCourseForAdmin, addOrUpdateAuthorImage, addOrUpdateCour
 const { uploadLessonVideo, hardDeleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
 const { createLessonQuiz, getAllQuizByLessonId, hardDeleteLessonQuiz, updateLessonQuiz } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
 const { addBanner, updateBanner, addPDF, hardDeletePDF, addResource, hardDeleteResource } = require('../../Controllers/Admin/AddCourse/lessonFileController');
-const { addCommentForAdmin, approveComment, deleteCommentForAdmin, getCommentForAdmin } = require('../../Controllers/Admin/AddCourse/videoCommentController');
+const { addCommentForAdmin, approveComment, hardDeleteCommentForAdmin, getCommentForAdmin } = require('../../Controllers/Admin/AddCourse/videoCommentController');
 // Teacher
 const { registerTeacher } = require("../../Controllers/Admin/Teacher/teacherController");
 
@@ -74,7 +74,7 @@ router.delete("/hardDeleteResource/:id", verifyAdminToken, isAdmin, hardDeleteRe
 // Comment
 router.post("/addComment/:lessonVideoId", verifyAdminToken, isAdmin, uploadImageAndPDF.array("commentFile", 10), addCommentForAdmin);
 router.get("/comment/:lessonVideoId", verifyAdminToken, isAdmin, getCommentForAdmin);
-router.delete("/deleteComment/:id", verifyAdminToken, isAdmin, deleteCommentForAdmin);
+router.delete("/hardDeleteComment/:id", verifyAdminToken, isAdmin, hardDeleteCommentForAdmin);
 router.put("/approveComment/:id", verifyAdminToken, isAdmin, approveComment);
 
 module.exports = router;

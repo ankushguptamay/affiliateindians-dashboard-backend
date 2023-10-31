@@ -11,7 +11,7 @@ const { createCourse, getCourseForAdmin, getAllCourse, addOrUpdateAuthorImage, a
 const { uploadLessonVideo, hardDeleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
 const { createLessonQuiz, getAllQuizByLessonId, hardDeleteLessonQuiz, updateLessonQuiz } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
 const { addBanner, updateBanner, addPDF, hardDeletePDF, addResource, hardDeleteResource } = require('../../Controllers/Admin/AddCourse/lessonFileController');
-const { addCommentForAdmin, approveComment, deleteCommentForAdmin, getCommentForAdmin } = require('../../Controllers/Admin/AddCourse/videoCommentController');
+const { addCommentForAdmin, approveComment, hardDeleteCommentForAdmin, getCommentForAdmin } = require('../../Controllers/Admin/AddCourse/videoCommentController');
 
 //middleware
 const multer = require('multer');
@@ -24,7 +24,7 @@ const uploadImageAndPDF = require('../../Middlewares/UploadFile/uploadImageAndPD
 
 // Route
 // Super Admin 
-// router.post("/register", registerAdmin);
+router.post("/register", registerAdmin);
 router.post("/login", loginAdmin);
 
 // Course
@@ -61,5 +61,10 @@ router.post("/uploadVideo/:lessonId", verifyAdminToken, isSuperAdmin, upload.sin
 router.put("/addOrUpdateThumbNail/:id", verifyAdminToken, isSuperAdmin, uploadImage.single("thumbnail"), addOrUpdateThumbNail);
 router.get("/videos/:lessonId", verifyAdminToken, isSuperAdmin, getAllVideoByLessonId);
 router.delete("/hardDeleteVideo/:id", verifyAdminToken, isSuperAdmin, hardDeleteLessonVideo);
+// Comment
+router.post("/addComment/:lessonVideoId", verifyAdminToken, isSuperAdmin, uploadImageAndPDF.array("commentFile", 10), addCommentForAdmin);
+router.get("/comment/:lessonVideoId", verifyAdminToken, isSuperAdmin, getCommentForAdmin);
+router.delete("/hardDeleteComment/:id", verifyAdminToken, isSuperAdmin, hardDeleteCommentForAdmin);
+router.put("/approveComment/:id", verifyAdminToken, isSuperAdmin, approveComment);
 
 module.exports = router;

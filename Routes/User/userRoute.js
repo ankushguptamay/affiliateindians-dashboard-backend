@@ -7,10 +7,12 @@ const { getAllSectionByCourseIdForUser } = require('../../Controllers/Admin/AddC
 const { getLessonByLessonIdForUser } = require('../../Controllers/Admin/AddCourse/lessonController');
 const { getAllQuizByLessonId } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
 const { getAllVideoByLessonId } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
+const { addCommentForUser, hardDeleteCommentForUser, getCommentForUser } = require('../../Controllers/Admin/AddCourse/videoCommentController');
 
 // Middleware
 const { verifyUserToken } = require('../../Middlewares/varifyToken');
 const { isUser } = require('../../Middlewares/isPresent');
+const uploadImageAndPDF = require('../../Middlewares/UploadFile/uploadImageAndPDF');
 
 // User
 router.post("/register", create);
@@ -25,5 +27,10 @@ router.get("/sections/:courseId", verifyUserToken, isUser, getAllSectionByCourse
 router.get("/lesson/:id", verifyUserToken, isUser, getLessonByLessonIdForUser);
 router.get("/quizs/:lessonId", verifyUserToken, isUser, getAllQuizByLessonId);
 router.get("/videos/:lessonId", verifyUserToken, isUser, getAllVideoByLessonId);
+
+// Comment
+router.post("/addComment/:lessonVideoId", verifyUserToken, isUser, uploadImageAndPDF.array("commentFile", 10), addCommentForUser);
+router.get("/comment/:lessonVideoId", verifyUserToken, isUser, getCommentForUser);
+router.delete("/hardDeleteComment/:id", verifyUserToken, isUser, hardDeleteCommentForUser);
 
 module.exports = router;
