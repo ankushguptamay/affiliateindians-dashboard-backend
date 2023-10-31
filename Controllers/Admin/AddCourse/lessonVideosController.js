@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const db = require('../../../Models');
 const Lesson = db.lesson;
 const Course = db.course;
@@ -20,7 +21,6 @@ exports.uploadLessonVideo = async (req, res) => {
             });
         }
         // find lesson
-        const { courseId, sectionId } = req.body;
         const lessonId = req.params.lessonId;
         const lesson = await Lesson.findOne({
             where: { id: lessonId },
@@ -81,8 +81,8 @@ exports.uploadLessonVideo = async (req, res) => {
             Video_ID: video_id,
             Iframe_URL: `https://iframe.mediadelivery.net/embed/${lesson.parentCourse.BUNNY_VIDEO_LIBRARY_ID}/${video_id}`,
             Direct_Play_URL: `https://iframe.mediadelivery.net/play/${lesson.parentCourse.BUNNY_VIDEO_LIBRARY_ID}/${video_id}`,
-            courseId: courseId,
-            sectionId: sectionId,
+            courseId: lesson.courseId,
+            sectionId: lesson.sectionId,
             lessonId: lessonId,
             BUNNY_VIDEO_LIBRARY_ID: lesson.parentCourse.BUNNY_VIDEO_LIBRARY_ID,
             BUNNY_LIBRARY_API_KEY: lesson.parentCourse.BUNNY_LIBRARY_API_KEY,
@@ -102,13 +102,17 @@ exports.uploadLessonVideo = async (req, res) => {
     }
 };
 
-exports.deleteLessonVideo = async (req, res) => {
+exports.hardDeleteLessonVideo = async (req, res) => {
     try {
         const id = req.params.id;
+        const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
         const lessonVideo = await LessonVideo.findOne({
             where: {
-                id: id,
-                adminId: req.admin.id
+                [Op.and]: condition
             }
         });
         if (!lessonVideo) {
@@ -148,12 +152,13 @@ exports.deleteLessonVideo = async (req, res) => {
         const fileArray = [];
         for (let i = 0; i < comment.length; i++) {
             fileArray.push(comment[i].file_Path);
+            await comment[i].destroy({ force: true });
         }
         if (fileArray.length > 0) {
             deleteMultiFile(fileArray);
         }
         // delete lesson video
-        await lessonVideo.destroy();
+        await lessonVideo.destroy({ force: true });
         res.status(200).send({
             success: true,
             message: `Lesson Video deleted successfully!`
@@ -176,11 +181,15 @@ exports.addOrUpdateThumbNail = async (req, res) => {
             });
         }
         const id = req.params.id;
+        const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
         const lessonVideo = await LessonVideo.findOne({
             where: {
-                id: id,
-                adminId: req.admin.id
-            },
+                [Op.and]: condition
+            }
         });
         if (!lessonVideo) {
             return res.status(400).send({

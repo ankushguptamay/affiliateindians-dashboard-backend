@@ -8,7 +8,7 @@ const { createSection, getAllSectionByCourseIdForAdmin, publicSection } = requir
 const { createLesson, getLessonByLessonIdForAdmin, publicLesson } = require('../../Controllers/Admin/AddCourse/lessonController');
 const { createCourse, getCourseForAdmin, getAllCourse, addOrUpdateAuthorImage, addOrUpdateCourseImage,
     deleteAuthorImage, deleteCourseImage, publicCourse, } = require('../../Controllers/Admin/AddCourse/courseController');
-const { uploadLessonVideo, deleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail, purgeURL } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
+const { uploadLessonVideo, hardDeleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
 const { createLessonQuiz, getAllQuizByLessonId, hardDeleteLessonQuiz, updateLessonQuiz } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
 const { addBanner, updateBanner, addPDF, hardDeletePDF, addResource, hardDeleteResource } = require('../../Controllers/Admin/AddCourse/lessonFileController');
 const { addCommentForAdmin, approveComment, deleteCommentForAdmin, getCommentForAdmin } = require('../../Controllers/Admin/AddCourse/videoCommentController');
@@ -56,5 +56,10 @@ router.post("/createQuiz/:lessonId", verifyAdminToken, isSuperAdmin, createLesso
 router.get("/quizs/:lessonId", verifyAdminToken, isSuperAdmin, getAllQuizByLessonId);
 router.put("/updateQuiz/:id", verifyAdminToken, isSuperAdmin, updateLessonQuiz);
 router.delete("/hardDeleteQuiz/:id", verifyAdminToken, isSuperAdmin, hardDeleteLessonQuiz);
+// Video
+router.post("/uploadVideo/:lessonId", verifyAdminToken, isSuperAdmin, upload.single("lessonVideo"), uploadLessonVideo);
+router.put("/addOrUpdateThumbNail/:id", verifyAdminToken, isSuperAdmin, uploadImage.single("thumbnail"), addOrUpdateThumbNail);
+router.get("/videos/:lessonId", verifyAdminToken, isSuperAdmin, getAllVideoByLessonId);
+router.delete("/hardDeleteVideo/:id", verifyAdminToken, isSuperAdmin, hardDeleteLessonVideo);
 
 module.exports = router;

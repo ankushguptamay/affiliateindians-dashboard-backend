@@ -6,6 +6,7 @@ const { getAllCourse, getUsersCourse } = require('../../Controllers/Admin/AddCou
 const { getAllSectionByCourseIdForUser } = require('../../Controllers/Admin/AddCourse/sectionControllers');
 const { getLessonByLessonIdForUser } = require('../../Controllers/Admin/AddCourse/lessonController');
 const { getAllQuizByLessonId } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
+const { getAllVideoByLessonId } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
 
 // Middleware
 const { verifyUserToken } = require('../../Middlewares/varifyToken');
@@ -23,5 +24,6 @@ router.get("/myCourses", verifyUserToken, isUser, getUsersCourse);
 router.get("/sections/:courseId", verifyUserToken, isUser, getAllSectionByCourseIdForUser);
 router.get("/lesson/:id", verifyUserToken, isUser, getLessonByLessonIdForUser);
 router.get("/quizs/:lessonId", verifyUserToken, isUser, getAllQuizByLessonId);
+router.get("/videos/:lessonId", verifyUserToken, isUser, getAllVideoByLessonId);
 
 module.exports = router;

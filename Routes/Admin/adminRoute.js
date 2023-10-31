@@ -11,7 +11,7 @@ const { createSection, getAllSectionByCourseIdForAdmin, publicSection } = requir
 const { createLesson, getLessonByLessonIdForAdmin, publicLesson } = require('../../Controllers/Admin/AddCourse/lessonController');
 const { createCourse, getCourseForAdmin, addOrUpdateAuthorImage, addOrUpdateCourseImage,
     deleteAuthorImage, deleteCourseImage, publicCourse } = require('../../Controllers/Admin/AddCourse/courseController');
-const { uploadLessonVideo, deleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail, purgeURL } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
+const { uploadLessonVideo, hardDeleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
 const { createLessonQuiz, getAllQuizByLessonId, hardDeleteLessonQuiz, updateLessonQuiz } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
 const { addBanner, updateBanner, addPDF, hardDeletePDF, addResource, hardDeleteResource } = require('../../Controllers/Admin/AddCourse/lessonFileController');
 const { addCommentForAdmin, approveComment, deleteCommentForAdmin, getCommentForAdmin } = require('../../Controllers/Admin/AddCourse/videoCommentController');
@@ -58,7 +58,7 @@ router.put("/publicLesson/:id", verifyAdminToken, isAdmin, publicLesson);
 router.post("/uploadVideo/:lessonId", verifyAdminToken, isAdmin, upload.single("lessonVideo"), uploadLessonVideo);
 router.put("/addOrUpdateThumbNail/:id", verifyAdminToken, isAdmin, uploadImage.single("thumbnail"), addOrUpdateThumbNail);
 router.get("/videos/:lessonId", verifyAdminToken, isAdmin, getAllVideoByLessonId);
-router.delete("/deleteVideo/:id", verifyAdminToken, isAdmin, deleteLessonVideo);
+router.delete("/hardDeleteVideo/:id", verifyAdminToken, isAdmin, hardDeleteLessonVideo);
 // Quiz
 router.post("/createQuiz/:lessonId", verifyAdminToken, isAdmin, createLessonQuiz);
 router.get("/quizs/:lessonId", verifyAdminToken, isAdmin, getAllQuizByLessonId);
