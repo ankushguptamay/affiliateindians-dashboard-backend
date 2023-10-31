@@ -14,7 +14,7 @@ const razorpayInstance = new Razorpay({
     key_secret: RAZORPAY_SECRET_ID
 });
 
-exports.purchaseCourse = async (req, res) => {
+exports.createPayment = async (req, res) => {
     try {
         // Validate body
         const { error } = purchaseCourseValidation(req.body);
@@ -60,7 +60,7 @@ exports.purchaseCourse = async (req, res) => {
     }
 };
 
-app.post('/verifyPurchase', async (req, res) => {
+exports.verifyPayment = async (req, res) => {
     try {
         // Validate body
         const { error } = verifyPaymentValidation(req.body);
@@ -105,4 +105,4 @@ app.post('/verifyPurchase', async (req, res) => {
     catch (err) {
         res.status(500).send({ message: err.message });
     }
-});
+};

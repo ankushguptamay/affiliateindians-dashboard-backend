@@ -126,13 +126,13 @@ db.userWallet.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 // db.user.hasMany(db.userAccountDetail, { foreignKey: "userId" });
 // db.userAccountDetail.belongsTo(db.user, { foreignKey: "userId" });
 
-queryInterface.addColumn("user_courses", "amount", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.addColumn("user_courses", "currency", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.addColumn("user_courses", "receipt", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.addColumn("user_courses", "razorpayOrderId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.addColumn("user_courses", "razorpayPaymentId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.addColumn("user_courses", "razorpayTime", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.addColumn("user_courses", "status", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.addColumn("user_courses", "verify", { type: DataTypes.BOOLEAN, defaultValue: false }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.addColumn("user_courses", "amount", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.addColumn("user_courses", "currency", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.addColumn("user_courses", "receipt", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.addColumn("user_courses", "razorpayOrderId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.addColumn("user_courses", "razorpayPaymentId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.addColumn("user_courses", "razorpayTime", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.addColumn("user_courses", "status", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.addColumn("user_courses", "verify", { type: DataTypes.BOOLEAN, defaultValue: false }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 module.exports = db;
