@@ -5,6 +5,7 @@ const Course = db.course;
 const { userRegistration, userLogin, changePassword } = require("../../Middlewares/Validate/validateUser");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { Op } = require('sequelize');
 
 // create
 // login
@@ -185,56 +186,6 @@ exports.findUser = async (req, res) => {
     }
 };
 
-// exports.findAllUserForOnlyBulkCheck = async (req, res) => {
-//     try {
-//         const users = await User.findAll({
-//             include: [{
-//                 model: User_Course,
-//                 as: "user_courses"
-//             }]
-//         });
-//         let OneCount = 0;
-//         let TwoCount = 0;
-//         let ThreeCount = 0;
-//         let FourCount = 0;
-//         let FiveCount = 0;
-//         let SixCount = 0;
-//         let SevenCount = 0;
-//         let EightCount = 0;
-//         for (let i = 0; i < users.length; i++) {
-//             const course = users[i].user_courses;
-//             // console.log(course);
-//             if (course.length === 1) {
-//                 OneCount = OneCount + 1;
-//             } else if (course.length === 2) {
-//                 TwoCount = TwoCount + 1;
-//             } else if (course.length === 3) {
-//                 ThreeCount = ThreeCount + 1;
-//             } else if (course.length === 4) {
-//                 FourCount = FourCount + 1;
-//             } else if (course.length === 5) {
-//                 FiveCount = FiveCount + 1;
-//             } else if (course.length === 6) {
-//                 SixCount = SixCount + 1;
-//             } else if (course.length === 7) {
-//                 SevenCount = SevenCount + 1;
-//             } else if (course.length === 8) {
-//                 EightCount = EightCount + 1;
-//             }
-//         }
-
-//         const data = `${OneCount} One, ${TwoCount} Two, ${ThreeCount} Three, ${FourCount} Four, ${FiveCount} Five, ${SixCount} Six, ${SevenCount} Seven, ${EightCount} Eight`;
-//         res.status(200).send({
-//             success: true,
-//             message: `All User fetched successfully!`,
-//             data: data
-//         });
-//     } catch (err) {
-//         console.log(err);
-//         res.status(500).send(err);
-//     }
-// };
-
 // exports.delete = async (req, res) => {
 //     try {
 //         const id = req.params.id;
@@ -285,3 +236,161 @@ exports.findUser = async (req, res) => {
 //         res.status(500).send(err);
 //     }
 // };
+
+exports.findUserForSuperAdmin = async (req, res) => {
+    try {
+        const { page, limit, search, courseId } = req.query;
+        // Pagination
+        const recordLimit = parseInt(limit) || 10;
+        let offSet = 0;
+        let currentPage = 1;
+        if (page) {
+            offSet = (parseInt(page) - 1) * recordLimit;
+            currentPage = parseInt(page);
+        }
+        // Search 
+        const condition = [];
+        if (search) {
+            condition.push({
+                [Op.or]: [
+                    { name: { [Op.substring]: search } },
+                    { mobileNumber: { [Op.substring]: search } },
+                    { email: { [Op.substring]: search } }
+                ]
+            })
+        }
+        // Filter by courseID
+        const userIdArray = [];
+        if (courseId) {
+            const association = await User_Course.findAll({
+                where: {
+                    courseId: courseId
+                },
+                order: [
+                    ['createdAt', 'DESC']
+                ]
+            });
+            for (let i = 0; i < association.length; i++) {
+                userIdArray.push(association[i].userId);
+            }
+            condition.push({ id: userIdArray });
+        }
+        // Count All User
+        const totalUser = await User.count({
+            where: {
+                [Op.and]: condition
+            }
+        });
+        const user = await User.findAll({
+            where: {
+                [Op.and]: condition
+            },
+            limit: recordLimit,
+            offset: offSet,
+            order: [
+                ['createdAt', 'DESC']
+            ]
+        });
+        res.status(200).send({
+            success: true,
+            message: `Users fetched successfully!`,
+            totalPage: Math.ceil(totalUser / recordLimit),
+            currentPage: currentPage,
+            data: user
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+};
+
+exports.findUserForAdmin = async (req, res) => {
+    try {
+        const { page, limit, search, courseId } = req.query;
+        // Pagination
+        const recordLimit = parseInt(limit) || 10;
+        let offSet = 0;
+        let currentPage = 1;
+        if (page) {
+            offSet = (parseInt(page) - 1) * recordLimit;
+            currentPage = parseInt(page);
+        }
+        // Search 
+        const condition = [];
+        if (search) {
+            condition.push({
+                [Op.or]: [
+                    { name: { [Op.substring]: search } },
+                    { mobileNumber: { [Op.substring]: search } },
+                    { email: { [Op.substring]: search } }
+                ]
+            })
+        }
+        // Only that user who purchase admin course
+        const userIdArray = [];
+        let courseCondition;
+        // Filter by courseID
+        if (courseId) {
+            courseCondition = {
+                id: courseId,
+                adminId: req.admin.id
+            }
+        } else {
+            courseCondition = {
+                adminId: req.admin.id
+            }
+        }
+        const allAdminCourse = await Course.findAll({
+            where: courseCondition,
+            order: [
+                ['createdAt', 'DESC']
+            ]
+        });
+        const courseIdArray = [];
+        for (let i = 0; i < allAdminCourse.length; i++) {
+            courseIdArray.push(allAdminCourse[i].id);
+        }
+        if (courseIdArray.length > 0) {
+            const association = await User_Course.findAll({
+                where: {
+                    courseId: courseIdArray
+                },
+                order: [
+                    ['createdAt', 'DESC']
+                ]
+            });
+            for (let i = 0; i < association.length; i++) {
+                userIdArray.push(association[i].userId);
+            }
+            condition.push({ id: userIdArray });
+        } else {
+            condition.push({ id: userIdArray });
+        }
+        // Count All User
+        const totalUser = await User.count({
+            where: {
+                [Op.and]: condition
+            }
+        });
+        const user = await User.findAll({
+            where: {
+                [Op.and]: condition
+            },
+            limit: recordLimit,
+            offset: offSet,
+            order: [
+                ['createdAt', 'DESC']
+            ]
+        });
+        res.status(200).send({
+            success: true,
+            message: `Users fetched successfully!`,
+            totalPage: Math.ceil(totalUser / recordLimit),
+            currentPage: currentPage,
+            data: user
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+};

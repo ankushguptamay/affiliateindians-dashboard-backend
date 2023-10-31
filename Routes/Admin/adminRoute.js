@@ -17,6 +17,8 @@ const { addBanner, updateBanner, addPDF, hardDeletePDF, addResource, hardDeleteR
 const { addCommentForAdmin, approveComment, hardDeleteCommentForAdmin, getCommentForAdmin } = require('../../Controllers/Admin/AddCourse/videoCommentController');
 // Teacher
 const { registerTeacher } = require("../../Controllers/Admin/Teacher/teacherController");
+// User
+const { findUserForAdmin } = require("../../Controllers/User/user");
 
 //middleware
 const multer = require('multer');
@@ -76,5 +78,8 @@ router.post("/addComment/:lessonVideoId", verifyAdminToken, isAdmin, uploadImage
 router.get("/comment/:lessonVideoId", verifyAdminToken, isAdmin, getCommentForAdmin);
 router.delete("/hardDeleteComment/:id", verifyAdminToken, isAdmin, hardDeleteCommentForAdmin);
 router.put("/approveComment/:id", verifyAdminToken, isAdmin, approveComment);
+
+// User
+router.get("/myUsers", verifyAdminToken, isAdmin, findUserForAdmin);
 
 module.exports = router;

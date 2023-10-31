@@ -5,18 +5,18 @@ const User_Course = db.user_course;
 const Course = db.course;
 const User = db.user;
 
-// SUPER AFFILIATE MEMBERSHIP
-// AFFILIATE INDIANS BUSINESS BUILDER CHALLENGE
 // 3 STEP HIGH TICKET AFFILIATE SYSTEM
-// EXPERT MEMBERSHIP
-// YOUR BONUSES
+// AFFILIATE INDIANS BUSINESS BUILDER CHALLENGE
 // BEGINNER MEMBERSHIP
-// PRO MEMBERSHIP
 // CLICKBANK MASTERY
+// EXPERT MEMBERSHIP
+// PRO MEMBERSHIP
+// SUPER AFFILIATE MEMBERSHIP
+// YOUR BONUSES
 
 const getData = () => {
     return new Promise(async (resolve, reject) => {
-        fs.readFile(__dirname + "/../../Data/SAM.json", function (err, data) {
+        fs.readFile(__dirname + "/../../Data/3SHTAS.json", function (err, data) {
             if (err) {
                 reject(err);
             } else {
@@ -31,7 +31,7 @@ exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
         const obj = await getData();
         let newRegister = 0;
         let oldRegister = 0;
-        const Title = 'SUPER AFFILIATE MEMBERSHIP';
+        const Title = '3 STEP HIGH TICKET AFFILIATE SYSTEM';
         for (let i = 0; i < obj.length; i++) {
             const isUser = await User.findOne({ where: { email: obj[i].email } });
             if (!isUser) {
@@ -68,6 +68,55 @@ exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
         });
     }
     catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+};
+
+exports.findAllUserForOnlyBulkCheck = async (req, res) => {
+    try {
+        const users = await User.findAll({
+            include: [{
+                model: User_Course,
+                as: "user_courses"
+            }]
+        });
+        let OneCount = 0;
+        let TwoCount = 0;
+        let ThreeCount = 0;
+        let FourCount = 0;
+        let FiveCount = 0;
+        let SixCount = 0;
+        let SevenCount = 0;
+        let EightCount = 0;
+        for (let i = 0; i < users.length; i++) {
+            const course = users[i].user_courses;
+            // console.log(course);
+            if (course.length === 1) {
+                OneCount = OneCount + 1;
+            } else if (course.length === 2) {
+                TwoCount = TwoCount + 1;
+            } else if (course.length === 3) {
+                ThreeCount = ThreeCount + 1;
+            } else if (course.length === 4) {
+                FourCount = FourCount + 1;
+            } else if (course.length === 5) {
+                FiveCount = FiveCount + 1;
+            } else if (course.length === 6) {
+                SixCount = SixCount + 1;
+            } else if (course.length === 7) {
+                SevenCount = SevenCount + 1;
+            } else if (course.length === 8) {
+                EightCount = EightCount + 1;
+            }
+        }
+        const data = `${OneCount} One, ${TwoCount} Two, ${ThreeCount} Three, ${FourCount} Four, ${FiveCount} Five, ${SixCount} Six, ${SevenCount} Seven, ${EightCount} Eight`;
+        res.status(200).send({
+            success: true,
+            message: `All User fetched successfully!`,
+            data: data
+        });
+    } catch (err) {
         console.log(err);
         res.status(500).send(err);
     }

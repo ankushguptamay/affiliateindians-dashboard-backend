@@ -13,6 +13,9 @@ const { createLessonQuiz, getAllQuizByLessonId, hardDeleteLessonQuiz, updateLess
 const { addBanner, updateBanner, addPDF, hardDeletePDF, addResource, hardDeleteResource } = require('../../Controllers/Admin/AddCourse/lessonFileController');
 const { addCommentForAdmin, approveComment, hardDeleteCommentForAdmin, getCommentForAdmin } = require('../../Controllers/Admin/AddCourse/videoCommentController');
 
+const { findUserForSuperAdmin, findUserForAdmin } = require("../../Controllers/User/user");
+const { bulkRegisterUserAndCreateCourseAndAssign, findAllUserForOnlyBulkCheck } = require("../../Controllers/User/bulk");
+
 //middleware
 const multer = require('multer');
 const upload = multer();
@@ -66,5 +69,13 @@ router.post("/addComment/:lessonVideoId", verifyAdminToken, isSuperAdmin, upload
 router.get("/comment/:lessonVideoId", verifyAdminToken, isSuperAdmin, getCommentForAdmin);
 router.delete("/hardDeleteComment/:id", verifyAdminToken, isSuperAdmin, hardDeleteCommentForAdmin);
 router.put("/approveComment/:id", verifyAdminToken, isSuperAdmin, approveComment);
+
+// User
+router.get("/users", verifyAdminToken, isSuperAdmin, findUserForSuperAdmin);
+router.get("/myUsers", verifyAdminToken, isSuperAdmin, findUserForAdmin);
+
+// Bulk
+router.post("/bulkRegister", verifyAdminToken, isSuperAdmin, bulkRegisterUserAndCreateCourseAndAssign);
+router.get("/bulkCheck", verifyAdminToken, isSuperAdmin, findAllUserForOnlyBulkCheck);
 
 module.exports = router;

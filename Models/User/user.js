@@ -31,6 +31,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     password: {
       type: DataTypes.STRING,
+    },
+    joinThrough: {
+      type: DataTypes.STRING
     }
   }, {
     paranoid: true
