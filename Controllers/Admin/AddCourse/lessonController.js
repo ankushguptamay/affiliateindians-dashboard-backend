@@ -52,7 +52,7 @@ exports.getLessonByLessonIdForAdmin = async (req, res) => {
         const lesson = await Lesson.findOne({
             where: {
                 id: lessonId,
-                 adminId: req.admin.id
+                adminId: req.admin.id
             },
             include: [{
                 model: LessonFile,

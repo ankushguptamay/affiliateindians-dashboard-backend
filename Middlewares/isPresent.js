@@ -4,7 +4,7 @@ const User = db.user;
 
 exports.isAdmin = async (req, res, next) => {
     try {
-        const adminTag = toUpperCase(req.admin.adminTag);
+        const adminTag = (req.admin.adminTag).toUpperCase();
         if (adminTag !== "ADMIN") {
             return res.status(400).send({ message: "Unauthorized!" });
         }
@@ -29,7 +29,7 @@ exports.isAdmin = async (req, res, next) => {
 
 exports.isSuperAdmin = async (req, res, next) => {
     try {
-        const adminTag = toUpperCase(req.admin.adminTag);
+        const adminTag = (req.admin.adminTag).toUpperCase();
         if (adminTag !== "SUPERADMIN") {
             return res.status(400).send({ message: "Unauthorized!" });
         }

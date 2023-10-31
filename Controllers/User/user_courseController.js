@@ -60,8 +60,6 @@ exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
                 if (!isUserCourse) {
                     await User_Course.create({ courseId: isCourse.id, userId: isUser.id });
                 }
-
-
             }
         }
         res.status(201).send({

@@ -4,7 +4,8 @@ const Lesson = db.lesson;
 const LessonFile = db.lessonFile;
 const LessonVideo = db.lessonVideo;
 const VideoComment = db.videoComment;
-const { deleteSingleFile, deleteMultiFile } = require("../../../Util/deleteFile")
+const { deleteSingleFile, deleteMultiFile } = require("../../../Util/deleteFile");
+const { courseValidation } = require("../../../Middlewares/Validate/validateCourse");
 const axios = require('axios');
 const { Op } = require('sequelize');
 
@@ -21,15 +22,14 @@ const { Op } = require('sequelize');
 
 exports.createCourse = async (req, res) => {
     try {
-        const { title, subTitle, categories, authorName } = req.body;
-        if (!title) {
-            return res.status(400).send({
-                success: false,
-                message: "Course title should be present!"
-            });
+        // Validate Body
+        const { error } = courseValidation(req.body);
+        if (error) {
+            return res.status(400).send(error.details[0].message);
         }
-        //Always unique title
-        const isCourse = await Course.findOne({ where: { title: title } });
+        const { title } = req.body;
+        // Always unique title
+        const isCourse = await Course.findOne({ where: { title: title.toUpperCase() } });
         if (isCourse) {
             return res.status(400).send({
                 success: false,
@@ -48,14 +48,10 @@ exports.createCourse = async (req, res) => {
             data: { name: title }
         };
         const response = await axios.request(createVideoLibrary);
-        console.log(response);
         // console.log(response);
         // Store in database  
         await Course.create({
             title: title,
-            subTitle: subTitle,
-            authorName: authorName,
-            categories: categories,
             BUNNY_VIDEO_LIBRARY_ID: response.data.Id,
             BUNNY_LIBRARY_API_KEY: response.data.ApiKey,
             adminId: req.admin.id
@@ -66,7 +62,6 @@ exports.createCourse = async (req, res) => {
         });
     }
     catch (err) {
-        // console.log(err);
         res.status(500).send({
             success: false,
             err: err
