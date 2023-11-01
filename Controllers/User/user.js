@@ -58,8 +58,8 @@ exports.create = async (req, res) => {
             userId: user.id
         });
         const data = {
-            id: isUser.id,
-            email: isUser.email
+            id: user.id,
+            email: user.email
         }
         const authToken = jwt.sign(data, process.env.JWT_SECRET_KEY_USER);
         res.status(201).send({
