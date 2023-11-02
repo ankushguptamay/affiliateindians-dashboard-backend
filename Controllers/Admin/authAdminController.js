@@ -1,5 +1,6 @@
 const db = require('../../Models');
 const Admin = db.admin;
+const AdminWallet = db.adminWallet;
 const { adminLogin, adminRegistration } = require("../../Middlewares/Validate/validateAdmin");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -52,13 +53,17 @@ exports.registerAdmin = async (req, res) => {
         const admin = await Admin.create({
             name: name,
             email: email,
-            password: bcPassword
+            password: bcPassword,
+            adminCode: code
+        });
+        // Creating Wallet
+        await AdminWallet.create({
+            adminId: admin.id
         });
         const data = {
             id: admin.id,
             email: admin.email,
-            adminTag: admin.adminTag,
-            adminCode: code
+            adminTag: admin.adminTag
         }
         const authToken = jwt.sign(data, process.env.JWT_SECRET_KEY_ADMIN);
         res.status(201).send({

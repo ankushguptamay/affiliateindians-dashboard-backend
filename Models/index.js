@@ -29,6 +29,7 @@ db.sequelize = sequelize;
 
 // Admin
 db.admin = require('./Admin/admin')(sequelize, Sequelize);
+db.adminWallet = require('./Admin/adminWalletModel.js')(sequelize, Sequelize);
 
 // Admin AddCourse
 db.course = require('./Admin/AddCourse/courseModel.js')(sequelize, Sequelize);
@@ -70,7 +71,11 @@ db.admin.hasMany(db.template, { foreignKey: "superAdminId" });
 
 // Admin Teacher Association
 db.admin.hasMany(db.teacher, { foreignKey: "adminId", as: "teacher" });
-db.teacher.belongsTo(db.admin, { foreignKey: "adminId", as: "admin" })
+db.teacher.belongsTo(db.admin, { foreignKey: "adminId", as: "admin" });
+
+// Admin Teacher Association
+db.admin.hasOne(db.adminWallet, { foreignKey: "adminId", as: "wallet" });
+db.adminWallet.belongsTo(db.admin, { foreignKey: "adminId", as: "admin" });
 
 // Course Association
 db.course.hasMany(db.section, { foreignKey: "courseId", as: "sections", onDelete: "CASCADE" });
@@ -120,14 +125,14 @@ db.course.hasMany(db.user_course, { foreignKey: "courseId", as: "user_courses" }
 db.user_course.belongsTo(db.course, { foreignKey: "courseId", as: "course" });
 
 // User Association with wallet
-db.user.hasMany(db.userWallet, { foreignKey: "userId", as: "wallet" });
+db.user.hasOne(db.userWallet, { foreignKey: "userId", as: "wallet" });
 db.userWallet.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 
 // db.user.hasMany(db.userAccountDetail, { foreignKey: "userId" });
 // db.userAccountDetail.belongsTo(db.user, { foreignKey: "userId" });
 
-queryInterface.addColumn("courses", "courseCode", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.addColumn("users", "userCode", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.addColumn("admins", "adminCode", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.addColumn("courses", "courseCode", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.addColumn("users", "userCode", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.addColumn("admins", "adminCode", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 module.exports = db;
