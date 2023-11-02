@@ -26,6 +26,26 @@ exports.registerAdmin = async (req, res) => {
                 message: "Admin already registered"
             });
         }
+        // Generating Code
+        let code;
+        const isAdminCode = await Admin.findAll({
+            order: [
+                ['createdAt', 'ASC']
+            ],
+            paranoid: false
+        });
+        if (isAdminCode.length == 0) {
+            const year = new Date().toISOString().slice(2, 4);
+            const month = new Date().toISOString().slice(5, 7);
+            code = "AFF" + year + month + 1000;
+        } else {
+            const year = new Date().toISOString().slice(2, 4);
+            const month = new Date().toISOString().slice(5, 7);
+            let lastCode = isAdminCode[isAdminCode.length - 1];
+            let lastDigits = lastCode.adminCode.substring(7);
+            let incrementedDigits = parseInt(lastDigits, 10) + 1;
+            code = "AFF" + year + month + incrementedDigits;
+        }
         const salt = await bcrypt.genSalt(10);
         const bcPassword = await bcrypt.hash(password, salt);
 
@@ -37,7 +57,8 @@ exports.registerAdmin = async (req, res) => {
         const data = {
             id: admin.id,
             email: admin.email,
-            adminTag: admin.adminTag
+            adminTag: admin.adminTag,
+            adminCode: code
         }
         const authToken = jwt.sign(data, process.env.JWT_SECRET_KEY_ADMIN);
         res.status(201).send({

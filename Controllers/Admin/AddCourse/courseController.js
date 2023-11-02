@@ -42,6 +42,26 @@ exports.createCourse = async (req, res) => {
                 message: "This course title is already present!"
             })
         }
+        // Generating Code
+        let code;
+        const isCourseCode = await Course.findAll({
+            order: [
+                ['createdAt', 'ASC']
+            ],
+            paranoid: false
+        });
+        if (isCourseCode.length == 0) {
+            const year = new Date().toISOString().slice(2, 4);
+            const month = new Date().toISOString().slice(5, 7);
+            code = "AFF" + year + month + 1000;
+        } else {
+            const year = new Date().toISOString().slice(2, 4);
+            const month = new Date().toISOString().slice(5, 7);
+            let lastCode = isCourseCode[isCourseCode.length - 1];
+            let lastDigits = lastCode.courseCode.substring(7);
+            let incrementedDigits = parseInt(lastDigits, 10) + 1;
+            code = "AFF" + year + month + incrementedDigits;
+        }
         // Create video library on bunny
         const createVideoLibrary = {
             method: "POST",
@@ -60,7 +80,8 @@ exports.createCourse = async (req, res) => {
             title: title,
             BUNNY_VIDEO_LIBRARY_ID: response.data.Id,
             BUNNY_LIBRARY_API_KEY: response.data.ApiKey,
-            adminId: req.admin.id
+            adminId: req.admin.id,
+            courseCode:code
         });
         res.status(201).send({
             success: true,

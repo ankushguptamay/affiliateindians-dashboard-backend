@@ -20,6 +20,9 @@ module.exports = (sequelize, DataTypes) => {
         isIn: [['SUPERADMIN', 'ADMIN']]
       },
       defaultValue: 'ADMIN'
+    },
+    adminCode: {
+      type: DataTypes.STRING
     }
   }, {
     paranoid: true

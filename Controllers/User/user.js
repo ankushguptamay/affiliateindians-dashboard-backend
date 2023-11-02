@@ -40,8 +40,29 @@ exports.create = async (req, res) => {
                 message: "User is present! Login.."
             });
         }
+        // Generating Code
+        let code;
+        const isUserCode = await User.findAll({
+            order: [
+                ['createdAt', 'ASC']
+            ],
+            paranoid: false
+        });
+        if (isUserCode.length == 0) {
+            const year = new Date().toISOString().slice(2, 4);
+            const month = new Date().toISOString().slice(5, 7);
+            code = "AFF" + year + month + 1000;
+        } else {
+            const year = new Date().toISOString().slice(2, 4);
+            const month = new Date().toISOString().slice(5, 7);
+            let lastCode = isUserCode[isUserCode.length - 1];
+            let lastDigits = lastCode.userCode.substring(7);
+            let incrementedDigits = parseInt(lastDigits, 10) + 1;
+            code = "AFF" + year + month + incrementedDigits;
+        }
         const salt = await bcrypt.genSalt(10);
         const bcPassword = await bcrypt.hash(req.body.password, salt);
+        // Store in database
         const user = await User.create({
             name: req.body.name,
             email: req.body.email,
@@ -51,7 +72,8 @@ exports.create = async (req, res) => {
             state: req.body.state,
             country: req.body.country,
             pinCode: req.body.pinCode,
-            password: bcPassword
+            password: bcPassword,
+            userCode: code
         });
         // Creating Wallet
         await UserWallet.create({

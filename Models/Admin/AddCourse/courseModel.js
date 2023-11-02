@@ -51,6 +51,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         tag: {
             type: DataTypes.STRING
+        },
+        courseCode: {
+            type: DataTypes.STRING
         }
     }, {
         paranoid: true

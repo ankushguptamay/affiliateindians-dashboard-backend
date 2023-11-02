@@ -34,7 +34,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     joinThrough: {
       type: DataTypes.STRING
-    }
+    },
+    userCode: {
+      type: DataTypes.STRING
+  }
   }, {
     paranoid: true
   });
