@@ -92,6 +92,9 @@ exports.getAllSectionByCourseIdForUser = async (req, res) => {
             },
             include: [{
                 model: Lesson,
+                where: {
+                    isPublic: true
+                },
                 as: "lessons",
                 attributes: ["id", "lessonName"],
                 order: [

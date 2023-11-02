@@ -4,7 +4,7 @@ const LessonFile = db.lessonFile;
 const LessonVideo = db.lessonVideo;
 const LessonQuiz = db.lessonQuiz;
 const User_Course = db.user_course;
-const VideoComment = db.videoComment;
+const Section = db.section;
 const { deleteSingleFile, deleteMultiFile } = require("../../../Util/deleteFile");
 const axios = require('axios');
 
@@ -16,15 +16,20 @@ const axios = require('axios');
 
 exports.createLesson = async (req, res) => {
     try {
-        const { lessonName, codeExample, customCode, richTextEditor, sectionId, courseId } = req.body;
-        if (lessonName && sectionId && courseId) {
+        const { lessonName, codeExample, customCode, richTextEditor, sectionId } = req.body;
+        const section = await Section.findOne({
+            where: {
+                id: sectionId
+            }
+        });
+        if (lessonName && sectionId) {
             await Lesson.create({
                 lessonName: lessonName,
                 codeExample: codeExample,
                 customCode: customCode,
                 richTextEditor: richTextEditor,
                 sectionId: sectionId,
-                courseId: courseId,
+                courseId: section.courseId,
                 adminId: req.admin.id
             });
             res.status(201).send({
@@ -34,7 +39,7 @@ exports.createLesson = async (req, res) => {
         } else {
             res.status(400).send({
                 success: false,
-                message: `LessonName, sectionId, curseId should present!`
+                message: `LessonName and sectionId should be present!`
             });
         }
     }
