@@ -17,7 +17,13 @@ exports.uploadLessonVideo = async (req, res) => {
         if (!req.file) {
             return res.status(400).send({
                 success: false,
-                message: "Select a video!"
+                message: "Select a file!"
+            });
+        }
+        if ((req.file.mimetype).startsWith("video") === false) {
+            return res.status(400).send({
+                success: false,
+                message: "Select only video!"
             });
         }
         // find lesson

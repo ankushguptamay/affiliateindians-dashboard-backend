@@ -4,6 +4,7 @@ const AdminWallet = db.adminWallet;
 const { suparAdminRegistration, superAdminLogin } = require("../../Middlewares/Validate/validateSuperAdmin");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const { Op } = require('sequelize');
 
 //register Super Admin
 // exports.registerAdmin = async (req, res) => {
@@ -28,24 +29,33 @@ const jwt = require('jsonwebtoken');
 //             });
 //         }
 //         // Generating Code
+//         // 1.Today Date
+//         const date = JSON.stringify(new Date((new Date).getTime() - (24 * 60 * 60 * 1000)));
+//         const today = `${date.slice(1, 12)}18:30:00.000Z`;
+//         // 2.Today Day
+//         const Day = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+//         const dayNumber = (new Date).getDay();
+//         // Get All Today Code
 //         let code;
 //         const isAdminCode = await Admin.findAll({
+//             where: {
+//                 createdAt: { [Op.gt]: today }
+//             },
 //             order: [
 //                 ['createdAt', 'ASC']
 //             ],
 //             paranoid: false
 //         });
-//         if (isAdminCode.length == 0) {
-//             const year = new Date().toISOString().slice(2, 4);
-//             const month = new Date().toISOString().slice(5, 7);
-//             code = "AFF" + year + month + 1000;
+//         const day = new Date().toISOString().slice(8, 10);
+//         const year = new Date().toISOString().slice(2, 4);
+//         const month = new Date().toISOString().slice(5, 7);
+//         if (isUserCode.length == 0) {
+//             code = "AFAD" + day + month + year + Day[dayNumber] + 1;
 //         } else {
-//             const year = new Date().toISOString().slice(2, 4);
-//             const month = new Date().toISOString().slice(5, 7);
 //             let lastCode = isAdminCode[isAdminCode.length - 1];
-//             let lastDigits = lastCode.adminCode.substring(7);
+//             let lastDigits = lastCode.adminCode.substring(13);
 //             let incrementedDigits = parseInt(lastDigits, 10) + 1;
-//             code = "AFF" + year + month + incrementedDigits;
+//             code = "AFAD" + day + month + year + Day[dayNumber] + incrementedDigits;
 //         }
 //         const salt = await bcrypt.genSalt(10);
 //         const bcPassword = await bcrypt.hash(password, salt);
