@@ -30,6 +30,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false
     },
+    referalId: {
+      type: DataTypes.STRING
+    }
   }, {
     paranoid: true
   });

@@ -71,3 +71,25 @@ exports.isUser = async (req, res, next) => {
         res.status(500).send(err);
     }
 }
+
+exports.isUserForPayment = async (req, res, next) => {
+    try {
+        if (req.user) {
+            const email = req.user.email;
+            const id = req.user.id;
+            const isUser = await User.findOne({
+                where: {
+                    id: id,
+                    email: email
+                }
+            });
+            if (!isUser) {
+                return res.status(400).send({ message: "User is not present!" });
+            };
+        }
+        next();
+    } catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+}

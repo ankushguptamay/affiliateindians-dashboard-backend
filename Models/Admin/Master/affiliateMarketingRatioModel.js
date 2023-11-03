@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING
         },
         ratioName: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING //their should GENERAL  applicable for all
         },
         ratioCode: {
             type: DataTypes.STRING

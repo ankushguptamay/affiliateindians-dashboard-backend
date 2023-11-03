@@ -10,8 +10,8 @@ const { getAllVideoByLessonId } = require('../../Controllers/Admin/AddCourse/les
 const { addCommentForUser, hardDeleteCommentForUser, getCommentForUser } = require('../../Controllers/Admin/AddCourse/videoCommentController');
 const { createPayment, verifyPayment } = require('../../Controllers/User/purchaseCourseController');
 // Middleware
-const { verifyUserToken } = require('../../Middlewares/varifyToken');
-const { isUser } = require('../../Middlewares/isPresent');
+const { verifyUserToken, verifyUserTokenForPayment } = require('../../Middlewares/varifyToken');
+const { isUser, isUserForPayment } = require('../../Middlewares/isPresent');
 const uploadImageAndPDF = require('../../Middlewares/UploadFile/uploadImageAndPDF');
 
 // User
@@ -34,7 +34,7 @@ router.get("/comment/:lessonVideoId", verifyUserToken, isUser, getCommentForUser
 router.delete("/hardDeleteComment/:id", verifyUserToken, isUser, hardDeleteCommentForUser);
 
 // Purchase
-router.post("/createPayment/:id", verifyUserToken, isUser, createPayment);
+router.post("/createPayment/:id", verifyUserTokenForPayment, isUserForPayment, createPayment);
 router.post("/verifyPayment", verifyPayment);
 
 module.exports = router;

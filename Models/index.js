@@ -135,8 +135,8 @@ db.userWallet.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 // db.user.hasMany(db.userAccountDetail, { foreignKey: "userId" });
 // db.userAccountDetail.belongsTo(db.user, { foreignKey: "userId" });
 
-queryInterface.addColumn("courses", "ratioId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.addColumn("users", "referalId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.dropTable("templates").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.addColumn("courses", "ratioId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("user_courses", "referalId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.dropTable("templates").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 module.exports = db;
