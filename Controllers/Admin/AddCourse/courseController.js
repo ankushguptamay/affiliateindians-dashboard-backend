@@ -28,7 +28,7 @@ exports.createCourse = async (req, res) => {
         if (error) {
             return res.status(400).send(error.details[0].message);
         }
-        const { title } = req.body;
+        const { title, ratioId } = req.body;
         // Always unique title
         const isCourse = await Course.findOne({
             where: {
@@ -42,7 +42,7 @@ exports.createCourse = async (req, res) => {
                 message: "This course title is already present!"
             })
         }
-          // Generating Code
+        // Generating Code
         // 1.Today Date
         const date = JSON.stringify(new Date((new Date).getTime() - (24 * 60 * 60 * 1000)));
         const today = `${date.slice(1, 12)}18:30:00.000Z`;
@@ -90,7 +90,8 @@ exports.createCourse = async (req, res) => {
             BUNNY_VIDEO_LIBRARY_ID: response.data.Id,
             BUNNY_LIBRARY_API_KEY: response.data.ApiKey,
             adminId: req.admin.id,
-            courseCode:code
+            ratioId: ratioId,
+            courseCode: code
         });
         res.status(201).send({
             success: true,

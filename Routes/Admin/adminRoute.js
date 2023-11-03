@@ -5,6 +5,8 @@ const { registerAdmin, loginAdmin } = require('../../Controllers/Admin/authAdmin
 
 // Master
 const { getTemplate } = require('../../Controllers/Admin/Master/templateController');
+const { getTag } = require('../../Controllers/Admin/Master/tagController');
+const { getRatio } = require('../../Controllers/Admin/Master/affiliateMarketingRatioController');
 
 // Course
 const { createSection, getAllSectionByCourseIdForAdmin, publicSection } = require('../../Controllers/Admin/AddCourse/sectionControllers');
@@ -35,7 +37,14 @@ router.post("/register", registerAdmin);
 router.post("/login", loginAdmin);
 
 // Master
+//Template
 router.get("/templates", verifyAdminToken, isAdmin, getTemplate);
+
+//Tag
+router.get("/tags", verifyAdminToken, isAdmin, getTag);
+
+//Ratio
+router.get("/ratios", verifyAdminToken, isAdmin, getRatio);
 
 // Teacher
 // router.post("/registerTeacher", verifyAdminToken, isAdmin, registerTeacher);

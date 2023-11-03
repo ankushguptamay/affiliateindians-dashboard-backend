@@ -1,5 +1,6 @@
 const db = require('../../../Models');
 const Template = db.template;
+const { Op } = require('sequelize');
 const { deleteSingleFile } = require("../../../Util/deleteFile");
 
 exports.addTemplate = async (req, res) => {
@@ -15,7 +16,7 @@ exports.addTemplate = async (req, res) => {
             templateImage_Path: req.file.path,
             templateImage_OriginalName: req.file.originalname,
             templateImage_FileName: req.file.filename,
-            superAdminId: req.admin.id,
+            adminId: req.admin.id,
             template: template
         });
         res.status(201).send({
@@ -48,11 +49,17 @@ exports.getTemplate = async (req, res) => {
     }
 };
 
-exports.deleteTemplate = async (req, res) => {
+exports.hardDeleteTemplate = async (req, res) => {
     try {
+        const id = req.params.id;
+        const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
         const template = await Template.findOne({
             where: {
-                id: req.params.id
+                [Op.and]: condition
             }
         });
         if (!template) {

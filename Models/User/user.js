@@ -37,7 +37,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     userCode: {
       type: DataTypes.STRING
-  }
+    },
+    referalId: {
+      type: DataTypes.STRING
+    }
   }, {
     paranoid: true
   });

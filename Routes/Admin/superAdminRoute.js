@@ -2,7 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 const { registerAdmin, loginAdmin } = require('../../Controllers/Admin/authSuperAdminController');
-
+// Master
+const { getTemplate, addTemplate, hardDeleteTemplate } = require('../../Controllers/Admin/Master/templateController');
+const { getTag, hardDeleteTag, addTag } = require('../../Controllers/Admin/Master/tagController');
+const { getRatio, addRatio, hardDeleteRatio } = require('../../Controllers/Admin/Master/affiliateMarketingRatioController');
 // Course
 const { createSection, getAllSectionByCourseIdForAdmin, publicSection } = require('../../Controllers/Admin/AddCourse/sectionControllers');
 const { createLesson, getLessonByLessonIdForAdmin, publicLesson } = require('../../Controllers/Admin/AddCourse/lessonController');
@@ -29,6 +32,20 @@ const uploadImageAndPDF = require('../../Middlewares/UploadFile/uploadImageAndPD
 // Super Admin 
 // router.post("/register", registerAdmin);
 router.post("/login", loginAdmin);
+
+// Master
+//Template
+router.get("/templates", verifyAdminToken, isSuperAdmin, getTemplate);
+router.post("/addTemplate", verifyAdminToken, isSuperAdmin, addTemplate);
+router.delete("/hardDeleteTemplate/:id", verifyAdminToken, isSuperAdmin, hardDeleteTemplate);
+//Tag
+router.get("/tags", verifyAdminToken, isSuperAdmin, getTag);
+router.post("/addTag", verifyAdminToken, isSuperAdmin, addTag);
+router.delete("/hardDeleteTag/:id", verifyAdminToken, isSuperAdmin, hardDeleteTag);
+//Ratio
+router.get("/ratios", verifyAdminToken, isSuperAdmin, getRatio);
+router.post("/addRatio", verifyAdminToken, isSuperAdmin, addRatio);
+router.delete("/hardDeleteRatio/:id", verifyAdminToken, isSuperAdmin, hardDeleteRatio);
 
 // Course
 router.post("/createCourse", verifyAdminToken, isSuperAdmin, createCourse);

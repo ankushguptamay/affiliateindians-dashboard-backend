@@ -43,8 +43,10 @@ db.videoComment = require('./Admin/AddCourse/videoCommentModel.js')(sequelize, S
 // Teacher
 db.teacher = require('./Admin/Teacher/teacherModel.js')(sequelize, Sequelize);
 
-// Admin AddCourse
+// Master
 db.template = require('./Admin/Master/templateModel.js')(sequelize, Sequelize);
+db.affiliateMarketingRatio = require('./Admin/Master/affiliateMarketingRatioModel.js')(sequelize, Sequelize);
+db.tag = require('./Admin/Master/tagModel.js')(sequelize, Sequelize);
 
 // user
 db.user = require('./User/user.js')(sequelize, Sequelize);
@@ -67,7 +69,9 @@ db.admin.hasMany(db.lessonVideo, { foreignKey: "adminId" });
 db.admin.hasMany(db.lessonFile, { foreignKey: "adminId" });
 
 // Admin Master Association
-db.admin.hasMany(db.template, { foreignKey: "superAdminId" });
+db.admin.hasMany(db.template, { foreignKey: "adminId" });
+db.admin.hasMany(db.affiliateMarketingRatio, { foreignKey: "adminId" });
+db.admin.hasMany(db.tag, { foreignKey: "adminId" });
 
 // Admin Teacher Association
 db.admin.hasMany(db.teacher, { foreignKey: "adminId", as: "teacher" });
@@ -131,8 +135,8 @@ db.userWallet.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 // db.user.hasMany(db.userAccountDetail, { foreignKey: "userId" });
 // db.userAccountDetail.belongsTo(db.user, { foreignKey: "userId" });
 
-// queryInterface.addColumn("courses", "courseCode", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-// queryInterface.addColumn("users", "userCode", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-// queryInterface.addColumn("admins", "adminCode", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("courses", "ratioId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("users", "referalId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.dropTable("templates").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 module.exports = db;
