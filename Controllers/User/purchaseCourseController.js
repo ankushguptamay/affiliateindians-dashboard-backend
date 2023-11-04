@@ -204,9 +204,17 @@ exports.verifyPayment = async (req, res) => {
         if (razorpay_signature === generated_signature) {
             const purchase = await User_Course.findOne({
                 where: {
-                    razorpayOrderId: orderId
+                    razorpayOrderId: orderId,
+                    verify: false,
+                    status: "created"
                 }
             });
+            if (!purchase) {
+                return res.status(200).json({
+                    success: false,
+                    message: "Payment has been verified!"
+                });
+            }
             // Get Course
             const course = await Course.findOne({
                 where: {

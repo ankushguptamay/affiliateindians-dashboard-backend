@@ -228,6 +228,43 @@ exports.publicLesson = async (req, res) => {
     }
 };
 
+exports.unPublicLesson = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
+        const lesson = await Lesson.findOne({
+            where: {
+                [Op.and]: condition
+            }
+        });
+        if (!lesson) {
+            return res.status(400).send({
+                success: false,
+                message: "Lesson is not present!"
+            });
+        };
+        await lesson.update({
+            ...lesson,
+            isPublic: false
+        });
+        res.status(200).send({
+            success: true,
+            message: `Lesson publiced successfully!`
+        });
+    }
+    catch (err) {
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
+
+
 // exports.deleteLesson = async (req, res) => {
 //     try {
 //         const id = req.params.id;

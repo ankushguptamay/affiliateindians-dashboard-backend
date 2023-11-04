@@ -283,3 +283,39 @@ exports.publicSection = async (req, res) => {
         });
     }
 };
+
+exports.unPublicSection = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
+        const section = await Section.findOne({
+            where: {
+                [Op.and]: condition
+            }
+        });
+        if (!section) {
+            return res.status(400).send({
+                success: false,
+                message: "Section is not present!"
+            });
+        };
+        await section.update({
+            ...section,
+            isPublic: false
+        });
+        res.status(200).send({
+            success: true,
+            message: `Section unpubliced seccessfully!`
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};

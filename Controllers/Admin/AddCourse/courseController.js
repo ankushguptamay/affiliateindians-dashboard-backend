@@ -30,9 +30,10 @@ exports.createCourse = async (req, res) => {
         }
         const { title, ratioId } = req.body;
         // Always unique title
+        const courseTitle = title.toUpperCase();
         const isCourse = await Course.findOne({
             where: {
-                title: title.toUpperCase()
+                title: courseTitle
             },
             paranoid: false
         });
@@ -80,13 +81,13 @@ exports.createCourse = async (req, res) => {
                 "Content-Type": "application/json",
                 AccessKey: process.env.BUNNY_ACCOUNT_ACCESS_KEY,
             },
-            data: { name: title }
+            data: { name: courseTitle }
         };
         const response = await axios.request(createVideoLibrary);
         // console.log(response);
         // Store in database  
         await Course.create({
-            title: title,
+            title: courseTitle,
             BUNNY_VIDEO_LIBRARY_ID: response.data.Id,
             BUNNY_LIBRARY_API_KEY: response.data.ApiKey,
             adminId: req.admin.id,
@@ -625,6 +626,45 @@ exports.publicCourse = async (req, res) => {
         res.status(200).send({
             success: true,
             message: `Course publiced successfully!`
+        });
+    } catch (err) {
+        // console.log(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
+
+
+exports.unPublicCourse = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
+        // is course present
+        const course = await Course.findOne({
+            where: {
+                [Op.and]: condition
+            }
+        });
+        if (!course) {
+            return res.status(400).send({
+                success: false,
+                message: "Course is not present!"
+            });
+        }
+        // update isPublice
+        await course.update({
+            ...course,
+            isPublic: false
+        });
+        res.status(200).send({
+            success: true,
+            message: `Course unpubliced successfully!`
         });
     } catch (err) {
         // console.log(err);

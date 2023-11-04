@@ -9,10 +9,10 @@ const { getTag } = require('../../Controllers/Admin/Master/tagController');
 const { getRatio } = require('../../Controllers/Admin/Master/affiliateMarketingRatioController');
 
 // Course
-const { createSection, getAllSectionByCourseIdForAdmin, publicSection } = require('../../Controllers/Admin/AddCourse/sectionControllers');
-const { createLesson, getLessonByLessonIdForAdmin, publicLesson } = require('../../Controllers/Admin/AddCourse/lessonController');
+const { createSection, getAllSectionByCourseIdForAdmin, publicSection, unPublicSection } = require('../../Controllers/Admin/AddCourse/sectionControllers');
+const { createLesson, getLessonByLessonIdForAdmin, publicLesson, unPublicLesson } = require('../../Controllers/Admin/AddCourse/lessonController');
 const { createCourse, getCourseForAdmin, addOrUpdateAuthorImage, addOrUpdateCourseImage,
-    deleteAuthorImage, deleteCourseImage, publicCourse } = require('../../Controllers/Admin/AddCourse/courseController');
+    deleteAuthorImage, deleteCourseImage, publicCourse, unPublicCourse } = require('../../Controllers/Admin/AddCourse/courseController');
 const { uploadLessonVideo, hardDeleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
 const { createLessonQuiz, getAllQuizByLessonId, hardDeleteLessonQuiz, updateLessonQuiz } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
 const { addBanner, updateBanner, addPDF, hardDeletePDF, addResource, hardDeleteResource } = require('../../Controllers/Admin/AddCourse/lessonFileController');
@@ -55,16 +55,19 @@ router.get("/myCourses", verifyAdminToken, isAdmin, getCourseForAdmin);
 router.put("/addOrUpdateAuthorImage/:id", verifyAdminToken, isAdmin, uploadImage.single("authorImage"), addOrUpdateAuthorImage);
 router.put("/addOrUpdateCourseImage/:id", verifyAdminToken, isAdmin, uploadImage.single("courseImage"), addOrUpdateCourseImage);
 router.put("/publicCourse/:id", verifyAdminToken, isAdmin, publicCourse);
+router.put("/unPublicCourse/:id", verifyAdminToken, isAdmin, unPublicCourse);
 router.delete("/deleteAuthorImage/:id", verifyAdminToken, isAdmin, deleteAuthorImage);
 router.delete("/deleteCourseImage/:id", verifyAdminToken, isAdmin, deleteCourseImage);
 // Section
 router.post("/createSection", verifyAdminToken, isAdmin, createSection);
 router.get("/sections/:courseId", verifyAdminToken, isAdmin, getAllSectionByCourseIdForAdmin);
 router.put("/publicSection/:id", verifyAdminToken, isAdmin, publicSection);
+router.put("/unPublicSection/:id", verifyAdminToken, isAdmin, unPublicSection);
 // Lesson
 router.post("/createLesson", verifyAdminToken, isAdmin, createLesson);
 router.get("/lesson/:id", verifyAdminToken, isAdmin, getLessonByLessonIdForAdmin);
 router.put("/publicLesson/:id", verifyAdminToken, isAdmin, publicLesson);
+router.put("/unPublicLesson/:id", verifyAdminToken, isAdmin, unPublicLesson);
 // Video
 router.post("/uploadVideo/:lessonId", verifyAdminToken, isAdmin, upload.single("lessonVideo"), uploadLessonVideo);
 router.put("/addOrUpdateThumbNail/:id", verifyAdminToken, isAdmin, uploadImage.single("thumbnail"), addOrUpdateThumbNail);
