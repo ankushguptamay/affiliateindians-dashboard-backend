@@ -2,6 +2,7 @@ const { Op } = require('sequelize');
 const db = require('../../../Models');
 const Section = db.section
 const Lesson = db.lesson;
+const Course = db.course;
 const User_Course = db.user_course;
 const LessonFile = db.lessonFile;
 const LessonVideo = db.lessonVideo;
@@ -41,6 +42,12 @@ exports.getAllSectionByCourseIdForAdmin = async (req, res) => {
         if (req.admin.adminTag === "ADMIN") {
             condition.push({ adminId: req.admin.id });
         }
+        const course = await Course.findOne({
+            where: {
+                id: req.params.courseId
+            },
+            attributes: ["id", "title", "isPublic"]
+        });
         const section = await Section.findAll({
             where: {
                 [Op.and]: condition
@@ -48,7 +55,7 @@ exports.getAllSectionByCourseIdForAdmin = async (req, res) => {
             include: [{
                 model: Lesson,
                 as: "lessons",
-                attributes: ["id", "lessonName"],
+                attributes: ["id", "lessonName", "isPublic"],
                 order: [
                     ['createdAt', 'ASC']
                 ]
@@ -60,7 +67,8 @@ exports.getAllSectionByCourseIdForAdmin = async (req, res) => {
         res.status(200).send({
             success: true,
             message: "section fetched successfully!",
-            data: section
+            data: section,
+            course: course
         });
     } catch (err) {
         console.log(err);
@@ -85,6 +93,12 @@ exports.getAllSectionByCourseIdForUser = async (req, res) => {
                 message: "Purchase this course!"
             });
         }
+        const course = await Course.findOne({
+            where: {
+                id: req.params.courseId
+            },
+            attributes: ["id", "title", "isPublic"]
+        });
         const section = await Section.findAll({
             where: {
                 courseId: req.params.courseId,
@@ -96,7 +110,7 @@ exports.getAllSectionByCourseIdForUser = async (req, res) => {
                     isPublic: true
                 },
                 as: "lessons",
-                attributes: ["id", "lessonName"],
+                attributes: ["id", "lessonName", "isPublic"],
                 order: [
                     ['createdAt', 'ASC']
                 ]
@@ -108,7 +122,8 @@ exports.getAllSectionByCourseIdForUser = async (req, res) => {
         res.status(200).send({
             success: true,
             message: "section fetched successfully!",
-            data: section
+            data: section,
+            course: course
         });
     } catch (err) {
         console.log(err);

@@ -35,6 +35,7 @@ exports.createPayment = async (req, res) => {
                     id: userId
                 }
             });
+            // initiate payment
             razorpayInstance.orders.create({ amount, currency, receipt },
                 (err, order) => {
                     if (!err) {
@@ -144,7 +145,7 @@ exports.createPayment = async (req, res) => {
                 userCode: code,
                 referalId: referalId
             });
-            // Iniciate payment
+            // Initiate payment
             razorpayInstance.orders.create({ amount, currency, receipt },
                 (err, order) => {
                     if (!err) {
