@@ -7,6 +7,7 @@ const User_Course = db.user_course;
 const Section = db.section;
 const { deleteSingleFile, deleteMultiFile } = require("../../../Util/deleteFile");
 const axios = require('axios');
+const { Op } = require('sequelize');
 
 // createLesson lesson name is required
 // getLessonByLessonId
