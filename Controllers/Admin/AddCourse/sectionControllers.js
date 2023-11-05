@@ -58,7 +58,14 @@ exports.getAllSectionByCourseIdForAdmin = async (req, res) => {
                 attributes: ["id", "lessonName", "isPublic"],
                 order: [
                     ['createdAt', 'ASC']
-                ]
+                ],
+                include: [{
+                    model: LessonVideo,
+                    as: "lessonVideos",
+                    order: [
+                        ['createdAt', 'ASC']
+                    ]
+                }]
             }],
             order: [
                 ['createdAt', 'ASC']
@@ -113,7 +120,14 @@ exports.getAllSectionByCourseIdForUser = async (req, res) => {
                 attributes: ["id", "lessonName", "isPublic"],
                 order: [
                     ['createdAt', 'ASC']
-                ]
+                ],
+                include: [{
+                    model: LessonVideo,
+                    as: "lessonVideos",
+                    order: [
+                        ['createdAt', 'ASC']
+                    ]
+                }]
             }],
             order: [
                 ['createdAt', 'ASC']

@@ -190,7 +190,6 @@ exports.verifyPayment = async (req, res) => {
         if (error) {
             return res.status(400).send(error.details[0].message);
         }
-
         const { orderId, paymentId } = req.body;
         const razorpay_signature = req.headers['x-razorpay-signature'];
 
