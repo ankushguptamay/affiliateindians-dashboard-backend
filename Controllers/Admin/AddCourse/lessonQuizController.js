@@ -5,7 +5,7 @@ const Lesson = db.lesson;
 
 exports.createLessonQuiz = async (req, res) => {
     try {
-        const { quizQuestion, optionA, optionB, optionC, optionD } = req.body;
+        const { quizQuestion, optionA, optionB, optionC, optionD, answer } = req.body;
         const lessonId = req.params.lessonId;
         const lesson = await Lesson.findOne({ where: { id: lessonId } });
         await LessonQuiz.create({
@@ -17,6 +17,7 @@ exports.createLessonQuiz = async (req, res) => {
             courseId: lesson.courseId,
             sectionId: lesson.sectionId,
             lessonId: lessonId,
+            answer: answer,
             adminId: req.admin.id
         });
         res.status(201).send({
@@ -98,7 +99,7 @@ exports.updateLessonQuiz = async (req, res) => {
         if (req.admin.adminTag === "ADMIN") {
             condition.push({ adminId: adminId });
         }
-        const { quizQuestion, optionA, optionB, optionC, optionD } = req.body;
+        const { quizQuestion, optionA, optionB, optionC, optionD, answer } = req.body;
         const lessonQuiz = await LessonQuiz.findOne({
             where: {
                 [Op.and]: condition
@@ -116,7 +117,8 @@ exports.updateLessonQuiz = async (req, res) => {
             optionA: optionA,
             optionB: optionB,
             optionC: optionC,
-            optionD: optionD
+            optionD: optionD,
+            answer: answer
         });
         res.status(200).send({
             success: true,
