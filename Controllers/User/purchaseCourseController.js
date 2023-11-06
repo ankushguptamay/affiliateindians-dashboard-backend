@@ -185,13 +185,17 @@ exports.createPayment = async (req, res) => {
 
 exports.verifyPayment = async (req, res) => {
     try {
+        console.log(body);
+
         // Validate body
         const { error } = verifyPaymentValidation(req.body);
         if (error) {
             return res.status(400).send(error.details[0].message);
         }
-        const { orderId, paymentId } = req.body;
-        const razorpay_signature = req.headers['x-razorpay-signature'];
+        const { razorpay_order_id, razorpay_payment_id } = req.body;
+        const orderId = razorpay_order_id;
+        const paymentId = razorpay_payment_id;
+        const razorpay_signature = req.body.razorpay_signature;//req.headers['x-razorpay-signature'];
 
         // Creating hmac object 
         let hmac = crypto.createHmac('sha256', RAZORPAY_SECRET_ID);

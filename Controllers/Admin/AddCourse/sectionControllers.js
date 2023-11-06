@@ -91,7 +91,9 @@ exports.getAllSectionByCourseIdForUser = async (req, res) => {
         const isPurchase = await User_Course.findOne({
             where: {
                 courseId: req.params.courseId,
-                userId: req.user.id
+                userId: req.user.id,
+                verify: true,
+                status: "paid"
             }
         });
         if (!isPurchase) {

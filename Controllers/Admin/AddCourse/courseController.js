@@ -224,7 +224,9 @@ exports.getUsersCourse = async (req, res) => {
     try {
         const purchase = await User_Course.findAll({
             where: {
-                userId: req.user.id
+                userId: req.user.id,
+                verify: true,
+                status: "paid"
             }
         });
         const courseId = [];
