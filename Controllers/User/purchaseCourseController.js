@@ -259,18 +259,19 @@ exports.verifyPayment = async (req, res) => {
             // Transfer money to Course Owenr Wallet
             const adminWalletAmount = parseFloat(courseOwnerWallet.amount) + (parseFloat(purchase.amount) * parseFloat(ratio.adminRatio)) / 100;
             await courseOwnerWallet.update({
-                amount: (Math.round(adminWalletAmount * 100) / 100).toFixed(2)
+                amount: (Math.round(adminWalletAmount * 100) / 100)
             });
             // Transfer money to Referal Wallet, if referal is not present then tranfer it to course admin wallet
             if (referalWallet) {
                 const referalAmount = parseFloat(referalWallet.amount) + (parseFloat(purchase.amount) * parseFloat(ratio.referalRatio)) / 100;
                 await referalWallet.update({
-                    amount: (Math.round(referalAmount * 100) / 100).toFixed(2)
+                    amount: (Math.round(referalAmount * 100) / 100)
                 });
             } else {
                 const referalAmount = parseFloat(courseOwnerWallet.amount) + (parseFloat(purchase.amount) * parseFloat(ratio.referalRatio)) / 100;
+                // (Math.round(referalAmount * 100) / 100).toFixed(2)
                 await courseOwnerWallet.update({
-                    amount: (Math.round(referalAmount * 100) / 100).toFixed(2)
+                    amount: (Math.round(referalAmount * 100) / 100)
                 });
             }
             // Update Purchase
