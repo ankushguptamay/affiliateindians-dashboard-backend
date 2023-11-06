@@ -19,8 +19,11 @@ module.exports = (sequelize, DataTypes) => {
         },
         file_FileName: {
             type: DataTypes.STRING
+        },
+        fileAsAssignment: {
+            type: DataTypes.BOOLEAN,
+            defaultValue:false
         }
-
     }, {
         paranoid: true
     });

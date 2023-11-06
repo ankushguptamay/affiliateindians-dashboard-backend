@@ -21,11 +21,3 @@ exports.purchaseCourseByReferalValidation = (data) => {
     });
     return schema.validate(data);
 }
-
-exports.verifyPaymentValidation = (data) => {
-    const schema = joi.object().keys({
-        orderId: joi.string().required(),
-        paymentId: joi.string().required()
-    });
-    return schema.validate(data);
-}

@@ -28,8 +28,10 @@ module.exports = (sequelize, DataTypes) => {
         },
         BUNNY_LIBRARY_API_KEY: {
             type: DataTypes.STRING
+        },
+        videoName: {
+            type: DataTypes.STRING
         }
-
     }, {
         paranoid: true
     });

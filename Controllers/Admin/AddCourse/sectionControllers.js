@@ -231,38 +231,41 @@ exports.getAllSectionByCourseIdForUser = async (req, res) => {
 //     }
 // };
 
-// exports.updateSection = async (req, res) => {
-//     try {
-//         const id = req.params.id;
-//         const section = await Section.findOne({
-//             where: {
-//                 [Op.and]: [
-//                     { id: id }, { adminId: req.admin.id }
-//                 ]
-//             }
-//         });
-//         if (!section) {
-//             return res.status(400).send({
-//                 success: false,
-//                 message: "Section is not present!"
-//             });
-//         };
-//         await section.update({
-//             ...section,
-//             sectionName: req.body.sectionName
-//         });
-//         res.status(200).send({
-//             success: true,
-//             message: `Section Name updated seccessfully!`
-//         });
-//     } catch (err) {
-//         console.log(err);
-//         res.status(500).send({
-//             success: false,
-//             err: err.message
-//         });
-//     }
-// };
+exports.updateSection = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
+        const section = await Section.findOne({
+            where: {
+                [Op.and]: condition
+            }
+        });
+        if (!section) {
+            return res.status(400).send({
+                success: false,
+                message: "Section is not present!"
+            });
+        };
+        await section.update({
+            ...section,
+            sectionName: req.body.sectionName
+        });
+        res.status(200).send({
+            success: true,
+            message: `Section Name updated seccessfully!`
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
 
 exports.publicSection = async (req, res) => {
     try {

@@ -92,7 +92,8 @@ exports.uploadLessonVideo = async (req, res) => {
             lessonId: lessonId,
             BUNNY_VIDEO_LIBRARY_ID: lesson.parentCourse.BUNNY_VIDEO_LIBRARY_ID,
             BUNNY_LIBRARY_API_KEY: lesson.parentCourse.BUNNY_LIBRARY_API_KEY,
-            adminId: req.admin.id
+            adminId: req.admin.id,
+            videoName: req.file.originalname
         });
         res.status(201).send({
             success: true,

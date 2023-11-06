@@ -7,9 +7,9 @@ const { getTemplate, addTemplate, hardDeleteTemplate } = require('../../Controll
 const { getTag, hardDeleteTag, addTag } = require('../../Controllers/Admin/Master/tagController');
 const { getRatio, addRatio, hardDeleteRatio } = require('../../Controllers/Admin/Master/affiliateMarketingRatioController');
 // Course
-const { createSection, getAllSectionByCourseIdForAdmin, publicSection, unPublicSection } = require('../../Controllers/Admin/AddCourse/sectionControllers');
-const { createLesson, getLessonByLessonIdForAdmin, publicLesson, unPublicLesson } = require('../../Controllers/Admin/AddCourse/lessonController');
-const { createCourse, getCourseForAdmin, getAllCourse, addOrUpdateAuthorImage, addOrUpdateCourseImage,
+const { createSection, getAllSectionByCourseIdForAdmin, publicSection, unPublicSection, updateSection } = require('../../Controllers/Admin/AddCourse/sectionControllers');
+const { createLesson, getLessonByLessonIdForAdmin, publicLesson, unPublicLesson, updateLesson } = require('../../Controllers/Admin/AddCourse/lessonController');
+const { createCourse, getCourseForAdmin, getAllCourse, addOrUpdateAuthorImage, addOrUpdateCourseImage, updateCourse,
     deleteAuthorImage, deleteCourseImage, publicCourse, unPublicCourse } = require('../../Controllers/Admin/AddCourse/courseController');
 const { uploadLessonVideo, hardDeleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
 const { createLessonQuiz, getAllQuizByLessonId, hardDeleteLessonQuiz, updateLessonQuiz } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
@@ -55,17 +55,20 @@ router.put("/addOrUpdateAuthorImage/:id", verifyAdminToken, isSuperAdmin, upload
 router.put("/addOrUpdateCourseImage/:id", verifyAdminToken, isSuperAdmin, uploadImage.single("courseImage"), addOrUpdateCourseImage);
 router.put("/publicCourse/:id", verifyAdminToken, isSuperAdmin, publicCourse);
 router.put("/unPublicCourse/:id", verifyAdminToken, isSuperAdmin, unPublicCourse);
+router.put("/updateCourse/:id", verifyAdminToken, isSuperAdmin, updateCourse);
 router.delete("/deleteAuthorImage/:id", verifyAdminToken, isSuperAdmin, deleteAuthorImage);
 router.delete("/deleteCourseImage/:id", verifyAdminToken, isSuperAdmin, deleteCourseImage);
 // Section
 router.post("/createSection", verifyAdminToken, isSuperAdmin, createSection);
 router.get("/sections/:courseId", verifyAdminToken, isSuperAdmin, getAllSectionByCourseIdForAdmin);
 router.put("/publicSection/:id", verifyAdminToken, isSuperAdmin, publicSection);
+router.put("/updateSection/:id", verifyAdminToken, isSuperAdmin, updateSection);
 router.put("/unPublicSection/:id", verifyAdminToken, isSuperAdmin, unPublicSection);
 // Lesson
 router.post("/createLesson", verifyAdminToken, isSuperAdmin, createLesson);
 router.get("/lesson/:id", verifyAdminToken, isSuperAdmin, getLessonByLessonIdForAdmin);
 router.put("/publicLesson/:id", verifyAdminToken, isSuperAdmin, publicLesson);
+router.put("/updateLesson/:id", verifyAdminToken, isSuperAdmin, updateLesson);
 router.put("/unPublicLesson/:id", verifyAdminToken, isSuperAdmin, unPublicLesson);
 // Files
 router.post("/addBanner/:lessonId", verifyAdminToken, isSuperAdmin, uploadImage.single("lessonBanner"), addBanner);

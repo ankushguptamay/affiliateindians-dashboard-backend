@@ -49,7 +49,7 @@ const { Op } = require('sequelize');
 //         const day = new Date().toISOString().slice(8, 10);
 //         const year = new Date().toISOString().slice(2, 4);
 //         const month = new Date().toISOString().slice(5, 7);
-//         if (isUserCode.length == 0) {
+//         if (isAdminCode.length == 0) {
 //             code = "AFAD" + day + month + year + Day[dayNumber] + 1;
 //         } else {
 //             let lastCode = isAdminCode[isAdminCode.length - 1];

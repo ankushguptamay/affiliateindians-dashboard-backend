@@ -58,6 +58,9 @@ module.exports = (sequelize, DataTypes) => {
         ratioId: {
             type: DataTypes.STRING
         },
+        price: {
+            type: DataTypes.STRING
+        }
     }, {
         paranoid: true
     });

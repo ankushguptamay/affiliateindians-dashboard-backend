@@ -164,36 +164,46 @@ exports.getLessonByLessonIdForUser = async (req, res) => {
     }
 };
 
-// // update customCode, richTextEditor, codeExample
-// exports.updateLesson = async (req, res) => {
-//     try {
-//         const lessonId = req.params.id;
-//         const { codeExample, customCode, richTextEditor } = req.body;
-//         const lesson = await Lesson.findOne({ where: { id: lessonId } });
-//         if (!lesson) {
-//             return res.status(400).send({
-//                 success: false,
-//                 message: "Lesson is not present!"
-//             });
-//         }
-//         await lesson.update({
-//             ...lesson,
-//             codeExample: codeExample,
-//             customCode: customCode,
-//             richTextEditor: richTextEditor
-//         });
-//         res.status(200).send({
-//             success: true,
-//             message: `Lesson modified successfully!`
-//         });
-//     } catch (err) {
-//         console.log(err);
-//         res.status(500).send({
-//             success: false,
-//             err: err.message
-//         });
-//     }
-// };
+// update customCode, richTextEditor, codeExample
+exports.updateLesson = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
+        const { codeExample, customCode, richTextEditor, lessonName } = req.body;
+        const lesson = await Lesson.findOne({
+            where: {
+                [Op.and]: condition
+            }
+        });
+        if (!lesson) {
+            return res.status(400).send({
+                success: false,
+                message: "Lesson is not present!"
+            });
+        }
+        await lesson.update({
+            ...lesson,
+            codeExample: codeExample,
+            customCode: customCode,
+            richTextEditor: richTextEditor,
+            lessonName: lessonName
+        });
+        res.status(200).send({
+            success: true,
+            message: `Lesson modified successfully!`
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
 
 exports.publicLesson = async (req, res) => {
     try {

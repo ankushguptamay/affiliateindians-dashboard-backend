@@ -351,61 +351,65 @@ exports.getUsersCourse = async (req, res) => {
 //     }
 // };
 
-// exports.updateCourse = async (req, res) => {
-//     try {
-//         const id = req.params.id;
-//         const adminId = req.admin.id;
-//         const { title, subTitle, categories, authorName, PlayerKeyColor } = req.body;
-//         // is course present
-//         const course = await Course.findOne({
-//             where: {
-//                 [Op.and]:
-//                     [
-//                         { id: id }, { adminId: adminId }
-//                     ]
-//             }
-//         });
-//         if (!course) {
-//             return res.status(400).send({
-//                 success: false,
-//                 message: "Course is not present!"
-//             });
-//         }
-//         // update title name
-//         const updateVideoLibrary = {
-//             method: "POST",
-//             url: `https://api.bunny.net/videolibrary/${course.BUNNY_VIDEO_LIBRARY_ID}`,
-//             headers: {
-//                 Accept: "application/json",
-//                 "Content-Type": "application/json",
-//                 AccessKey: process.env.BUNNY_ACCOUNT_ACCESS_KEY,
-//             },
-//             data: {
-//                 Name: title,
-//                 PlayerKeyColor: PlayerKeyColor // "#55ff60" their are more option, check it on bunny 
-//             }
-//         };
-//         await axios.request(updateVideoLibrary);
-//         // update in database
-//         await course.update({
-//             ...course,
-//             title: title,
-//             subTitle: subTitle,
-//             authorName: authorName,
-//             categories: categories
-//         });
-//         res.status(200).send({
-//             success: true,
-//             message: `Course modified successfully!`
-//         });
-//     } catch (err) {
-//         // console.log(err);
-//         res.status(500).send({
-//             success: false,
-//             err: err.message
-//         });
-//     }
-// };
+exports.updateCourse = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
+        const { title, subTitle, categories, authorName, PlayerKeyColor, price } = req.body;
+        // is course present
+        const course = await Course.findOne({
+            where: {
+                [Op.and]: condition
+            }
+        });
+        if (!course) {
+            return res.status(400).send({
+                success: false,
+                message: "Course is not present!"
+            });
+        }
+        // update title name
+        if (title !== course.title) {
+            const updateVideoLibrary = {
+                method: "POST",
+                url: `https://api.bunny.net/videolibrary/${course.BUNNY_VIDEO_LIBRARY_ID}`,
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    AccessKey: process.env.BUNNY_ACCOUNT_ACCESS_KEY,
+                },
+                data: {
+                    Name: title,
+                    PlayerKeyColor: PlayerKeyColor // "#55ff60" their are more option, check it on bunny 
+                }
+            };
+            await axios.request(updateVideoLibrary);
+        }
+        // update in database
+        await course.update({
+            ...course,
+            title: title,
+            subTitle: subTitle,
+            authorName: authorName,
+            categories: categories,
+            price: price
+        });
+        res.status(200).send({
+            success: true,
+            message: `Course modified successfully!`
+        });
+    } catch (err) {
+        // console.log(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
 
 exports.addOrUpdateCourseImage = async (req, res) => {
     try {

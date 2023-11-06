@@ -19,8 +19,14 @@ module.exports = (sequelize, DataTypes) => {
         },
         optionD: {
             type: DataTypes.STRING
+        },
+        quizAsAssignment: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
+        },
+        answer: {
+            type: DataTypes.STRING
         }
-
     }, {
         paranoid: true
     });
