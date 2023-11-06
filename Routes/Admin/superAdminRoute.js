@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 
 const { registerAdmin, loginAdmin } = require('../../Controllers/Admin/authSuperAdminController');
+
+const { getAllPaymentData } = require('../../Controllers/User/purchaseCourseController');
 // Master
 const { getTemplate, addTemplate, hardDeleteTemplate } = require('../../Controllers/Admin/Master/templateController');
 const { getTag, hardDeleteTag, addTag } = require('../../Controllers/Admin/Master/tagController');
@@ -97,6 +99,8 @@ router.put("/approveComment/:id", verifyAdminToken, isSuperAdmin, approveComment
 router.get("/users", verifyAdminToken, isSuperAdmin, findUserForSuperAdmin);
 router.get("/myUsers", verifyAdminToken, isSuperAdmin, findUserForAdmin);
 
+// Payment Data
+router.get("/paymentData", verifyAdminToken, isSuperAdmin, getAllPaymentData);
 // Bulk
 router.post("/bulkRegister", verifyAdminToken, isSuperAdmin, bulkRegisterUserAndCreateCourseAndAssign);
 router.get("/bulkCheck", verifyAdminToken, isSuperAdmin, findAllUserForOnlyBulkCheck);

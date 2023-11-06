@@ -296,3 +296,20 @@ exports.verifyPayment = async (req, res) => {
         res.status(500).send({ message: err.message });
     }
 };
+
+exports.getAllPaymentData = async (req, res) => {
+    try {
+        const pay = await User_Course.findAll();
+        res.status(201).send({
+            success: true,
+            message: `Data fetched successfully!`,
+            data: pay
+        });
+    }
+    catch (err) {
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
