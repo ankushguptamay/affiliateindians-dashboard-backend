@@ -188,7 +188,7 @@ exports.verifyPayment = async (req, res) => {
         const orderId = req.body.razorpay_order_id;
         const paymentId = req.body.razorpay_payment_id;
         const razorpay_signature = req.body.razorpay_signature;
-
+        console.log(req.body);
         // Creating hmac object 
         let hmac = crypto.createHmac('sha256', RAZORPAY_SECRET_ID);
         // Passing the data to be hashed
@@ -207,9 +207,10 @@ exports.verifyPayment = async (req, res) => {
             if (!purchase) {
                 return res.status(200).json({
                     success: false,
-                    message: "Payment has been verified!"
+                    message: "Payment has been verified! Second Time!"
                 });
             }
+            console.log("Here")
             // Get Course
             const course = await Course.findOne({
                 where: {
