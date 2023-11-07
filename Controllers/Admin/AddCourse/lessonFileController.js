@@ -239,3 +239,20 @@ exports.hardDeleteResource = async (req, res) => {
         });
     }
 };
+
+exports.getAllLessonFile = async (req, res) => {
+    try {
+        const file = await LessonFile.findAll();
+        res.status(201).send({
+            success: true,
+            message: `Data fetched successfully!`,
+            data: file
+        });
+    }
+    catch (err) {
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
