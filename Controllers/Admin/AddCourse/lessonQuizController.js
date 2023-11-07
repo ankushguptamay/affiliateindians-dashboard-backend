@@ -132,20 +132,3 @@ exports.updateLessonQuiz = async (req, res) => {
         });
     }
 };
-
-exports.getAllLessonQuiz = async (req, res) => {
-    try {
-        const quiz = await LessonQuiz.findAll();
-        res.status(201).send({
-            success: true,
-            message: `Data fetched successfully!`,
-            data: quiz
-        });
-    }
-    catch (err) {
-        res.status(500).send({
-            success: false,
-            err: err.message
-        });
-    }
-};

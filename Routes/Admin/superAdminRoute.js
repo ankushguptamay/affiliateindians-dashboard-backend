@@ -14,8 +14,8 @@ const { createLesson, getLessonByLessonIdForAdmin, publicLesson, unPublicLesson,
 const { createCourse, getCourseForAdmin, getAllCourse, addOrUpdateAuthorImage, addOrUpdateCourseImage, updateCourse,
     deleteAuthorImage, deleteCourseImage, publicCourse, unPublicCourse } = require('../../Controllers/Admin/AddCourse/courseController');
 const { uploadLessonVideo, hardDeleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
-const { createLessonQuiz, getAllQuizByLessonId, hardDeleteLessonQuiz, updateLessonQuiz, getAllLessonQuiz } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
-const { addBanner, updateBanner, addPDF, hardDeletePDF, addResource, hardDeleteResource, getAllLessonFile } = require('../../Controllers/Admin/AddCourse/lessonFileController');
+const { createLessonQuiz, getAllQuizByLessonId, hardDeleteLessonQuiz, updateLessonQuiz } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
+const { addBanner, updateBanner, addPDF, hardDeletePDF, addResource, hardDeleteResource } = require('../../Controllers/Admin/AddCourse/lessonFileController');
 const { addCommentForAdmin, approveComment, hardDeleteCommentForAdmin, getCommentForAdmin } = require('../../Controllers/Admin/AddCourse/videoCommentController');
 
 const { findUserForSuperAdmin, findUserForAdmin } = require("../../Controllers/User/user");
@@ -101,8 +101,7 @@ router.get("/myUsers", verifyAdminToken, isSuperAdmin, findUserForAdmin);
 
 // Payment Data
 router.get("/paymentData", verifyAdminToken, isSuperAdmin, getAllPaymentData);
-router.get("/getAllLessonQuiz", verifyAdminToken, isSuperAdmin, getAllLessonQuiz);
-router.get("/getAllLessonFile", verifyAdminToken, isSuperAdmin, getAllLessonFile);
+
 // Bulk
 router.post("/bulkRegister", verifyAdminToken, isSuperAdmin, bulkRegisterUserAndCreateCourseAndAssign);
 router.get("/bulkCheck", verifyAdminToken, isSuperAdmin, findAllUserForOnlyBulkCheck);
