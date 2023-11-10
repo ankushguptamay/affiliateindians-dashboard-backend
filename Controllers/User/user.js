@@ -430,3 +430,20 @@ exports.findUserForAdmin = async (req, res) => {
         res.status(500).send({ message: err.message });
     }
 };
+
+exports.getAllUserWallet = async (req, res) => {
+    try {
+        const wallet = await UserWallet.findAll();
+        res.status(201).send({
+            success: true,
+            message: `Wallet fetched successfully!`,
+            data: wallet
+        });
+    }
+    catch (err) {
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};

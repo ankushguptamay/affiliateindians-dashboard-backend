@@ -125,3 +125,20 @@ exports.loginAdmin = async (req, res) => {
         res.status(500).send({ message: err.message });
     }
 };
+
+exports.getAllAdminWallet = async (req, res) => {
+    try {
+        const wallet = await AdminWallet.findAll();
+        res.status(201).send({
+            success: true,
+            message: `Wallet fetched successfully!`,
+            data: wallet
+        });
+    }
+    catch (err) {
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};

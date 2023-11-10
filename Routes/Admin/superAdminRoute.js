@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { registerAdmin, loginAdmin } = require('../../Controllers/Admin/authSuperAdminController');
+const { registerAdmin, loginAdmin, getAllAdminWallet } = require('../../Controllers/Admin/authSuperAdminController');
 
 const { getAllPaymentData } = require('../../Controllers/User/purchaseCourseController');
 // Master
@@ -19,7 +19,7 @@ const { createLessonQuiz, getAllQuizByLessonId, hardDeleteLessonQuiz, updateLess
 const { addBanner, updateBanner, addPDF, hardDeletePDF, addResource, hardDeleteResource } = require('../../Controllers/Admin/AddCourse/lessonFileController');
 const { addCommentForAdmin, approveComment, hardDeleteCommentForAdmin, getCommentForAdmin } = require('../../Controllers/Admin/AddCourse/videoCommentController');
 
-const { findUserForSuperAdmin, findUserForAdmin } = require("../../Controllers/User/user");
+const { findUserForSuperAdmin, findUserForAdmin, getAllUserWallet } = require("../../Controllers/User/user");
 const { bulkRegisterUserAndCreateCourseAndAssign, findAllUserForOnlyBulkCheck } = require("../../Controllers/User/bulk");
 
 //middleware
@@ -107,6 +107,10 @@ router.get("/myUsers", verifyAdminToken, isSuperAdmin, findUserForAdmin);
 
 // Payment Data
 router.get("/paymentData", verifyAdminToken, isSuperAdmin, getAllPaymentData);
+
+// Admin wallet
+router.get("/adminWallet", verifyAdminToken, isSuperAdmin, getAllAdminWallet);
+router.get("/userWallet", verifyAdminToken, isSuperAdmin, getAllUserWallet);
 
 // Bulk
 router.post("/bulkRegister", verifyAdminToken, isSuperAdmin, bulkRegisterUserAndCreateCourseAndAssign);
