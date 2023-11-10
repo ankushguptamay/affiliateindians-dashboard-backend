@@ -5,6 +5,12 @@ const { Op } = require('sequelize');
 exports.addRatio = async (req, res) => {
     try {
         const { referalRatio, adminRatio, ratioName } = req.body;
+        if ((parseFloat(referalRatio) + parseFloat(adminRatio)) !== 100) {
+            return res.status(400).send({
+                success: false,
+                message: "Total ratio value should be equal to 100!"
+            });
+        }
         const ratio = await AffiliateMarketingRatio.findOne({
             where: {
                 [Op.or]: [
