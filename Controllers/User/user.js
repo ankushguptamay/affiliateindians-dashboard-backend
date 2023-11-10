@@ -82,7 +82,9 @@ exports.create = async (req, res) => {
             country: req.body.country,
             pinCode: req.body.pinCode,
             password: bcPassword,
-            userCode: code
+            userCode: code,
+            termAndConditionAccepted: req.body.termAndConditionAccepted,
+            joinThrough: req.body.joinThrough
         });
         // Creating Wallet
         await UserWallet.create({
@@ -128,6 +130,12 @@ exports.login = async (req, res) => {
             return res.status(400).send({
                 success: false,
                 message: 'Sorry! try to login with currect credentials.'
+            });
+        }
+        if (isUser.termAndConditionAccepted !== true) {
+            return res.status(400).send({
+                success: false,
+                message: 'Please Accept terms and conditions!.'
             });
         }
         const data = {

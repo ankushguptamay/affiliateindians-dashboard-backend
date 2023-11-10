@@ -33,13 +33,17 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
     },
     joinThrough: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING // facebook, insta, ...
     },
     userCode: {
       type: DataTypes.STRING
     },
     referalId: {
       type: DataTypes.STRING
+    },
+    termAndConditionAccepted: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     }
   }, {
     paranoid: true

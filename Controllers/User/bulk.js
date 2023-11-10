@@ -77,7 +77,8 @@ exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
                     password: bcPassword,
                     createdAt: joinTime,
                     country: country,
-                    userCode: code
+                    userCode: code,
+                    termAndConditionAccepted: true
                 });
                 // Creating Wallet
                 await UserWallet.create({

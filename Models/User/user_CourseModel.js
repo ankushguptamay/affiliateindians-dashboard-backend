@@ -32,6 +32,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     referalId: {
       type: DataTypes.STRING
+    },
+    joinThrough: {
+      type: DataTypes.STRING // facebook, insta, ...
     }
   }, {
     paranoid: true

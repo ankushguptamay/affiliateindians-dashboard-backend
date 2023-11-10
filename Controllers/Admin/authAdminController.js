@@ -14,7 +14,7 @@ exports.registerAdmin = async (req, res) => {
         return res.status(400).send(error.details[0].message);
     }
     try {
-        const { email, password, name, confirmPassword } = req.body;
+        const { email, password, name, confirmPassword, termAndConditionAccepted } = req.body;
         if (password !== confirmPassword) {
             return res.status(400).send({
                 success: false,
@@ -64,7 +64,8 @@ exports.registerAdmin = async (req, res) => {
             name: name,
             email: email,
             password: bcPassword,
-            adminCode: code
+            adminCode: code,
+            termAndConditionAccepted: termAndConditionAccepted
         });
         // Creating Wallet
         await AdminWallet.create({
@@ -108,6 +109,12 @@ exports.loginAdmin = async (req, res) => {
             return res.status(400).send({
                 success: false,
                 message: 'Sorry! try to login with currect credentials.'
+            });
+        }
+        if (isAdmin.termAndConditionAccepted !== true) {
+            return res.status(400).send({
+                success: false,
+                message: 'Please Accept terms and conditions!.'
             });
         }
         const data = {

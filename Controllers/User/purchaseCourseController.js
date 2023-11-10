@@ -28,7 +28,7 @@ exports.createPayment = async (req, res) => {
             if (error) {
                 return res.status(400).send(error.details[0].message);
             }
-            const { amount, currency, receipt } = req.body; // receipt is id created for this order
+            const { amount, currency, receipt, joinThrough } = req.body; // receipt is id created for this order
             const userId = req.user.id;
             const user = await User.findOne({
                 where: {
@@ -49,7 +49,8 @@ exports.createPayment = async (req, res) => {
                             status: "created",
                             razorpayTime: order.created_at,
                             verify: false,
-                            referalId: user.referalId
+                            referalId: user.referalId,
+                            joinThrough: joinThrough
                         })
                             .then(() => {
                                 res.status(201).send({
@@ -73,7 +74,7 @@ exports.createPayment = async (req, res) => {
             if (error) {
                 return res.status(400).send(error.details[0].message);
             }
-            const { amount, currency, receipt, name, email, mobileNumber, referalCode } = req.body; // receipt is id created for this order
+            const { amount, currency, receipt, name, email, mobileNumber, referalCode, joinThrough, termAndConditionAccepted } = req.body; // receipt is id created for this order
             const isUser = await User.findOne({
                 where: {
                     email: email
@@ -143,7 +144,9 @@ exports.createPayment = async (req, res) => {
                 mobileNumber: mobileNumber,
                 password: bcPassword,
                 userCode: code,
-                referalId: referalId
+                referalId: referalId,
+                joinThrough: joinThrough,
+                termAndConditionAccepted: termAndConditionAccepted
             });
             // Initiate payment
             razorpayInstance.orders.create({ amount, currency, receipt },
@@ -159,7 +162,8 @@ exports.createPayment = async (req, res) => {
                             status: "created",
                             razorpayTime: order.created_at,
                             verify: false,
-                            referalId: referalId
+                            referalId: referalId,
+                            joinThrough: joinThrough
                         })
                             .then(() => {
                                 res.status(201).send({

@@ -8,14 +8,15 @@ exports.userRegistration = (data) => {
         password: joi.string()
             // .regex(RegExp(pattern))
             .required()
-            .min(8)
-            .max(8),
+            .min(8),
         mobileNumber: joi.string().length(10).optional(),
+        termAndConditionAccepted: joi.boolean().required(),
         address: joi.string().optional(),
         city: joi.string().optional(),
         state: joi.string().optional(),
         country: joi.string().optional(),
         pinCode: joi.string().optional(),
+        joinThrough: joi.string().optional(),
         confirmPassword: joi.string().required()
     }) // .options({ allowUnknown: true });
     return schema.validate(data);
@@ -28,7 +29,6 @@ exports.userLogin = (data) => {
             // .regex(RegExp(pattern))
             .required()
             .min(8)
-            .max(8)
     }) // .options({ allowUnknown: true });
     return schema.validate(data);
 }
@@ -39,8 +39,7 @@ exports.changePassword = (data) => {
         newPassword: joi.string()
             // .regex(RegExp(pattern))
             .required()
-            .min(8)
-            .max(8),
+            .min(8),
         previousPassword: joi.string().required().min(8).max(8)
     }) // .options({ allowUnknown: true });
     return schema.validate(data);

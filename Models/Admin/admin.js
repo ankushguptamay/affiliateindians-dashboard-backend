@@ -23,6 +23,10 @@ module.exports = (sequelize, DataTypes) => {
     },
     adminCode: {
       type: DataTypes.STRING
+    },
+    termAndConditionAccepted: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
     }
   }, {
     paranoid: true

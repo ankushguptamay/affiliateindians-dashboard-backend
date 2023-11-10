@@ -14,7 +14,8 @@ exports.isAdmin = async (req, res, next) => {
             where: {
                 id: id,
                 email: email,
-                adminTag: "ADMIN"
+                adminTag: "ADMIN",
+                termAndConditionAccepted: true
             }
         });
         if (!isAdmin) {
@@ -59,7 +60,8 @@ exports.isUser = async (req, res, next) => {
         const isUser = await User.findOne({
             where: {
                 id: id,
-                email: email
+                email: email,
+                termAndConditionAccepted: true
             }
         });
         if (!isUser) {
@@ -80,7 +82,8 @@ exports.isUserForPayment = async (req, res, next) => {
             const isUser = await User.findOne({
                 where: {
                     id: id,
-                    email: email
+                    email: email,
+                    termAndConditionAccepted: true
                 }
             });
             if (!isUser) {

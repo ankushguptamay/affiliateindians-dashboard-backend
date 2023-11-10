@@ -135,10 +135,9 @@ db.userWallet.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 // db.user.hasMany(db.userAccountDetail, { foreignKey: "userId" });
 // db.userAccountDetail.belongsTo(db.user, { foreignKey: "userId" });
 
-// queryInterface.addColumn("courses", "price", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-// queryInterface.addColumn("lessonVideos", "videoName", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-// queryInterface.addColumn("lessonFiles", "fileAsAssignment", { type: DataTypes.BOOLEAN, defaultValue: false }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-// queryInterface.addColumn("lessonQuizzes", "quizAsAssignment", { type: DataTypes.BOOLEAN, defaultValue: false }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-// queryInterface.addColumn("lessonQuizzes", "answer", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("users", "termAndConditionAccepted", { type: DataTypes.BOOLEAN, defaultValue: false }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("users", "joinThrough", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("admins", "termAndConditionAccepted", { type: DataTypes.BOOLEAN, defaultValue: false }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("user_courses", "joinThrough", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 module.exports = db;

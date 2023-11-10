@@ -8,9 +8,9 @@ exports.adminRegistration = (data) => {
         password: joi.string()
             // .regex(RegExp(pattern))
             .required()
-            .min(8)
-            .max(8),
-        confirmPassword: joi.string().required()
+            .min(8),
+        confirmPassword: joi.string().required(),
+        termAndConditionAccepted: joi.boolean().required()
     }) // .options({ allowUnknown: true });
     return schema.validate(data);
 }
@@ -22,7 +22,6 @@ exports.adminLogin = (data) => {
             // .regex(RegExp(pattern))
             .required()
             .min(8)
-            .max(8)
     })//.options({ allowUnknown: true });
     return schema.validate(data);
 }
