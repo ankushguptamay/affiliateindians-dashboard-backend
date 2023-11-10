@@ -60,6 +60,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         price: {
             type: DataTypes.STRING
+        },
+        couponCode: {
+            type: DataTypes.STRING
         }
     }, {
         paranoid: true

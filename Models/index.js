@@ -47,6 +47,7 @@ db.teacher = require('./Admin/Teacher/teacherModel.js')(sequelize, Sequelize);
 db.template = require('./Admin/Master/templateModel.js')(sequelize, Sequelize);
 db.affiliateMarketingRatio = require('./Admin/Master/affiliateMarketingRatioModel.js')(sequelize, Sequelize);
 db.tag = require('./Admin/Master/tagModel.js')(sequelize, Sequelize);
+db.coupon = require('./Admin/Master/couponModel.js')(sequelize, Sequelize);
 
 // user
 db.user = require('./User/user.js')(sequelize, Sequelize);
@@ -138,7 +139,7 @@ db.userWallet.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 // queryInterface.addColumn("users", "termAndConditionAccepted", { type: DataTypes.BOOLEAN, defaultValue: false }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.addColumn("users", "joinThrough", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.addColumn("admins", "termAndConditionAccepted", { type: DataTypes.BOOLEAN, defaultValue: false }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.addColumn("user_courses", "joinThrough", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.addColumn("user_courses", "joinThrough", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
-// queryInterface.addColumn("users", "joinThrough", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("courses", "couponCode", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 module.exports = db;
