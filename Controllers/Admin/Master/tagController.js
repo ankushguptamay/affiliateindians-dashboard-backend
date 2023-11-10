@@ -8,7 +8,8 @@ exports.addTag = async (req, res) => {
         const tag = await Tag.findOne({
             where: {
                 tagName: tagName.toUpperCase()
-            }
+            },
+            paranoid:false
         });
         if (tag) {
             return res.status(400).send({

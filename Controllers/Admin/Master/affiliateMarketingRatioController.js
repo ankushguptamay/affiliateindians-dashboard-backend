@@ -22,7 +22,8 @@ exports.addRatio = async (req, res) => {
                         ]
                     }
                 ]
-            }
+            },
+            paranoid: false
         });
         if (ratio) {
             return res.status(400).send({

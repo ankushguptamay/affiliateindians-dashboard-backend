@@ -138,7 +138,7 @@ db.userWallet.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 // queryInterface.addColumn("users", "termAndConditionAccepted", { type: DataTypes.BOOLEAN, defaultValue: false }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.addColumn("users", "joinThrough", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.addColumn("admins", "termAndConditionAccepted", { type: DataTypes.BOOLEAN, defaultValue: false }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-// queryInterface.addColumn("user_courses", "joinThrough", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("user_courses", "joinThrough", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 // queryInterface.addColumn("users", "joinThrough", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 module.exports = db;
