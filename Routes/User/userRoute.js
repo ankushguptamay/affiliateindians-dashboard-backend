@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const { create, changePassword, login, findUser } = require("../../Controllers/User/user");
+const { getCoupon, applyCouponToCourse } = require('../../Controllers/Admin/Master/couponController');
 const { getAllCourse, getUsersCourse } = require('../../Controllers/Admin/AddCourse/courseController');
 const { getAllSectionByCourseIdForUser } = require('../../Controllers/Admin/AddCourse/sectionControllers');
 const { getLessonByLessonIdForUser } = require('../../Controllers/Admin/AddCourse/lessonController');
@@ -36,5 +37,9 @@ router.delete("/hardDeleteComment/:id", verifyUserToken, isUser, hardDeleteComme
 // Purchase
 router.post("/createPayment/:id", verifyUserTokenForPayment, isUserForPayment, createPayment);
 router.post("/verifyPayment", verifyPayment);
+
+//Coupon
+router.get("/coupons", verifyUserToken, isUser, getCoupon);
+router.put("/applyCouponToCourse", verifyUserToken, isUser, applyCouponToCourse);
 
 module.exports = router;

@@ -1,6 +1,7 @@
 const db = require('../../../Models');
 const Course = db.course;
 const Coupon = db.coupon;
+const { Op } = require('sequelize');
 const { couponValidation, addCouponToCourse, applyCouponToCourse } = require("../../../Middlewares/Validate/validateCourse");
 
 exports.createCoupon = async (req, res) => {
@@ -79,10 +80,16 @@ exports.createCoupon = async (req, res) => {
             adminId: req.admin.id
         });
         // Add coupon to course
+        const adminId = req.admin.id;
+        const adminTag = req.admin.adminTag;
+        const condition = [{ id: coursesId }];
+        if (adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
         if (coursesId.length > 0) {
             await Course.update({
                 where: {
-                    id: coursesId
+                    [Op.and]: condition
                 }
             }, {
                 couponCode: code
@@ -97,22 +104,7 @@ exports.createCoupon = async (req, res) => {
         console.log(err);
         res.status(500).send({
             success: false,
-            err: err.messageexports.getTag = async (req, res) => {
-                try {
-                    const tag = await Tag.findAll();
-                    res.status(201).send({
-                        success: true,
-                        message: `Tag fetched successfully!`,
-                        data: tag
-                    });
-                }
-                catch (err) {
-                    res.status(500).send({
-                        success: false,
-                        err: err.message
-                    });
-                }
-            }
+            err: err.messag
         });
     }
 };
@@ -156,18 +148,32 @@ exports.addCouponToCourse = async (req, res) => {
             });
         }
         // Add coupon to course
+        let num = 0;
+        const adminId = req.admin.id;
+        const adminTag = req.admin.adminTag;
         if (coursesId.length > 0) {
-            await Course.update({
-                where: {
-                    id: coursesId
+            for (let i = 0; i < coursesId.length; i++) {
+                const id = coursesId[i];
+                const condition = [{ id: id }];
+                if (adminTag === "ADMIN") {
+                    condition.push({ adminId: adminId });
                 }
-            }, {
-                couponCode: couponCode
-            });
+                const course = await Course.findOne({
+                    where: {
+                        [Op.and]: condition
+                    }
+                });
+                if (course) {
+                    await course.update({
+                        couponCode: couponCode
+                    });
+                    num = num + 1;
+                }
+            }
         }
         res.status(201).send({
             success: true,
-            message: `Coupon added to ${coursesId.length} courses successfully!`
+            message: `Coupon added to ${num} courses successfully!`
         });
     }
     catch (err) {

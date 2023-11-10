@@ -143,6 +143,6 @@ db.userWallet.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 // queryInterface.addColumn("user_courses", "joinThrough", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 // queryInterface.addColumn("courses", "couponCode", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.dropTable("coupons").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.dropTable("coupons").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 module.exports = db;
