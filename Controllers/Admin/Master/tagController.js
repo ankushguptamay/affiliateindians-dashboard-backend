@@ -14,7 +14,7 @@ exports.addTag = async (req, res) => {
         if (tag) {
             return res.status(400).send({
                 success: false,
-                message: "Thia Tag name is present!"
+                message: "This Tag name is present!"
             });
         }
         // Generating Code

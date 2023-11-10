@@ -13,6 +13,18 @@ module.exports = (sequelize, DataTypes) => {
         },
         validTill:{
             type: DataTypes.STRING
+        },
+        couponType:{
+            type: DataTypes.STRING,
+            validate: {
+                isIn: [['PERCENT', 'INTEGER']]
+            }
+        },
+        percentageValue:{
+            type: DataTypes.STRING
+        },
+        integerValue:{
+            type: DataTypes.STRING
         }
     }, {
         paranoid: true

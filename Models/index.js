@@ -73,6 +73,7 @@ db.admin.hasMany(db.lessonFile, { foreignKey: "adminId" });
 db.admin.hasMany(db.template, { foreignKey: "adminId" });
 db.admin.hasMany(db.affiliateMarketingRatio, { foreignKey: "adminId" });
 db.admin.hasMany(db.tag, { foreignKey: "adminId" });
+db.admin.hasMany(db.coupon, { foreignKey: "adminId" });
 
 // Admin Teacher Association
 db.admin.hasMany(db.teacher, { foreignKey: "adminId", as: "teacher" });
@@ -141,5 +142,7 @@ db.userWallet.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 // queryInterface.addColumn("admins", "termAndConditionAccepted", { type: DataTypes.BOOLEAN, defaultValue: false }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.addColumn("user_courses", "joinThrough", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
-queryInterface.addColumn("courses", "couponCode", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.addColumn("courses", "couponCode", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.dropTable("coupons").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+
 module.exports = db;
