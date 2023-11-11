@@ -6,7 +6,7 @@ const { registerAdmin, loginAdmin } = require('../../Controllers/Admin/authAdmin
 // Master
 const { getTemplate } = require('../../Controllers/Admin/Master/templateController');
 const { getTag } = require('../../Controllers/Admin/Master/tagController');
-const { getCoupon, addCouponToCourse } = require('../../Controllers/Admin/Master/couponController');
+const { getCoupon, addCouponToCourse, createCoupon } = require('../../Controllers/Admin/Master/couponController');
 const { getRatio } = require('../../Controllers/Admin/Master/affiliateMarketingRatioController');
 
 // Course
@@ -46,6 +46,7 @@ router.get("/tags", verifyAdminToken, isAdmin, getTag);
 router.get("/ratios", verifyAdminToken, isAdmin, getRatio);
 //Coupon
 router.get("/coupons", verifyAdminToken, isAdmin, getCoupon);
+router.post("/createCoupon", verifyAdminToken, isAdmin, createCoupon);
 router.put("/addCouponToCourses", verifyAdminToken, isAdmin, addCouponToCourse);
 
 // Teacher
