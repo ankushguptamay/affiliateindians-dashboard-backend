@@ -83,6 +83,7 @@ exports.create = async (req, res) => {
             pinCode: req.body.pinCode,
             password: bcPassword,
             userCode: code,
+            referalCode: req.body.referalCode,
             termAndConditionAccepted: req.body.termAndConditionAccepted,
             joinThrough: req.body.joinThrough
         });
