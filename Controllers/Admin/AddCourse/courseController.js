@@ -210,7 +210,7 @@ exports.getAllCourse = async (req, res) => {
                 },
                 include: [{
                     model: Coupon,
-                    as: "coupons"
+                    as: "coupon"
                 }]
             }],
             order: [
@@ -285,7 +285,7 @@ exports.getCourseById = async (req, res) => {
                 },
                 include: [{
                     model: Coupon,
-                    as: "coupons"
+                    as: "coupon"
                 }]
             }],
         });
