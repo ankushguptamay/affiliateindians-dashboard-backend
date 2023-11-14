@@ -60,6 +60,12 @@ module.exports = (sequelize, DataTypes) => {
         },
         price: {
             type: DataTypes.STRING
+        },
+        currency: {
+            type: DataTypes.STRING
+        },
+        discription: {
+            type: DataTypes.STRING
         }
     }, {
         paranoid: true

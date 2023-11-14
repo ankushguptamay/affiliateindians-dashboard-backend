@@ -359,7 +359,8 @@ exports.updateCourse = async (req, res) => {
         if (req.admin.adminTag === "ADMIN") {
             condition.push({ adminId: adminId });
         }
-        const { title, subTitle, categories, authorName, PlayerKeyColor, price } = req.body;
+        const { title, subTitle, categories, authorName, PlayerKeyColor, price, discription, currency, isPaid, ratioId } = req.body;
+        const courseTitle = title.toUpperCase();
         // is course present
         const course = await Course.findOne({
             where: {
@@ -373,7 +374,7 @@ exports.updateCourse = async (req, res) => {
             });
         }
         // update title name
-        if (title !== course.title) {
+        if (courseTitle !== course.title) {
             const updateVideoLibrary = {
                 method: "POST",
                 url: `https://api.bunny.net/videolibrary/${course.BUNNY_VIDEO_LIBRARY_ID}`,
@@ -383,7 +384,7 @@ exports.updateCourse = async (req, res) => {
                     AccessKey: process.env.BUNNY_ACCOUNT_ACCESS_KEY,
                 },
                 data: {
-                    Name: title,
+                    Name: courseTitle,
                     PlayerKeyColor: PlayerKeyColor // "#55ff60" their are more option, check it on bunny 
                 }
             };
@@ -392,11 +393,15 @@ exports.updateCourse = async (req, res) => {
         // update in database
         await course.update({
             ...course,
-            title: title,
+            title: courseTitle,
             subTitle: subTitle,
             authorName: authorName,
             categories: categories,
-            price: price
+            price: price,
+            ratioId: ratioId,
+            currency: currency,
+            discription: discription,
+            isPaid: isPaid
         });
         res.status(200).send({
             success: true,
