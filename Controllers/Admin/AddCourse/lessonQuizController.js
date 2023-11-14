@@ -1,19 +1,27 @@
 const { Op } = require('sequelize');
 const db = require('../../../Models');
+const { addQuiz } = require("../../../Middlewares/Validate/validateCourse");
 const LessonQuiz = db.lessonQuiz;
 const Lesson = db.lesson;
 
 exports.createLessonQuiz = async (req, res) => {
     try {
-        const { quizQuestion, optionA, optionB, optionC, optionD, answer } = req.body;
+        // const option = {
+        //     optionA:"ndsdclcl",
+        //     optionB:"npspvpvpp"
+        // }
+        // const answer=["optionB","optionA"]
+        // Validate Body
+        const { error } = addQuiz(req.body);
+        if (error) {
+            return res.status(400).send(error.details[0].message);
+        }
+        const { quizQuestion, option, answer } = req.body;
         const lessonId = req.params.lessonId;
         const lesson = await Lesson.findOne({ where: { id: lessonId } });
         await LessonQuiz.create({
             quizQuestion: quizQuestion,
-            optionA: optionA,
-            optionB: optionB,
-            optionC: optionC,
-            optionD: optionD,
+            option: option,
             courseId: lesson.courseId,
             sectionId: lesson.sectionId,
             lessonId: lessonId,
@@ -99,7 +107,7 @@ exports.updateLessonQuiz = async (req, res) => {
         if (req.admin.adminTag === "ADMIN") {
             condition.push({ adminId: adminId });
         }
-        const { quizQuestion, optionA, optionB, optionC, optionD, answer } = req.body;
+        const { quizQuestion, option, answer } = req.body;
         const lessonQuiz = await LessonQuiz.findOne({
             where: {
                 [Op.and]: condition
@@ -114,10 +122,7 @@ exports.updateLessonQuiz = async (req, res) => {
         await lessonQuiz.update({
             ...lessonQuiz,
             quizQuestion: quizQuestion,
-            optionA: optionA,
-            optionB: optionB,
-            optionC: optionC,
-            optionD: optionD,
+            option: option,
             answer: answer
         });
         res.status(200).send({

@@ -47,3 +47,12 @@ exports.updateCouponValidation = (data) => {
     }) // .options({ allowUnknown: true });
     return schema.validate(data);
 }
+
+exports.addQuiz = (data) => {
+    const schema = joi.object().keys({
+        quizQuestion: joi.string().required(),
+        option: joi.object().required(),
+        answer: joi.array().required()
+    }) // .options({ allowUnknown: true });
+    return schema.validate(data);
+}
