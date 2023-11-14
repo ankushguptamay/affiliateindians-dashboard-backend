@@ -12,7 +12,7 @@ const { getCoupon, addCouponToCourse, createCoupon, hardDeleteCoupon, UpdateCoup
 // Course
 const { createSection, getAllSectionByCourseIdForAdmin, publicSection, unPublicSection, updateSection } = require('../../Controllers/Admin/AddCourse/sectionControllers');
 const { createLesson, getLessonByLessonIdForAdmin, publicLesson, unPublicLesson, updateLesson } = require('../../Controllers/Admin/AddCourse/lessonController');
-const { createCourse, getCourseForAdmin, getAllCourse, addOrUpdateAuthorImage, addOrUpdateCourseImage, updateCourse,
+const { createCourse, getCourseForAdmin, getAllCourse, addOrUpdateAuthorImage, addOrUpdateCourseImage, updateCourse,getCourseById,
     deleteAuthorImage, deleteCourseImage, publicCourse, unPublicCourse } = require('../../Controllers/Admin/AddCourse/courseController');
 const { uploadLessonVideo, hardDeleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
 const { createLessonQuiz, getAllQuizByLessonId, hardDeleteLessonQuiz, updateLessonQuiz } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
@@ -60,6 +60,7 @@ router.put("/UpdateCoupon/:id", verifyAdminToken, isSuperAdmin, UpdateCoupon);
 router.post("/createCourse", verifyAdminToken, isSuperAdmin, createCourse);
 router.get("/myCourses", verifyAdminToken, isSuperAdmin, getCourseForAdmin);
 router.get("/courses", verifyAdminToken, isSuperAdmin, getAllCourse);
+router.get("/courses/:id", verifyAdminToken, isSuperAdmin, getCourseById);
 router.put("/addOrUpdateAuthorImage/:id", verifyAdminToken, isSuperAdmin, uploadImage.single("authorImage"), addOrUpdateAuthorImage);
 router.put("/addOrUpdateCourseImage/:id", verifyAdminToken, isSuperAdmin, uploadImage.single("courseImage"), addOrUpdateCourseImage);
 router.put("/publicCourse/:id", verifyAdminToken, isSuperAdmin, publicCourse);
