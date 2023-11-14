@@ -35,6 +35,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     joinThrough: {
       type: DataTypes.STRING // facebook, insta, ...
+    },
+    couponCode: {
+      type: DataTypes.STRING
     }
   }, {
     paranoid: true

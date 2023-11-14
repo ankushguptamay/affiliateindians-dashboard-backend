@@ -6,7 +6,7 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true
         },
         couponName: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING // their should be a coupon with GENERAL applicable for all course
         },
         couponCode: {
             type: DataTypes.STRING
