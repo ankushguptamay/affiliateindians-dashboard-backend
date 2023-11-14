@@ -95,8 +95,8 @@ exports.createCoupon = async (req, res) => {
                 couponCode: code
             });
         }
-        res.status(400).send({
-            success: false,
+        res.status(200).send({
+            success: true,
             message: "Coupon create successfully!"
         });
     }

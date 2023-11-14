@@ -360,6 +360,12 @@ exports.updateCourse = async (req, res) => {
             condition.push({ adminId: adminId });
         }
         const { title, subTitle, categories, authorName, PlayerKeyColor, price, discription, currency, isPaid, ratioId } = req.body;
+        if (!title) {
+            return res.status(400).send({
+                success: false,
+                message: "Title should be present!"
+            });
+        }
         const courseTitle = title.toUpperCase();
         // is course present
         const course = await Course.findOne({
@@ -470,12 +476,7 @@ exports.addOrUpdateCourseImage = async (req, res) => {
 
 exports.addOrUpdateAuthorImage = async (req, res) => {
     try {
-        if (!req.file) {
-            return res.status(400).send({
-                success: false,
-                message: "Select a Author Image!"
-            });
-        }
+        const { authorName, authorDiscription } = req.body;
         const id = req.params.id;
         const adminId = req.admin.id;
         const condition = [{ id: id }];
@@ -494,18 +495,26 @@ exports.addOrUpdateAuthorImage = async (req, res) => {
                 message: "Course is not present!"
             });
         }
-        // delete file if present
-        let message = "added"
-        if (course.authorImagePath) {
-            deleteSingleFile(course.authorImagePath);
-            message = "updated"
+        let originalName, fileName, path;
+        let message = "added";
+        if (req.file) {
+            originalName = req.file.originalname;
+            fileName = req.file.filename;
+            path = req.file.path;
+            // delete file if present
+            if (course.authorImagePath) {
+                deleteSingleFile(course.authorImagePath);
+                message = "updated";
+            }
         }
         // update authorImage
         await course.update({
             ...course,
-            authorImageOriginalName: req.file.originalname,
-            authorImageFileName: req.file.filename,
-            authorImagePath: req.file.path
+            authorImageOriginalName: originalName,
+            authorImageFileName: fileName,
+            authorImagePath: path,
+            authorDiscription: authorDiscription,
+            authorName: authorName
         });
         res.status(201).send({
             success: true,

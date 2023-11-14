@@ -65,7 +65,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING
         },
         discription: {
-            type: DataTypes.STRING
+            type: DataTypes.TEXT
+        },
+        authorDiscription: {
+            type: DataTypes.TEXT
         }
     }, {
         paranoid: true
