@@ -3,6 +3,7 @@ const Lesson = db.lesson;
 const LessonFile = db.lessonFile;
 const LessonVideo = db.lessonVideo;
 const LessonQuiz = db.lessonQuiz;
+const Course = db.course;
 const User_Course = db.user_course;
 const Section = db.section;
 const { deleteSingleFile, deleteMultiFile } = require("../../../Util/deleteFile");
@@ -136,19 +137,28 @@ exports.getLessonByLessonIdForUser = async (req, res) => {
                 message: "Lesson is not present!"
             });
         }
-        const isPurchase = await User_Course.findOne({
+        const course = await Course.findOne({
             where: {
-                courseId: lesson.courseId,
-                userId: req.user.id,
-                verify: true,
-                status: "paid"
-            }
+                id: lesson.courseId,
+                isPublic: true
+            },
+            attributes: ["id", "title", "isPublic"]
         });
-        if (!isPurchase) {
-            return res.status(400).send({
-                success: false,
-                message: "Purchase this course!"
+        if (course.isPaid === true) {
+            const isPurchase = await User_Course.findOne({
+                where: {
+                    courseId: lesson.courseId,
+                    userId: req.user.id,
+                    verify: true,
+                    status: "paid"
+                }
             });
+            if (!isPurchase) {
+                return res.status(400).send({
+                    success: false,
+                    message: "Purchase this course!"
+                });
+            }
         }
         res.status(200).send({
             success: true,

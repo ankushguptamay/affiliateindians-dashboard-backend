@@ -88,23 +88,10 @@ exports.getAllSectionByCourseIdForAdmin = async (req, res) => {
 
 exports.getAllSectionByCourseIdForUser = async (req, res) => {
     try {
-        const isPurchase = await User_Course.findOne({
-            where: {
-                courseId: req.params.courseId,
-                userId: req.user.id,
-                verify: true,
-                status: "paid"
-            }
-        });
-        if (!isPurchase) {
-            return res.status(400).send({
-                success: false,
-                message: "Purchase this course!"
-            });
-        }
         const course = await Course.findOne({
             where: {
-                id: req.params.courseId
+                id: req.params.courseId,
+                isPublic: true
             },
             attributes: ["id", "title", "isPublic"]
         });
@@ -135,6 +122,22 @@ exports.getAllSectionByCourseIdForUser = async (req, res) => {
                 ['createdAt', 'ASC']
             ]
         });
+        if (course.isPaid === true) {
+            const isPurchase = await User_Course.findOne({
+                where: {
+                    courseId: req.params.courseId,
+                    userId: req.user.id,
+                    verify: true,
+                    status: "paid"
+                }
+            });
+            if (!isPurchase) {
+                return res.status(400).send({
+                    success: false,
+                    message: "Purchase this course!"
+                });
+            }
+        }
         res.status(200).send({
             success: true,
             message: "section fetched successfully!",
