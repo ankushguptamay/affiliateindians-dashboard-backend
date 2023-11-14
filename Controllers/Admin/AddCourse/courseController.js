@@ -202,17 +202,17 @@ exports.getAllCourse = async (req, res) => {
             where: {
                 [Op.and]: condition
             },
-            include: [{
-                model: Course_Coupon,
-                as: "course_coupons",
-                where: {
-                    type: "DEFAULT"
-                },
-                include: [{
-                    model: Coupon,
-                    as: "coupon"
-                }]
-            }],
+            // include: [{
+            //     model: Course_Coupon,
+            //     as: "course_coupons",
+            //     where: {
+            //         type: "DEFAULT"
+            //     },
+            //     include: [{
+            //         model: Coupon,
+            //         as: "coupon"
+            //     }]
+            // }],
             order: [
                 ['createdAt', 'DESC']
             ]
