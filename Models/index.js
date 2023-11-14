@@ -48,6 +48,7 @@ db.template = require('./Admin/Master/templateModel.js')(sequelize, Sequelize);
 db.affiliateMarketingRatio = require('./Admin/Master/affiliateMarketingRatioModel.js')(sequelize, Sequelize);
 db.tag = require('./Admin/Master/tagModel.js')(sequelize, Sequelize);
 db.coupon = require('./Admin/Master/couponModel.js')(sequelize, Sequelize);
+db.course_coupon = require('./Admin/Master/course_CouponModel.js')(sequelize, Sequelize);
 
 // user
 db.user = require('./User/user.js')(sequelize, Sequelize);
@@ -126,9 +127,17 @@ db.lessonVideo.hasMany(db.videoComment, { foreignKey: "lessonVideoId", as: "vide
 db.user.hasMany(db.user_course, { foreignKey: "userId", as: "user_courses" });
 db.user_course.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 
-// course Association with userTag
+// course Association user_course
 db.course.hasMany(db.user_course, { foreignKey: "courseId", as: "user_courses" });
 db.user_course.belongsTo(db.course, { foreignKey: "courseId", as: "course" });
+
+// Coupon Association with course_coupon
+db.coupon.hasMany(db.course_coupon, { foreignKey: "couponId", as: "course_coupons" });
+db.course_coupon.belongsTo(db.coupon, { foreignKey: "couponId", as: "coupon" });
+
+// course Association course_coupon
+db.course.hasMany(db.course_coupon, { foreignKey: "courseId", as: "course_coupons" });
+db.course_coupon.belongsTo(db.course, { foreignKey: "courseId", as: "course" });
 
 // User Association with wallet
 db.user.hasOne(db.userWallet, { foreignKey: "userId", as: "wallet" });
@@ -137,8 +146,8 @@ db.userWallet.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 // db.user.hasMany(db.userAccountDetail, { foreignKey: "userId" });
 // db.userAccountDetail.belongsTo(db.user, { foreignKey: "userId" });
 
-queryInterface.removeColumn("courses", "discription").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-// queryInterface.addColumn("courses", "authorDiscription", { type: DataTypes.TEXT }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-// queryInterface.addColumn("courses", "discription", { type: DataTypes.TEXT }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.removeColumn("courses", "discription").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("courses", "authorDiscription", { type: DataTypes.TEXT }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("courses", "discription", { type: DataTypes.TEXT }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 module.exports = db;

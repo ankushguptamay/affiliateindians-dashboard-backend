@@ -1,8 +1,9 @@
 const db = require('../../../Models');
 const Course = db.course;
 const Coupon = db.coupon;
+const Course_Coupon = db.course_coupon;
 const { Op } = require('sequelize');
-const { couponValidation, addCouponToCourse, applyCouponToCourse } = require("../../../Middlewares/Validate/validateCourse");
+const { couponValidation, addCouponToCourse, applyCouponToCourse, updateCouponValidation } = require("../../../Middlewares/Validate/validateCourse");
 
 exports.createCoupon = async (req, res) => {
     try {
@@ -70,7 +71,7 @@ exports.createCoupon = async (req, res) => {
             code = "AFCOU" + incrementedDigits;
         }
         // create coupon
-        await Coupon.create({
+        const coupon = await Coupon.create({
             couponName: couponName.toUpperCase(),
             validTill: validTill,
             couponCode: code,
@@ -82,18 +83,26 @@ exports.createCoupon = async (req, res) => {
         // Add coupon to course
         const adminId = req.admin.id;
         const adminTag = req.admin.adminTag;
-        const condition = [{ id: coursesId }];
+        const condition = [];
         if (adminTag === "ADMIN") {
             condition.push({ adminId: adminId });
         }
         if (coursesId.length > 0) {
-            await Course.update({
-                where: {
-                    [Op.and]: condition
+            // only superAdmin can add coupon to all course otherwise admin can only add coupon in those courses which he created
+            for (let i = 0; i < coursesId.length; i++) {
+                condition.push({ id: coursesId[i] });
+                const isAdminHasCourse = await Course.findOne({
+                    where: {
+                        [Op.and]: condition
+                    }
+                });
+                if (isAdminHasCourse) {
+                    await Course_Coupon.create({
+                        courseId: coursesId[i],
+                        couponId: coupon.id
+                    });
                 }
-            }, {
-                couponCode: code
-            });
+            }
         }
         res.status(200).send({
             success: true,
@@ -133,28 +142,20 @@ exports.addCouponToCourse = async (req, res) => {
         if (error) {
             return res.status(400).send(error.details[0].message);
         }
-        const { couponCode, coursesId } = req.body;
-        const coupon = await Coupon.findOne({
-            where: {
-                couponCode: couponCode
-            }
-        });
-        // is coupon expired?
-        const isCouponExpired = new Date().getTime() > parseInt(coupon.validTill);
-        if (isCouponExpired) {
-            return res.status(400).send({
-                success: false,
-                message: `This coupon expired!`
+        const { couponsId, courseId, type } = req.body;
+        const expiredCoupon = [];
+        for (let i = 0; i < couponsId.length; i++) {
+            const coupon = await Coupon.findOne({
+                where: {
+                    id: couponsId[i]
+                }
             });
-        }
-        // Add coupon to course
-        let num = 0;
-        const adminId = req.admin.id;
-        const adminTag = req.admin.adminTag;
-        if (coursesId.length > 0) {
-            for (let i = 0; i < coursesId.length; i++) {
-                const id = coursesId[i];
-                const condition = [{ id: id }];
+            // is coupon expired?
+            const isCouponExpired = new Date().getTime() > parseInt(coupon.validTill);
+            if (isCouponExpired) {
+                expiredCoupon.push(coupon.couponCode);
+            } else {
+                const condition = [{ id: courseId }];
                 if (adminTag === "ADMIN") {
                     condition.push({ adminId: adminId });
                 }
@@ -164,16 +165,21 @@ exports.addCouponToCourse = async (req, res) => {
                     }
                 });
                 if (course) {
-                    await course.update({
-                        couponCode: couponCode
+                    await Course_Coupon.create({
+                        courseId: courseId,
+                        couponId: couponsId[i],
+                        type: type.toUpperCase()
                     });
-                    num = num + 1;
                 }
             }
         }
+        let message = `Coupons added to course successfully!`;
+        if (expiredCoupon.length > 0) {
+            `Coupons added to course successfully! ${expiredCoupon} these coupon have been expired so we did not add!`
+        }
         res.status(201).send({
             success: true,
-            message: `Coupon added to ${num} courses successfully!`
+            message: message
         });
     }
     catch (err) {
@@ -224,10 +230,16 @@ exports.applyCouponToCourse = async (req, res) => {
                 message: `This course is not present!`
             });
         }
-        if (course.couponCode !== couponCode) {
+        const isCourseHasCoupon = await Course_Coupon.findOne({
+            where: {
+                courseId: courseId,
+                couponId: coupon.id
+            }
+        });
+        if (!isCourseHasCoupon) {
             res.status(400).send({
                 success: false,
-                message: `This coupon is not applicable at this course!`
+                message: `This coupon is not applicable on this course!`
             });
         } else {
             let discountAmount = parseFloat(course.price);
@@ -285,10 +297,110 @@ exports.hardDeleteCoupon = async (req, res) => {
                 message: "Coupon is not present!"
             });
         }
+        const association = await Course_Coupon.findAll({
+            where: {
+                couponId: id
+            },
+            paranoid: false
+        });
+        for (let i = 0; i < association.length; i++) {
+            await association[i].destroy({ force: true });
+        }
         await coupon.destroy({ force: true });
         res.status(201).send({
             success: true,
             message: `Coupon deleted successfully!`
+        });
+    }
+    catch (err) {
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
+
+exports.UpdateCoupon = async (req, res) => {
+    try {
+        // Validate Body
+        const { error } = updateCouponValidation(req.body);
+        if (error) {
+            return res.status(400).send(error.details[0].message);
+        }
+        const id = req.params.id;
+        const adminId = req.admin.id;
+        const { couponName, validTill, couponType, percentageValue, integerValue } = req.body;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
+        const coupon = await Coupon.findOne({
+            where: {
+                [Op.and]: condition
+            }
+        });
+        if (!coupon) {
+            return res.status(400).send({
+                success: false,
+                message: "Coupon is not present!"
+            });
+        }
+        // validate couponType
+        if (couponType.toUpperCase() === "INTEGER") {
+            if (!integerValue) {
+                return res.status(400).send({
+                    success: false,
+                    message: "Integer value should be persent!"
+                });
+            }
+        } else if (couponType.toUpperCase() === "PERCENT") {
+            if (!percentageValue) {
+                return res.status(400).send({
+                    success: false,
+                    message: "Percent value should be persent!"
+                });
+            } else {
+                if (parseFloat(percentageValue) >= 100 || parseFloat(percentageValue) <= 0) {
+                    return res.status(400).send({
+                        success: false,
+                        message: "Percentage Value should be between 100 and 0!"
+                    });
+                }
+            }
+        } else {
+            return res.status(400).send({
+                success: false,
+                message: "This coupen type is not acceptable!"
+            });
+        }
+        // Check Duplicaty if coupon name is change
+        const couponNameInUpperCase = couponName.toUpperCase();
+        if (couponNameInUpperCase !== coupon.couponName) {
+            const isCoupon = await Coupon.findOne({
+                where: {
+                    couponName: couponNameInUpperCase
+                },
+                paranoid: false
+            });
+            if (isCoupon) {
+                return res.status(400).send({
+                    success: false,
+                    message: "This coupon name is present!"
+                });
+            }
+        }
+        await coupon.update({
+            ...coupon,
+            validTill: validTill,
+            couponName: couponNameInUpperCase,
+            couponType: couponType.toUpperCase(),
+            percentageValue: percentageValue,
+            integerValue: integerValue
+
+        });
+        res.status(201).send({
+            success: true,
+            message: `Coupon updated successfully!`
         });
     }
     catch (err) {

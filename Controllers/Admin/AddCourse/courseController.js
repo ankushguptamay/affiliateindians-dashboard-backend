@@ -1,6 +1,8 @@
 const db = require('../../../Models');
 const Course = db.course;
 const User_Course = db.user_course;
+const Coupon = db.coupon;
+const Course_Coupon = db.course_coupon;
 const Lesson = db.lesson;
 const LessonFile = db.lessonFile;
 const LessonVideo = db.lessonVideo;
@@ -200,6 +202,17 @@ exports.getAllCourse = async (req, res) => {
             where: {
                 [Op.and]: condition
             },
+            include: [{
+                model: Course_Coupon,
+                as: "course_coupons",
+                where: {
+                    type: "DEFAULT"
+                },
+                include: [{
+                    model: Coupon,
+                    as: "coupons"
+                }]
+            }],
             order: [
                 ['createdAt', 'DESC']
             ]
@@ -242,6 +255,39 @@ exports.getUsersCourse = async (req, res) => {
             order: [
                 ['createdAt', 'DESC']
             ]
+        });
+        res.status(200).send({
+            success: true,
+            message: "Course fetched successfully!",
+            data: course
+        });
+    } catch (err) {
+        // console.log(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
+
+exports.getCourseById = async (req, res) => {
+    try {
+        // All Course
+        const course = await Course.findOne({
+            where: {
+                id: req.params.id
+            },
+            include: [{
+                model: Course_Coupon,
+                as: "course_coupons",
+                where: {
+                    type: "DEFAULT"
+                },
+                include: [{
+                    model: Coupon,
+                    as: "coupons"
+                }]
+            }],
         });
         res.status(200).send({
             success: true,
