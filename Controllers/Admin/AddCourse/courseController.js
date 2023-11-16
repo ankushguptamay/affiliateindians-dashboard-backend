@@ -197,7 +197,7 @@ exports.getAllCourse = async (req, res) => {
         });
         console.log(totalCourse);
         const cCourse = await Course.findAll();
-        console.log(cCourse);
+        // console.log(cCourse);
         // All Course
         const course = await Course.findAll({
             limit: recordLimit,
@@ -205,6 +205,18 @@ exports.getAllCourse = async (req, res) => {
             where: {
                 [Op.and]: condition
             },
+            include: [{
+                model: Course_Coupon,
+                as: "course_coupons",
+                where: {
+                    type: "DEFAULT"
+                },
+                required : false,
+                include: [{
+                    model: Coupon,
+                    as: "coupon"
+                }]
+            }],
             order: [
                 ['createdAt', 'DESC']
             ]
@@ -275,6 +287,7 @@ exports.getCourseById = async (req, res) => {
                 where: {
                     type: "DEFAULT"
                 },
+                required : false,
                 include: [{
                     model: Coupon,
                     as: "coupon"
