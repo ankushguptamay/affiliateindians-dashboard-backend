@@ -143,6 +143,29 @@ exports.addCouponToCourse = async (req, res) => {
             return res.status(400).send(error.details[0].message);
         }
         const { couponsId, courseId, type } = req.body;
+        // Default Coupon validation
+        let defaultType;
+        if (type === "DEFAULT") {
+            defaultType = type.toUpperCase();
+            if (couponsId.length !== 1) {
+                return res.status(400).send({
+                    success: false,
+                    message: "In Default type couponsId,s length should be 1!"
+                });
+            }
+            const isDefault = await Course_Coupon.findOne({
+                where: {
+                    couponId: couponsId[0],
+                    courseId: courseId
+                }
+            });
+            if (isDefault) {
+                return res.status(400).send({
+                    success: false,
+                    message: `This Course already has one default coupon!`
+                });
+            }
+        }
         const expiredCoupon = [];
         for (let i = 0; i < couponsId.length; i++) {
             const coupon = await Coupon.findOne({
@@ -168,7 +191,7 @@ exports.addCouponToCourse = async (req, res) => {
                     await Course_Coupon.create({
                         courseId: courseId,
                         couponId: couponsId[i],
-                        type: type.toUpperCase()
+                        type: defaultType
                     });
                 }
             }
