@@ -87,7 +87,7 @@ exports.createCoupon = async (req, res) => {
         if (adminTag === "ADMIN") {
             condition.push({ adminId: adminId });
         }
-        if (coursesId.length > 0) {
+        if (coursesId) {
             // only superAdmin can add coupon to all course otherwise admin can only add coupon in those courses which he created
             for (let i = 0; i < coursesId.length; i++) {
                 condition.push({ id: coursesId[i] });

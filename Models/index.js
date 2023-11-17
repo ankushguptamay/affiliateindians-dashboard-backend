@@ -54,6 +54,7 @@ db.course_coupon = require('./Admin/Master/course_CouponModel.js')(sequelize, Se
 db.user = require('./User/user.js')(sequelize, Sequelize);
 db.user_course = require('./User/user_CourseModel.js')(sequelize, Sequelize);
 db.userWallet = require('./User/walletModel.js')(sequelize, Sequelize);
+db.quizAnswer = require('./User/quizAnswerModel.js')(sequelize, Sequelize);
 // db.userAccountDetail = require('./User/userAccountDetailsModel.js')(sequelize, Sequelize);
 
 // Admin Course Association
@@ -142,6 +143,21 @@ db.course_coupon.belongsTo(db.course, { foreignKey: "courseId", as: "course" });
 // User Association with wallet
 db.user.hasOne(db.userWallet, { foreignKey: "userId", as: "wallet" });
 db.userWallet.belongsTo(db.user, { foreignKey: "userId", as: "user" });
+
+// User Association with quizAnswer
+db.user.hasMany(db.quizAnswer, { foreignKey: "userId", as: "quizAnswer" });
+db.quizAnswer.belongsTo(db.user, { foreignKey: "userId", as: "user" });
+
+// Quiz Association with quizAnswer
+db.lessonQuiz.hasMany(db.quizAnswer, { foreignKey: "quizId", as: "quizAnswer" });
+db.course_coupon.belongsTo(db.lessonQuiz, { foreignKey: "quizId", as: "quiz" });
+
+// quizAnswer Association with course
+db.course.hasMany(db.quizAnswer, { foreignKey: "courseId", as: "quizAnswer" });
+// quizAnswer Association with section
+db.section.hasMany(db.quizAnswer, { foreignKey: "sectionId", as: "quizAnswer" });
+// quizAnswer Association with lesson
+db.lesson.hasMany(db.quizAnswer, { foreignKey: "lessonId", as: "quizAnswer" });
 
 // db.user.hasMany(db.userAccountDetail, { foreignKey: "userId" });
 // db.userAccountDetail.belongsTo(db.user, { foreignKey: "userId" });

@@ -56,3 +56,10 @@ exports.addQuiz = (data) => {
     }) // .options({ allowUnknown: true });
     return schema.validate(data);
 }
+
+exports.submitQuizAnswer = (data) => {
+    const schema = joi.object().keys({
+        quizQuestion: joi.array().required()
+    }) // .options({ allowUnknown: true });
+    return schema.validate(data);
+}
