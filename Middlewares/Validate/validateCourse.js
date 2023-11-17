@@ -22,8 +22,8 @@ exports.couponValidation = (data) => {
 
 exports.addCouponToCourse = (data) => {
     const schema = joi.object().keys({
-        couponsId: joi.string().required(),
-        courseId: joi.array().required(),
+        couponsId: joi.array().required(),
+        courseId: joi.string().required(),
         type: joi.array().optional()
     }) // .options({ allowUnknown: true });
     return schema.validate(data);
