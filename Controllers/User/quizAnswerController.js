@@ -94,85 +94,52 @@ exports.submitAnswer = async (req, res) => {
     }
 };
 
-exports.checkResultbyLessonForUser = async (req, res) => {
+exports.checkResultbyForUser = async (req, res) => {
     try {
         const userId = req.user.id;
-        const lessonId = req.params.id;
-
-        const quizAnswerByUser = await Quiz_Answer.findAll({
-            where: {
+        const { lessonId, sectionId, courseId } = req.query;
+        let conditionForUserAnswer;
+        let conditionForAdminAnswer;
+        if (lessonId) {
+            conditionForUserAnswer = {
                 lessonId: lessonId,
                 userId: userId
-            }
-        });
-        const quizAnswerByAdmin = await Quiz.findAll({
-            where: {
+            };
+            conditionForAdminAnswer = {
                 lessonId: lessonId
             }
-        });
-        const response = await checkAnswer(quizAnswerByAdmin, quizAnswerByUser);
-        res.status(201).send({
-            success: true,
-            message: `Quiz checked successfully!`,
-            data: response
-        });
-    }
-    catch (err) {
-        res.status(500).send({
-            success: false,
-            err: err.message
-        });
-    }
-};
-
-exports.checkResultbySectionForUser = async (req, res) => {
-    try {
-        const userId = req.user.id;
-        const sectionId = req.params.id;
-
-        const quizAnswerByUser = await Quiz_Answer.findAll({
-            where: {
+        } else if (sectionId) {
+            conditionForUserAnswer = {
                 sectionId: sectionId,
                 userId: userId
-            }
-        });
-        const quizAnswerByAdmin = await Quiz.findAll({
-            where: {
+            };
+            conditionForAdminAnswer = {
                 sectionId: sectionId
             }
-        });
-        const response = await checkAnswer(quizAnswerByAdmin, quizAnswerByUser);
-        res.status(201).send({
-            success: true,
-            message: `Quiz checked successfully!`,
-            data: response
-        });
-    }
-    catch (err) {
-        res.status(500).send({
-            success: false,
-            err: err.message
-        });
-    }
-};
-
-exports.checkResultbyCourseForUser = async (req, res) => {
-    try {
-        const userId = req.user.id;
-        const courseId = req.params.id;
-
-        const quizAnswerByUser = await Quiz_Answer.findAll({
-            where: {
+        } else if (courseId) {
+            conditionForUserAnswer = {
                 courseId: courseId,
                 userId: userId
-            }
-        });
-        const quizAnswerByAdmin = await Quiz.findAll({
-            where: {
+            };
+            conditionForAdminAnswer = {
                 courseId: courseId
             }
+        } else {
+            return res.status(400).send({
+                success: false,
+                message: "Required field is not present!"
+            });
+        }
+
+        const quizAnswerByUser = await Quiz_Answer.findAll({
+            where: conditionForUserAnswer
         });
+        const quizAnswerByAdmin = await Quiz.findAll({
+            where: conditionForAdminAnswer
+        });
+
         const response = await checkAnswer(quizAnswerByAdmin, quizAnswerByUser);
+
         res.status(201).send({
             success: true,
             message: `Quiz checked successfully!`,

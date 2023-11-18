@@ -179,6 +179,8 @@ exports.addCouponToCourse = async (req, res) => {
                 expiredCoupon.push(coupon.couponCode);
             } else {
                 const condition = [{ id: courseId }];
+                const adminId = req.admin.id;
+                const adminTag = req.admin.adminTag;
                 if (adminTag === "ADMIN") {
                     condition.push({ adminId: adminId });
                 }

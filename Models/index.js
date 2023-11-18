@@ -150,7 +150,7 @@ db.quizAnswer.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 
 // Quiz Association with quizAnswer
 db.lessonQuiz.hasMany(db.quizAnswer, { foreignKey: "quizId", as: "quizAnswer" });
-db.course_coupon.belongsTo(db.lessonQuiz, { foreignKey: "quizId", as: "quiz" });
+db.quizAnswer.belongsTo(db.lessonQuiz, { foreignKey: "quizId", as: "quiz" });
 
 // quizAnswer Association with course
 db.course.hasMany(db.quizAnswer, { foreignKey: "courseId", as: "quizAnswer" });
