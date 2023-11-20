@@ -4,6 +4,7 @@ const LessonFile = db.lessonFile;
 const LessonVideo = db.lessonVideo;
 const LessonQuiz = db.lessonQuiz;
 const Course = db.course;
+const VideoComment = db.videoComment;
 const User_Course = db.user_course;
 const Section = db.section;
 const { deleteSingleFile, deleteMultiFile } = require("../../../Util/deleteFile");
@@ -288,79 +289,113 @@ exports.unPublicLesson = async (req, res) => {
 };
 
 
-// exports.deleteLesson = async (req, res) => {
-//     try {
-//         const id = req.params.id;
-//         const lesson = await Lesson.findOne({ where: { id: id } });
-//         if (!lesson) {
-//             return res.status(400).send({
-//                 success: false,
-//                 message: "Lesson is not present!"
-//             });
-//         };
-//         // delete associated video
-//         const video = await LessonVideo.findAll({ lessonId: id });
-//         const commentFileArray = [];
-//         const thumbnailArray = [];
-//         if (video.length > 0) {
-//             // delete video from bunny
-//             for (let i = 0; i < video.length; i++) {
-//                 const deleteVideo = {
-//                     method: "DELETE",
-//                     url: `http://video.bunnycdn.com/library/${video[i].BUNNY_VIDEO_LIBRARY_ID}/videos/${video[i].Video_ID}`,
-//                     headers: {
-//                         AccessKey: video[i].BUNNY_LIBRARY_API_KEY,
-//                     }
-//                 };
+exports.hardDeleteLesson = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
+        const lesson = await Lesson.findOne({
+            where: {
+                [Op.and]: condition
+            }
+        });
+        if (!lesson) {
+            return res.status(400).send({
+                success: false,
+                message: "Lesson is not present!"
+            });
+        };
+        // delete associated video
+        const video = await LessonVideo.findAll({ lessonId: id });
+        const commentFileArray = [];
+        const thumbnailArray = [];
+        const lessonFileArray = [];
+        if (video.length > 0) {
+            // delete video from bunny
+            for (let i = 0; i < video.length; i++) {
+                const deleteVideo = {
+                    method: "DELETE",
+                    url: `http://video.bunnycdn.com/library/${video[i].BUNNY_VIDEO_LIBRARY_ID}/videos/${video[i].Video_ID}`,
+                    headers: {
+                        AccessKey: video[i].BUNNY_LIBRARY_API_KEY,
+                    }
+                };
 
-//                 await axios
-//                     .request(deleteVideo)
-//                     .then((response) => {
-//                         // console.log("delete: ", response.data);
-//                     })
-//                     .catch((error) => {
-//                         // console.log(error);
-//                         return res.status(400).send({
-//                             success: false,
-//                             message: "Delete request of video failed from bunny. try to delete again!",
-//                             bunnyMessage: error.message
-//                         });
-//                     });
-//                 thumbnailArray.push(video[i].Thumbnail_Path);
-//                 const comment = await VideoComment.findAll({ where: { lessonVideoId: video[i].id } });
-//                 for (let i = 0; i < comment.length; i++) {
-//                     commentFileArray.push(comment[i].file_Path);
-//                 }
-//             }
-//         }
-//         // delete thumbnail
-//         if (thumbnailArray.length > 0) {
-//             deleteMultiFile(thumbnailArray);
-//         }
-//         // delete comment Files
-//         if (commentFileArray.length > 0) {
-//             deleteMultiFile(commentFileArray);
-//         }
-//         // delete lesson files
-//         const lessonFileArray = [];
-//         const lessonFile = await LessonFile.findAll({ where: { lessonId: id } });
-//         for (let i = 0; i < lessonFile.length; i++) {
-//             lessonFileArray.push(lessonFile[i].file_Path);
-//         }
-//         if (lessonFileArray.length > 0) {
-//             deleteMultiFile(lessonFileArray);
-//         }
-//         // delete lesson from database
-//         await lesson.destroy();
-//         res.status(200).send({
-//             success: true,
-//             message: `Lesson deleted successfully!`
-//         });
-//     } catch (err) {
-//         console.log(err);
-//         res.status(500).send({
-//             success: false,
-//             err: err.message
-//         });
-//     }
-// };
+                await axios
+                    .request(deleteVideo)
+                    .then((response) => {
+                        // console.log("delete: ", response.data);
+                    })
+                    .catch((error) => {
+                        // console.log(error);
+                        return res.status(400).send({
+                            success: false,
+                            message: "Delete request of video failed from bunny. try to delete again!",
+                            bunnyMessage: error.message
+                        });
+                    });
+                thumbnailArray.push(video[i].Thumbnail_Path);
+            }
+        }
+        // delete thumbnail
+        if (thumbnailArray.length > 0) {
+            deleteMultiFile(thumbnailArray);
+        }
+        // Get All comment file
+        const comment = await VideoComment.findAll({ where: { lessonId: id } });
+        for (let i = 0; i < comment.length; i++) {
+            commentFileArray.push(comment[i].file_Path);
+        }
+        // delete comment Files
+        if (commentFileArray.length > 0) {
+            deleteMultiFile(commentFileArray);
+        }
+        // delete lesson files
+        const lessonFile = await LessonFile.findAll({ where: { lessonId: id } });
+        for (let i = 0; i < lessonFile.length; i++) {
+            lessonFileArray.push(lessonFile[i].file_Path);
+        }
+        if (lessonFileArray.length > 0) {
+            deleteMultiFile(lessonFileArray);
+        }
+        // delete video from database
+        await LessonVideo.destroy({
+            where: {
+                lessonId: id
+            }, force: true
+        });
+        // delete VideoComment from database
+        await VideoComment.destroy({
+            where: {
+                lessonId: id
+            }, force: true
+        });
+        // delete LessonFile from database
+        await LessonFile.destroy({
+            where: {
+                lessonId: id
+            }, force: true
+        });
+        // delete quiz from database
+        await LessonQuiz.destroy({
+            where: {
+                lessonId: id
+            }, force: true
+        });
+        // delete lesson from database
+        await lesson.destroy({ force: true });
+        res.status(200).send({
+            success: true,
+            message: `Lesson deleted successfully!`
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};

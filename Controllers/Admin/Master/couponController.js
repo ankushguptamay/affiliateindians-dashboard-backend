@@ -200,7 +200,7 @@ exports.addCouponToCourse = async (req, res) => {
         }
         let message = `Coupons added to course successfully!`;
         if (expiredCoupon.length > 0) {
-            `Coupons added to course successfully! ${expiredCoupon} these coupon have been expired so we did not add!`
+            message = `Coupons added to course successfully! ${expiredCoupon} these coupon have been expired so we did not add!`
         }
         res.status(201).send({
             success: true,
