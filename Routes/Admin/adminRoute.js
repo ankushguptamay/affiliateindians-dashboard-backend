@@ -70,7 +70,7 @@ router.get("/sections/:courseId", verifyAdminToken, isAdmin, getAllSectionByCour
 router.put("/publicSection/:id", verifyAdminToken, isAdmin, publicSection);
 router.put("/updateSection/:id", verifyAdminToken, isAdmin, updateSection);
 router.put("/unPublicSection/:id", verifyAdminToken, isAdmin, unPublicSection);
-router.delete("/hardeleteSection/:id", verifyAdminToken, isAdmin, hardeleteSection);
+router.delete("/hardDeleteSection/:id", verifyAdminToken, isAdmin, hardeleteSection);
 // Lesson
 router.post("/createLesson", verifyAdminToken, isAdmin, createLesson);
 router.get("/lesson/:id", verifyAdminToken, isAdmin, getLessonByLessonIdForAdmin);

@@ -431,6 +431,22 @@ exports.hardDeleteCourse = async (req, res) => {
         if (course.authorImagePath) {
             deleteSingleFile(course.authorImagePath);
         }
+        // Delete Library from bunny
+        const deleteVideoLibrary = {
+            method: "DELETE",
+            url: `https://api.bunny.net/videolibrary/${course.BUNNY_VIDEO_LIBRARY_ID}`,
+            headers: {
+                Accept: "application/json",
+                AccessKey: process.env.BUNNY_ACCOUNT_ACCESS_KEY,
+            }
+        };
+        await axios
+            .request(deleteVideoLibrary)
+            .then((response) => {
+            })
+            .catch((error) => {
+                return res.status(400).json({ error: "Library not deleted!" });
+            });
         // delete course from database
         await course.destroy({ force: true });
         res.status(200).send({
