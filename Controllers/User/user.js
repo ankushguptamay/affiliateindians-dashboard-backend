@@ -247,34 +247,38 @@ exports.findUser = async (req, res) => {
 //     }
 // };
 
-// exports.update = async (req, res) => {
-//     try {
-//         const id = req.params.id;
-//         const users = await User.findOne({ where: { id: id } });
-//         if (!users) {
-//             return res.status(400).send({
-//                 success: false,
-//                 message: "User is not present"
-//             })
-//         }
-//         users.update({
-//             name: req.body.name,
-//             // email: req.body.email,
-//             mobileNumber: req.body.mobileNumber,
-//             address: req.body.address,
-//             // city: req.body.city,
-//             // state: req.body.state,
-//             // country: req.body.country,
-//             pinCode: req.body.pinCode
-//         });
-//         res.status(200).send({
-//             success: true,
-//             message: `User updated successfully!`
-//         });
-//     } catch (err) {
-//           res.status(500).send({ message: err.message });
-//     }
-// };
+exports.update = async (req, res) => {
+    try {
+        const id = req.user.id;
+        const email = req.user.email;
+        const users = await User.findOne({
+            where: {
+                id: id,
+                email: email
+            }
+        });
+        const { city, state, country, pinCode, address, mobileNumber, name } = req.body;
+        await users.update({
+            ...users,
+            name: name,
+            mobileNumber: mobileNumber,
+            address: address,
+            city: city,
+            state: state,
+            country: country,
+            pinCode: pinCode
+        });
+        res.status(200).send({
+            success: true,
+            message: `User,s data updated successfully!`
+        });
+    } catch (err) {
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
 
 exports.findUserForSuperAdmin = async (req, res) => {
     try {

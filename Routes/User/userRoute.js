@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { create, changePassword, login, findUser } = require("../../Controllers/User/user");
+const { create, changePassword, login, findUser, update } = require("../../Controllers/User/user");
 const { submitAnswer, checkResultbyForUser } = require("../../Controllers/User/quizAnswerController");
 const { getCoupon, applyCouponToCourse } = require('../../Controllers/Admin/Master/couponController');
 const { getAllCourse, getUsersCourse } = require('../../Controllers/Admin/AddCourse/courseController');
@@ -21,6 +21,7 @@ router.post("/register", create);
 router.post("/login", login);
 router.post("/changePassword", verifyUserToken, isUser, changePassword);
 router.get("/users", verifyUserToken, isUser, findUser);
+router.put("/update", verifyUserToken, isUser, update);
 
 // Course
 router.get("/courses", verifyUserToken, isUser, getAllCourse);
