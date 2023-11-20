@@ -41,7 +41,7 @@ exports.changePassword = (data) => {
             // .regex(RegExp(pattern))
             .required()
             .min(8),
-        previousPassword: joi.string().required().min(8).max(8)
+        previousPassword: joi.string().required().min(8)
     }) // .options({ allowUnknown: true });
     return schema.validate(data);
 }

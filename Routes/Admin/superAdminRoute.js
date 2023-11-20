@@ -30,6 +30,7 @@ const { isSuperAdmin } = require('../../Middlewares/isPresent');
 const uploadImage = require('../../Middlewares/UploadFile/uploadImages');
 const uploadPDF = require('../../Middlewares/UploadFile/uploadPDF');
 const uploadImageAndPDF = require('../../Middlewares/UploadFile/uploadImageAndPDF');
+const uploadImageDocumentPresentation = require('../../Middlewares/UploadFile/uploadImageDocumentPresentation');
 
 // Route
 // Super Admin 
@@ -86,7 +87,7 @@ router.delete("/hardDeleteLesson/:id", verifyAdminToken, isSuperAdmin, hardDelet
 // Files
 router.post("/addBanner/:lessonId", verifyAdminToken, isSuperAdmin, uploadImage.single("lessonBanner"), addBanner);
 router.post("/addPDF/:lessonId", verifyAdminToken, isSuperAdmin, uploadPDF.array("lessonPDF", 10), addPDF);
-router.post("/addResource/:lessonId", verifyAdminToken, isSuperAdmin, uploadImageAndPDF.array("lessonResource", 10), addResource);
+router.post("/addResource/:lessonId", verifyAdminToken, isSuperAdmin, uploadImageDocumentPresentation.array("lessonResource", 10), addResource);
 router.delete("/hardDeletePDF/:id", verifyAdminToken, isSuperAdmin, hardDeletePDF);
 router.put("/updateBanner/:id", verifyAdminToken, isSuperAdmin, uploadImage.single("lessonBanner"), updateBanner);
 router.delete("/hardDeleteResource/:id", verifyAdminToken, isSuperAdmin, hardDeleteResource);
