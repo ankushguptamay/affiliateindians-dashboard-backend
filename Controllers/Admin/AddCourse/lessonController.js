@@ -309,7 +309,7 @@ exports.hardDeleteLesson = async (req, res) => {
             });
         };
         // delete associated video
-        const video = await LessonVideo.findAll({ lessonId: id });
+        const video = await LessonVideo.findAll({ where: { lessonId: id } });
         const commentFileArray = [];
         const thumbnailArray = [];
         const lessonFileArray = [];
