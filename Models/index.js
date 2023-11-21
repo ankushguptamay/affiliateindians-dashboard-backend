@@ -56,7 +56,7 @@ db.user = require('./User/user.js')(sequelize, Sequelize);
 db.user_course = require('./User/user_CourseModel.js')(sequelize, Sequelize);
 db.userWallet = require('./User/walletModel.js')(sequelize, Sequelize);
 db.quizAnswer = require('./User/quizAnswerModel.js')(sequelize, Sequelize);
-// db.userAccountDetail = require('./User/userAccountDetailsModel.js')(sequelize, Sequelize);
+db.userAccountDetail = require('./User/userAccountDetailsModel.js')(sequelize, Sequelize);
 
 // Admin Course Association
 db.admin.hasMany(db.course, { foreignKey: "adminId" });
@@ -165,8 +165,8 @@ db.course.hasMany(db.upSell, { foreignKey: "courseId", as: "upSell" });
 // admin Association upSell
 db.admin.hasMany(db.upSell, { foreignKey: "adminId", as: "upSell" });
 
-// db.user.hasMany(db.userAccountDetail, { foreignKey: "userId" });
-// db.userAccountDetail.belongsTo(db.user, { foreignKey: "userId" });
+db.user.hasOne(db.userAccountDetail, { foreignKey: "userId" });
+db.userAccountDetail.belongsTo(db.user, { foreignKey: "userId" });
 
 // queryInterface.removeColumn("courses", "discription").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.addColumn("courses", "authorDiscription", { type: DataTypes.TEXT }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });

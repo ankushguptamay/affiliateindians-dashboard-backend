@@ -103,7 +103,10 @@ exports.create = async (req, res) => {
         });
     }
     catch (err) {
-        res.status(500).send({ message: err.message });
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
     }
 };
 
@@ -151,7 +154,10 @@ exports.login = async (req, res) => {
         });
     }
     catch (err) {
-        res.status(500).send({ message: err.message });
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
     }
 };
 
@@ -200,7 +206,10 @@ exports.changePassword = async (req, res) => {
         });
     }
     catch (err) {
-        res.status(500).send({ message: err.message });
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
     }
 };
 
@@ -223,7 +232,10 @@ exports.findUser = async (req, res) => {
             data: user
         });
     } catch (err) {
-        res.status(500).send({ message: err.message });
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
     }
 };
 
@@ -342,7 +354,10 @@ exports.findUserForSuperAdmin = async (req, res) => {
             data: user
         });
     } catch (err) {
-        res.status(500).send({ message: err.message });
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
     }
 };
 
@@ -432,7 +447,10 @@ exports.findUserForAdmin = async (req, res) => {
             data: user
         });
     } catch (err) {
-        res.status(500).send({ message: err.message });
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
     }
 };
 

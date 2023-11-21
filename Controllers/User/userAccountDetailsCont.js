@@ -1,91 +1,158 @@
 const db = require('../../Models');
 const UserAccountDetail = db.userAccountDetail;
+const { Op } = require('sequelize');
+const { accountDetailsValidation } = require("../../Middlewares/Validate/validateUser");
 
-exports.create = async (req, res) => {
+exports.addAccountDetails = async (req, res) => {
     try {
-        // console.log(req.body);
-        const users = await UserAccountDetail.create({
-            name: req.body.name,
-            email: req.body.email,
-            mobileNumber: req.body.mobileNumber,
-            address: req.body.address,
-            city: req.body.city,
-            state: req.body.state,
-            country: req.body.country,
-            pinCode: req.body.pinCode
+        // Validate body
+        const { error } = accountDetailsValidation(req.body);
+        if (error) {
+            return res.status(400).send(error.details[0].message);
+        }
+        const { accountHolderName, accountNumber, bankName, branchName, IFSCCode, payTMNumber, gPayNumber, phonePayNumber, UPIID } = req.body;
+        if (accountHolderName || accountNumber || bankName || branchName) {
+            if (accountHolderName && accountNumber && bankName && branchName) {
+
+            } else {
+                return res.status(400).send({
+                    success: false,
+                    message: `Required field should be present!`
+                });
+            }
+        }
+        await UserAccountDetail.create({
+            accountHolderName: accountHolderName,
+            accountNumber: accountNumber,
+            bankName: bankName,
+            branchName: branchName,
+            IFSCCode: IFSCCode,
+            payTMNumber: payTMNumber,
+            gPayNumber: gPayNumber,
+            phonePayNumber: phonePayNumber,
+            UPIID: UPIID,
+            userId: req.user.id
         });
         res.status(201).send({
             success: true,
-            message: `User added successfully!`
+            message: `Account Details added successfully!`
         });
     }
     catch (err) {
-        console.log(err);
-        res.status(500).send(err);
-    }
-};
-
-exports.findAll = async (req, res) => {
-    try {
-        const users = await User.findAll();
-        res.status(200).send({
-            success: true,
-            message: `User fetched successfully!`,
-            data: users
+        res.status(500).send({
+            success: false,
+            err: err.message
         });
-    } catch (err) {
-        console.log(err);
-        res.status(500).send(err);
     }
 };
 
-exports.delete = async (req, res) => {
+exports.findUserAccountDetails = async (req, res) => {
     try {
-        const id = req.params.id;
-        const users = await User.findOne({ where: { id: id } });
-        if (!users) {
+        const accountDetails = await UserAccountDetail.findOne({
+            where: {
+                userId: req.user.id
+            }
+        });
+        if (!accountDetails) {
             return res.status(400).send({
                 success: false,
-                message: "User is not present"
+                message: `No account details found!`
             })
         }
-        users.destroy();
         res.status(200).send({
             success: true,
-            message: `User deleted successfully!`
+            message: `Account Details fetched successfully!`,
+            data: accountDetails
         });
     } catch (err) {
-        console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
     }
 };
 
-exports.update = async (req, res) => {
+// Not Hard delete
+exports.deleteAccountDetails = async (req, res) => {
     try {
         const id = req.params.id;
-        const users = await User.findOne({ where: { id: id } });
-        if (!users) {
+        // Is Account details present
+        const accountDetails = await UserAccountDetail.findOne({
+            where: {
+                id: id,
+                userId: req.user.id
+            }
+        });
+        if (!accountDetails) {
             return res.status(400).send({
                 success: false,
-                message: "User is not present"
+                message: `No account details found!`
             })
         }
-        users.update({
-            name: req.body.name,
-            // email: req.body.email,
-            mobileNumber: req.body.mobileNumber,
-            address: req.body.address,
-            // city: req.body.city,
-            // state: req.body.state,
-            // country: req.body.country,
-            pinCode: req.body.pinCode
+        accountDetails.destroy();
+        res.status(200).send({
+            success: true,
+            message: `Account Details successfully!`
+        });
+    } catch (err) {
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
+
+exports.updateAccountDetails = async (req, res) => {
+    try {
+        // Validate body
+        const { error } = accountDetailsValidation(req.body);
+        if (error) {
+            return res.status(400).send(error.details[0].message);
+        }
+        const { accountHolderName, accountNumber, bankName, branchName, IFSCCode, payTMNumber, gPayNumber, phonePayNumber, UPIID } = req.body;
+        if (accountHolderName || accountNumber || bankName || branchName) {
+            if (accountHolderName && accountNumber && bankName && branchName) {
+
+            } else {
+                return res.status(400).send({
+                    success: false,
+                    message: `Required field should be present!`
+                });
+            }
+        }
+        // Is Account details present
+        const id = req.params.id;
+        const accountDetails = await UserAccountDetail.findOne({
+            where: {
+                id: id,
+                userId: req.user.id
+            }
+        });
+        if (!accountDetails) {
+            return res.status(400).send({
+                success: false,
+                message: `No account details found!`
+            })
+        }
+        await accountDetails.update({
+            accountHolderName: accountHolderName,
+            accountNumber: accountNumber,
+            bankName: bankName,
+            branchName: branchName,
+            IFSCCode: IFSCCode,
+            payTMNumber: payTMNumber,
+            gPayNumber: gPayNumber,
+            phonePayNumber: phonePayNumber,
+            UPIID: UPIID
         });
         res.status(200).send({
             success: true,
-            message: `User updated successfully!`
+            message: `Account Details updated successfully!`
         });
     } catch (err) {
-        console.log(err);
-        res.status(500).send(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
     }
 };

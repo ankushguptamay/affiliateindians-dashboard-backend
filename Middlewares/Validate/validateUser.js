@@ -45,3 +45,18 @@ exports.changePassword = (data) => {
     }) // .options({ allowUnknown: true });
     return schema.validate(data);
 }
+
+exports.accountDetailsValidation = (data) => {
+    const schema = joi.object().keys({
+        accountHolderName: joi.string().optional(),
+        accountNumber: joi.string().optional(),
+        bankName: joi.string().optional(),
+        branchName: joi.string().optional(),
+        IFSCCode: joi.string().optional(),
+        payTMNumber: joi.string().optional(),
+        gPayNumber: joi.string().optional(),
+        phonePayNumber: joi.string().optional(),
+        UPIID: joi.string().optional()
+    }) // .options({ allowUnknown: true });
+    return schema.validate(data);
+}

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const { create, changePassword, login, findUser, update } = require("../../Controllers/User/user");
+const { addAccountDetails, findUserAccountDetails, deleteAccountDetails, updateAccountDetails } = require("../../Controllers/User/userAccountDetailsCont");
 const { submitAnswer, checkResultForUser } = require("../../Controllers/User/quizAnswerController");
 const { getCoupon, applyCouponToCourse } = require('../../Controllers/Admin/Master/couponController');
 const { getAllCourse, getUsersCourse } = require('../../Controllers/Admin/AddCourse/courseController');
@@ -47,5 +48,11 @@ router.put("/applyCouponToCourse", verifyUserToken, isUser, applyCouponToCourse)
 // Quiz Answer
 router.post("/submitAnswer", verifyUserToken, isUser, submitAnswer);
 router.get("/results", verifyUserToken, isUser, checkResultForUser);
+
+// Account Details
+router.post("/addAccountDetails", verifyUserToken, isUser, addAccountDetails);
+router.get("/findUserAccountDetails", verifyUserToken, isUser, findUserAccountDetails);
+router.put("/updateAccountDetails/:id", verifyUserToken, isUser, updateAccountDetails);
+router.delete("/deleteAccountDetails/:id", verifyUserToken, isUser, deleteAccountDetails);
 
 module.exports = router;
