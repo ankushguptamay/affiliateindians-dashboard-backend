@@ -9,6 +9,7 @@ const LessonVideo = db.lessonVideo;
 const VideoComment = db.videoComment;
 const LessonQuiz = db.lessonQuiz;
 const Section = db.section
+const UpSell = db.upSell;
 const { deleteSingleFile, deleteMultiFile } = require("../../../Util/deleteFile");
 const { courseValidation } = require("../../../Middlewares/Validate/validateCourse");
 const axios = require('axios');
@@ -218,6 +219,9 @@ exports.getAllCourse = async (req, res) => {
                     model: Coupon,
                     as: "coupon"
                 }]
+            }, {
+                model: UpSell,
+                as: "upSell",
             }],
             order: [
                 ['createdAt', 'DESC']
@@ -294,6 +298,9 @@ exports.getCourseById = async (req, res) => {
                     model: Coupon,
                     as: "coupon"
                 }]
+            }, {
+                model: UpSell,
+                as: "upSell",
             }],
         });
         res.status(200).send({

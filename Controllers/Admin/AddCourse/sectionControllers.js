@@ -30,7 +30,7 @@ exports.createSection = async (req, res) => {
         });
     }
     catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send({
             success: false,
             err: err.message
@@ -80,7 +80,7 @@ exports.getAllSectionByCourseIdForAdmin = async (req, res) => {
             course: course
         });
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send({
             success: false,
             err: err.message
@@ -147,7 +147,7 @@ exports.getAllSectionByCourseIdForUser = async (req, res) => {
             course: course
         });
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send({
             success: false,
             err: err.message
@@ -264,7 +264,7 @@ exports.hardeleteSection = async (req, res) => {
             message: `Section deleted seccessfully! ID: ${id}`
         });
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send({
             success: false,
             err: err.message
@@ -300,7 +300,7 @@ exports.updateSection = async (req, res) => {
             message: `Section Name updated seccessfully!`
         });
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send({
             success: false,
             err: err.message
@@ -336,7 +336,7 @@ exports.publicSection = async (req, res) => {
             message: `Section publiced seccessfully!`
         });
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send({
             success: false,
             err: err.message
@@ -372,7 +372,7 @@ exports.unPublicSection = async (req, res) => {
             message: `Section unpubliced seccessfully!`
         });
     } catch (err) {
-        console.log(err);
+        // console.log(err);
         res.status(500).send({
             success: false,
             err: err.message

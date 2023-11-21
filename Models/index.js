@@ -39,6 +39,7 @@ db.lessonQuiz = require('./Admin/AddCourse/lessonQuizModel.js')(sequelize, Seque
 db.lessonVideo = require('./Admin/AddCourse/lessonVideoModel.js')(sequelize, Sequelize);
 db.lessonFile = require('./Admin/AddCourse/lessonFileModel.js')(sequelize, Sequelize);
 db.videoComment = require('./Admin/AddCourse/videoCommentModel.js')(sequelize, Sequelize);
+db.upSell = require('./Admin/AddCourse/upSellModel.js')(sequelize, Sequelize);
 
 // Teacher
 db.teacher = require('./Admin/Teacher/teacherModel.js')(sequelize, Sequelize);
@@ -158,6 +159,11 @@ db.course.hasMany(db.quizAnswer, { foreignKey: "courseId", as: "quizAnswer" });
 db.section.hasMany(db.quizAnswer, { foreignKey: "sectionId", as: "quizAnswer" });
 // quizAnswer Association with lesson
 db.lesson.hasMany(db.quizAnswer, { foreignKey: "lessonId", as: "quizAnswer" });
+
+// course Association upSell
+db.course.hasMany(db.upSell, { foreignKey: "courseId", as: "upSell" });
+// admin Association upSell
+db.admin.hasMany(db.upSell, { foreignKey: "adminId", as: "upSell" });
 
 // db.user.hasMany(db.userAccountDetail, { foreignKey: "userId" });
 // db.userAccountDetail.belongsTo(db.user, { foreignKey: "userId" });

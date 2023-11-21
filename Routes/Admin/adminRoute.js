@@ -18,6 +18,7 @@ const { uploadLessonVideo, hardDeleteLessonVideo, getAllVideoByLessonId, addOrUp
 const { createLessonQuiz, getAllQuizByLessonId, hardDeleteLessonQuiz, updateLessonQuiz } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
 const { addBanner, updateBanner, addPDF, hardDeletePDF, addResource, hardDeleteResource } = require('../../Controllers/Admin/AddCourse/lessonFileController');
 const { addCommentForAdmin, approveComment, hardDeleteCommentForAdmin, getCommentForAdmin } = require('../../Controllers/Admin/AddCourse/videoCommentController');
+const { addUpSell, deleteUpSell } = require('../../Controllers/Admin/AddCourse/upSellController');
 // Teacher
 const { registerTeacher } = require("../../Controllers/Admin/Teacher/teacherController");
 // User
@@ -100,6 +101,9 @@ router.post("/addComment/:lessonVideoId", verifyAdminToken, isAdmin, uploadImage
 router.get("/comment/:lessonVideoId", verifyAdminToken, isAdmin, getCommentForAdmin);
 router.delete("/hardDeleteComment/:id", verifyAdminToken, isAdmin, hardDeleteCommentForAdmin);
 router.put("/approveComment/:id", verifyAdminToken, isAdmin, approveComment);
+//UpSell
+router.post("/addUpSell", verifyAdminToken, isAdmin, addUpSell);
+router.delete("/deleteUpSell/:id", verifyAdminToken, isAdmin, deleteUpSell);
 
 // User
 router.get("/myUsers", verifyAdminToken, isAdmin, findUserForAdmin);
