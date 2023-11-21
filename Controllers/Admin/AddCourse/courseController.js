@@ -147,6 +147,21 @@ exports.getCourseForAdmin = async (req, res) => {
             where: {
                 [Op.and]: condition
             },
+            include: [{
+                model: Course_Coupon,
+                as: "course_coupons",
+                where: {
+                    type: "DEFAULT"
+                },
+                required: false,
+                include: [{
+                    model: Coupon,
+                    as: "coupon"
+                }]
+            }, {
+                model: UpSell,
+                as: "upSell",
+            }],
             order: [
                 ['createdAt', 'DESC']
             ]
