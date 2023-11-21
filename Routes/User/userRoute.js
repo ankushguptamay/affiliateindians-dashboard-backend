@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const { create, changePassword, login, findUser, update } = require("../../Controllers/User/user");
-const { submitAnswer, checkResultbyForUser } = require("../../Controllers/User/quizAnswerController");
+const { submitAnswer, checkResultForUser } = require("../../Controllers/User/quizAnswerController");
 const { getCoupon, applyCouponToCourse } = require('../../Controllers/Admin/Master/couponController');
 const { getAllCourse, getUsersCourse } = require('../../Controllers/Admin/AddCourse/courseController');
 const { getAllSectionByCourseIdForUser } = require('../../Controllers/Admin/AddCourse/sectionControllers');
@@ -46,6 +46,6 @@ router.put("/applyCouponToCourse", verifyUserToken, isUser, applyCouponToCourse)
 
 // Quiz Answer
 router.post("/submitAnswer", verifyUserToken, isUser, submitAnswer);
-router.get("/results", verifyUserToken, isUser, checkResultbyForUser);
+router.get("/results", verifyUserToken, isUser, checkResultForUser);
 
 module.exports = router;

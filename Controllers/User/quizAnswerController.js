@@ -27,7 +27,7 @@ const checkAnswer = async (adminAnswer, userAnswer) => {
             }
         }
     }
-    const unAttempt = adminAnswer.length - userAnswer.length;
+    const unAttempt = adminAnswer.length - attempt;
     const response = {
         wrongAnswer: wrongAnswer,
         rigthAnswer: rigthAnswer,
@@ -94,7 +94,7 @@ exports.submitAnswer = async (req, res) => {
     }
 };
 
-exports.checkResultbyForUser = async (req, res) => {
+exports.checkResultForUser = async (req, res) => {
     try {
         const userId = req.user.id;
         const { lessonId, sectionId, courseId } = req.query;

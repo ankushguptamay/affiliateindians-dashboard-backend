@@ -59,7 +59,7 @@ exports.addQuiz = (data) => {
 
 exports.submitQuizAnswer = (data) => {
     const schema = joi.object().keys({
-        quizQuestion: joi.array().required()
+        answers: joi.array().required()
     }) // .options({ allowUnknown: true });
     return schema.validate(data);
 }
