@@ -213,7 +213,7 @@ exports.getAllCourse = async (req, res) => {
                 [Op.and]: condition
             }
         });
-        console.log(totalCourse);
+        // console.log(totalCourse);
         const cCourse = await Course.findAll();
         // console.log(cCourse);
         // All Course
@@ -237,8 +237,6 @@ exports.getAllCourse = async (req, res) => {
             }, {
                 model: UpSell,
                 as: "upSell",
-            }, , {
-                model: AffiliateMarketingRatio
             }],
             order: [
                 ['createdAt', 'DESC']
