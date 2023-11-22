@@ -156,7 +156,7 @@ exports.addCouponToCourse = async (req, res) => {
             const isDefault = await Course_Coupon.findOne({
                 where: {
                     couponId: couponsId[0],
-                    courseId: courseId
+                    courseId: coursesId[0]
                 }
             });
             if (isDefault) {

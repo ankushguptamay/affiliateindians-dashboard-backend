@@ -10,6 +10,7 @@ const VideoComment = db.videoComment;
 const LessonQuiz = db.lessonQuiz;
 const Section = db.section
 const UpSell = db.upSell;
+const AffiliateMarketingRatio = db.affiliateMarketingRatio;
 const { deleteSingleFile, deleteMultiFile } = require("../../../Util/deleteFile");
 const { courseValidation } = require("../../../Middlewares/Validate/validateCourse");
 const axios = require('axios');
@@ -236,6 +237,8 @@ exports.getAllCourse = async (req, res) => {
             }, {
                 model: UpSell,
                 as: "upSell",
+            }, , {
+                model: AffiliateMarketingRatio
             }],
             order: [
                 ['createdAt', 'DESC']
