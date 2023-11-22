@@ -2,8 +2,7 @@ const joi = require('joi');
 
 exports.courseValidation = (data) => {
     const schema = joi.object().keys({
-        title: joi.string().required(),
-        ratioId: joi.string().optional()
+        title: joi.string().required()
     }) // .options({ allowUnknown: true });
     return schema.validate(data);
 }
@@ -68,6 +67,16 @@ exports.upSellValidation = (data) => {
     const schema = joi.object().keys({
         buttonText: joi.string().required(),
         buttonLink: joi.string().required(),
+        courseId: joi.string().required()
+    }) // .options({ allowUnknown: true });
+    return schema.validate(data);
+}
+
+exports.ratioValidation = (data) => {
+    const schema = joi.object().keys({
+        referalRatio: joi.string().required(), // userCommission
+        adminRatio: joi.string().required(), // adminCommision
+        ratioName: joi.string().required(),
         courseId: joi.string().required()
     }) // .options({ allowUnknown: true });
     return schema.validate(data);

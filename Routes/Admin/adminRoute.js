@@ -7,7 +7,7 @@ const { registerAdmin, loginAdmin } = require('../../Controllers/Admin/authAdmin
 const { getTemplate } = require('../../Controllers/Admin/Master/templateController');
 const { getTag } = require('../../Controllers/Admin/Master/tagController');
 const { getCoupon, addCouponToCourse, createCoupon, UpdateCoupon } = require('../../Controllers/Admin/Master/couponController');
-const { getRatio } = require('../../Controllers/Admin/Master/affiliateMarketingRatioController');
+const { getRatio, addRatio } = require('../../Controllers/Admin/Master/affiliateMarketingRatioController');
 
 // Course
 const { createSection, getAllSectionByCourseIdForAdmin, publicSection, unPublicSection, updateSection, hardeleteSection } = require('../../Controllers/Admin/AddCourse/sectionControllers');
@@ -45,6 +45,7 @@ router.get("/templates", verifyAdminToken, isAdmin, getTemplate);
 router.get("/tags", verifyAdminToken, isAdmin, getTag);
 //Ratio
 router.get("/ratios", verifyAdminToken, isAdmin, getRatio);
+router.post("/addRatio", verifyAdminToken, isAdmin, addRatio);
 //Coupon
 router.get("/coupons", verifyAdminToken, isAdmin, getCoupon);
 router.post("/createCoupon", verifyAdminToken, isAdmin, createCoupon);

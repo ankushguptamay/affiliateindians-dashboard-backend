@@ -33,7 +33,7 @@ exports.createCourse = async (req, res) => {
         if (error) {
             return res.status(400).send(error.details[0].message);
         }
-        const { title, ratioId } = req.body;
+        const { title } = req.body;
         // Always unique title
         const courseTitle = title.toUpperCase();
         const isCourse = await Course.findOne({
@@ -96,7 +96,6 @@ exports.createCourse = async (req, res) => {
             BUNNY_VIDEO_LIBRARY_ID: response.data.Id,
             BUNNY_LIBRARY_API_KEY: response.data.ApiKey,
             adminId: req.admin.id,
-            ratioId: ratioId,
             courseCode: code
         });
         res.status(201).send({
