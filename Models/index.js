@@ -164,7 +164,11 @@ db.lesson.hasMany(db.quizAnswer, { foreignKey: "lessonId", as: "quizAnswer" });
 db.course.hasMany(db.upSell, { foreignKey: "courseId", as: "upSell" });
 // admin Association upSell
 db.admin.hasMany(db.upSell, { foreignKey: "adminId", as: "upSell" });
+// affiliateMarketingRatio Association with course
+db.affiliateMarketingRatio.hasMany(db.course, { foreignKey: "ratioId" });
+db.course.belongsTo(db.affiliateMarketingRatio, { foreignKey: "ratioId" });
 
+// user Association with userAccountDetail
 db.user.hasOne(db.userAccountDetail, { foreignKey: "userId" });
 db.userAccountDetail.belongsTo(db.user, { foreignKey: "userId" });
 

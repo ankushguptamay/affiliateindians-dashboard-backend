@@ -142,7 +142,7 @@ exports.addCouponToCourse = async (req, res) => {
         if (error) {
             return res.status(400).send(error.details[0].message);
         }
-        const { couponsId, courseId, type } = req.body;
+        const { couponsId, coursesId, type } = req.body;
         // Default Coupon validation
         let defaultType;
         if (type === "DEFAULT") {
@@ -178,23 +178,25 @@ exports.addCouponToCourse = async (req, res) => {
             if (isCouponExpired) {
                 expiredCoupon.push(coupon.couponCode);
             } else {
-                const condition = [{ id: courseId }];
                 const adminId = req.admin.id;
                 const adminTag = req.admin.adminTag;
-                if (adminTag === "ADMIN") {
-                    condition.push({ adminId: adminId });
-                }
-                const course = await Course.findOne({
-                    where: {
-                        [Op.and]: condition
+                for (let j = 0; j < coursesId.length; j++) {
+                    const condition = [{ id: coursesId[j] }];
+                    if (adminTag === "ADMIN") {
+                        condition.push({ adminId: adminId });
                     }
-                });
-                if (course) {
-                    await Course_Coupon.create({
-                        courseId: courseId,
-                        couponId: couponsId[i],
-                        type: defaultType
+                    const course = await Course.findOne({
+                        where: {
+                            [Op.and]: condition
+                        }
                     });
+                    if (course) {
+                        await Course_Coupon.create({
+                            courseId: coursesId[j],
+                            couponId: couponsId[i],
+                            type: defaultType
+                        });
+                    }
                 }
             }
         }

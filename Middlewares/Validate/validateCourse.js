@@ -22,7 +22,7 @@ exports.couponValidation = (data) => {
 exports.addCouponToCourse = (data) => {
     const schema = joi.object().keys({
         couponsId: joi.array().required(),
-        courseId: joi.string().required(),
+        coursesId: joi.array().required(),
         type: joi.string().optional()
     }) // .options({ allowUnknown: true });
     return schema.validate(data);
