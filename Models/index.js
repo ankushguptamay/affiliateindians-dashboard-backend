@@ -39,7 +39,7 @@ db.lessonQuiz = require('./Admin/AddCourse/lessonQuizModel.js')(sequelize, Seque
 db.lessonVideo = require('./Admin/AddCourse/lessonVideoModel.js')(sequelize, Sequelize);
 db.lessonFile = require('./Admin/AddCourse/lessonFileModel.js')(sequelize, Sequelize);
 db.videoComment = require('./Admin/AddCourse/videoCommentModel.js')(sequelize, Sequelize);
-db.upSell = require('./Admin/AddCourse/upSellModel.js')(sequelize, Sequelize);
+// db.upSell = require('./Admin/AddCourse/upSellModel.js')(sequelize, Sequelize);
 
 // Teacher
 db.teacher = require('./Admin/Teacher/teacherModel.js')(sequelize, Sequelize);
@@ -161,9 +161,9 @@ db.section.hasMany(db.quizAnswer, { foreignKey: "sectionId", as: "quizAnswer" })
 db.lesson.hasMany(db.quizAnswer, { foreignKey: "lessonId", as: "quizAnswer" });
 
 // course Association upSell
-db.course.hasMany(db.upSell, { foreignKey: "courseId", as: "upSell" });
+// db.lesson.hasMany(db.upSell, { foreignKey: "courseId", as: "upSell" });
 // admin Association upSell
-db.admin.hasMany(db.upSell, { foreignKey: "adminId", as: "upSell" });
+// db.admin.hasMany(db.upSell, { foreignKey: "adminId", as: "upSell" });
 // affiliateMarketingRatio Association with course
 db.affiliateMarketingRatio.hasMany(db.course, { foreignKey: "ratioId" });
 db.course.belongsTo(db.affiliateMarketingRatio, { foreignKey: "ratioId" });
@@ -175,6 +175,6 @@ db.userAccountDetail.belongsTo(db.user, { foreignKey: "userId" });
 // queryInterface.removeColumn("courses", "discription").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.addColumn("courses", "authorDiscription", { type: DataTypes.TEXT }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.addColumn("courses", "discription", { type: DataTypes.TEXT }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-// queryInterface.dropTable("course_coupons").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.dropTable("upSells").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 module.exports = db;
