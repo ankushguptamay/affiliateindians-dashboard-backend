@@ -147,10 +147,10 @@ exports.addCouponToCourse = async (req, res) => {
         let defaultType;
         if (type === "DEFAULT") {
             defaultType = type.toUpperCase();
-            if (couponsId.length !== 1) {
+            if (couponsId.length !== 1 && coursesId.length !== 1) {
                 return res.status(400).send({
                     success: false,
-                    message: "In Default type couponsId,s length should be 1!"
+                    message: "In Default type couponsId,s and coursesId,s length should be 1!"
                 });
             }
             const isDefault = await Course_Coupon.findOne({
@@ -428,6 +428,40 @@ exports.UpdateCoupon = async (req, res) => {
         res.status(201).send({
             success: true,
             message: `Coupon updated successfully!`
+        });
+    }
+    catch (err) {
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
+
+exports.getCouponByCourseId = async (req, res) => {
+    try {
+        const courseId = req.params.courseId;
+        const couponAssociation = await Course_Coupon.findAll({
+            where: {
+                courseId: courseId
+            }
+        });
+        const couponId = [];
+        for (let i = 0; i < couponAssociation.length; i++) {
+            couponId.push(couponAssociation[i].couponId);
+        }
+        const coupon = await Coupon.findAll({
+            where: {
+                id: couponId
+            },
+            order: [
+                ['createdAt', 'DESC']
+            ]
+        });
+        res.status(201).send({
+            success: true,
+            message: `All coupon fetched successfully!`,
+            data: coupon
         });
     }
     catch (err) {
