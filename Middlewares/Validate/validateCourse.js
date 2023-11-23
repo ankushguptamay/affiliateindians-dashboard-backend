@@ -67,7 +67,7 @@ exports.upSellValidation = (data) => {
     const schema = joi.object().keys({
         buttonText: joi.string().required(),
         buttonLink: joi.string().required(),
-        courseId: joi.string().required()
+        lessonId: joi.string().required()
     }) // .options({ allowUnknown: true });
     return schema.validate(data);
 }

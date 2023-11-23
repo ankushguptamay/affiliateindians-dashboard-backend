@@ -1,7 +1,7 @@
 const { Op } = require('sequelize');
 const db = require('../../../Models');
 const { upSellValidation } = require("../../../Middlewares/Validate/validateCourse");
-const Course = db.course;
+const Lesson = db.lesson;
 const UpSell = db.upSell;
 
 exports.addUpSell = async (req, res) => {
@@ -11,34 +11,34 @@ exports.addUpSell = async (req, res) => {
         if (error) {
             return res.status(400).send(error.details[0].message);
         }
-        const { buttonText, buttonLink, courseId } = req.body;
-        // Check is this course create by this admin, superAdmin can add any course
+        const { buttonText, buttonLink, lessonId } = req.body;
+        // Check is this lesson create by this admin, superAdmin can add any lesson
         const adminId = req.admin.id;
-        const condition = [{ id: courseId }];
+        const condition = [{ id: lessonId }];
         if (req.admin.adminTag === "ADMIN") {
             condition.push({ adminId: adminId });
         }
-        const course = await Course.findOne({
+        const lesson = await Lesson.findOne({
             where: {
                 [Op.and]: condition
             }
         });
-        if (!course) {
+        if (!lesson) {
             return res.status(400).send({
                 success: false,
-                message: "Course is not present!"
+                message: "Lesson is not present!"
             });
         };
         // Create upSell
         await UpSell.create({
-            courseId: courseId,
+            lessonId: lessonId,
             buttonLink: buttonLink,
             buttonText: buttonText,
             adminId: adminId
         });
         res.status(201).send({
             success: true,
-            message: `UpSell created successfully! and added to course ${course.title}!`
+            message: `UpSell created successfully! and added to lesson ${lesson.lessonName}!`
         });
     }
     catch (err) {

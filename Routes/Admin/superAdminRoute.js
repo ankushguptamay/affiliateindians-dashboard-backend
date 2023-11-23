@@ -18,7 +18,7 @@ const { uploadLessonVideo, hardDeleteLessonVideo, getAllVideoByLessonId, addOrUp
 const { createLessonQuiz, getAllQuizByLessonId, hardDeleteLessonQuiz, updateLessonQuiz } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
 const { addBanner, updateBanner, addPDF, hardDeletePDF, addResource, hardDeleteResource } = require('../../Controllers/Admin/AddCourse/lessonFileController');
 const { addCommentForAdmin, approveComment, hardDeleteCommentForAdmin, getCommentForAdmin } = require('../../Controllers/Admin/AddCourse/videoCommentController');
-const { addUpSell, deleteUpSell } = require('../../Controllers/Admin/AddCourse/upSellController');
+const { addUpSell, deleteUpSell } = require('../../Controllers/Admin/Master/upSellController');
 
 const { findUserForSuperAdmin, findUserForAdmin, getAllUserWallet } = require("../../Controllers/User/user");
 const { bulkRegisterUserAndCreateCourseAndAssign, findAllUserForOnlyBulkCheck } = require("../../Controllers/User/bulk");

@@ -1,5 +1,6 @@
 const db = require('../../../Models');
 const Lesson = db.lesson;
+const UpSell = db.upSell;
 const LessonFile = db.lessonFile;
 const LessonVideo = db.lessonVideo;
 const LessonQuiz = db.lessonQuiz;
@@ -81,6 +82,9 @@ exports.getLessonByLessonIdForAdmin = async (req, res) => {
                 order: [
                     ['createdAt', 'ASC']
                 ]
+            }, {
+                model: UpSell,
+                as: "upSell",
             }]
         });
         if (!lesson) {
@@ -130,6 +134,9 @@ exports.getLessonByLessonIdForUser = async (req, res) => {
                 order: [
                     ['createdAt', 'ASC']
                 ]
+            }, {
+                model: UpSell,
+                as: "upSell",
             }]
         });
         if (!lesson) {
