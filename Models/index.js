@@ -30,6 +30,7 @@ db.sequelize = sequelize;
 // Admin
 db.admin = require('./Admin/admin')(sequelize, Sequelize);
 db.adminWallet = require('./Admin/adminWalletModel.js')(sequelize, Sequelize);
+db.shareSaleLink = require('./Admin/shareSaleLinkModel.js')(sequelize, Sequelize);
 
 // Admin AddCourse
 db.course = require('./Admin/AddCourse/courseModel.js')(sequelize, Sequelize);
@@ -167,13 +168,15 @@ db.admin.hasMany(db.upSell, { foreignKey: "adminId", as: "upSell" });
 // affiliateMarketingRatio Association with course
 db.affiliateMarketingRatio.hasMany(db.course, { foreignKey: "ratioId" });
 db.course.belongsTo(db.affiliateMarketingRatio, { foreignKey: "ratioId" });
+// admin Association shareSaleLink
+db.admin.hasMany(db.shareSaleLink, { foreignKey: "adminId", as: "shareSaleLink" });
 
 // user Association with userAccountDetail
 db.user.hasOne(db.userAccountDetail, { foreignKey: "userId" });
 db.userAccountDetail.belongsTo(db.user, { foreignKey: "userId" });
 
 // queryInterface.removeColumn("courses", "discription").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-// queryInterface.addColumn("courses", "authorDiscription", { type: DataTypes.TEXT }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("user_courses", "saleLinkTag", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.addColumn("courses", "discription", { type: DataTypes.TEXT }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.dropTable("upSells").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 

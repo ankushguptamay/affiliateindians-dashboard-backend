@@ -6,7 +6,8 @@ exports.purchaseCourseValidation = (data) => {
         currency: joi.string().required(),
         receipt: joi.string().required(),
         joinThrough: joi.string().optional(),
-        couponCode: joi.string().optional()
+        couponCode: joi.string().optional(),
+        saleLinkTag: joi.string().optional()
     });
     return schema.validate(data);
 }
@@ -22,7 +23,8 @@ exports.purchaseCourseByReferalValidation = (data) => {
         email: joi.string().email().required().label('Email'),
         mobileNumber: joi.string().length(10).required(),
         referalCode: joi.string().optional(),
-        couponCode: joi.string().optional()
+        couponCode: joi.string().optional(),
+        saleLinkTag: joi.string().optional()
     });
     return schema.validate(data);
 }

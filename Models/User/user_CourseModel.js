@@ -38,6 +38,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     couponCode: {
       type: DataTypes.STRING
+    },
+    saleLinkTag: {
+      type: DataTypes.STRING
     }
   }, {
     paranoid: true

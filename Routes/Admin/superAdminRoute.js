@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const { registerAdmin, loginAdmin, getAllAdminWallet } = require('../../Controllers/Admin/authSuperAdminController');
+const { generateSaleLinkTag } = require('../../Controllers/Admin/shareSaleLinkController');
 
 const { getAllPaymentData } = require('../../Controllers/User/purchaseCourseController');
 // Master
@@ -37,6 +38,9 @@ const uploadImageDocumentPresentation = require('../../Middlewares/UploadFile/up
 // Super Admin 
 // router.post("/register", registerAdmin);
 router.post("/login", loginAdmin);
+
+// Sale Link
+router.post("/generateSaleLinkTag", verifyAdminToken, isSuperAdmin, generateSaleLinkTag);
 
 // Master
 //Template

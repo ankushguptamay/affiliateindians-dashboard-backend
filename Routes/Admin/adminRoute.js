@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const { registerAdmin, loginAdmin } = require('../../Controllers/Admin/authAdminController');
+const { generateSaleLinkTag } = require('../../Controllers/Admin/shareSaleLinkController');
 
 // Master
 const { getTemplate } = require('../../Controllers/Admin/Master/templateController');
@@ -37,7 +38,8 @@ const uploadImageDocumentPresentation = require('../../Middlewares/UploadFile/up
 // Admin
 router.post("/register", registerAdmin);
 router.post("/login", loginAdmin);
-
+// Sale Link
+router.post("/generateSaleLinkTag", verifyAdminToken, isAdmin, generateSaleLinkTag);
 // Master
 //Template
 router.get("/templates", verifyAdminToken, isAdmin, getTemplate);

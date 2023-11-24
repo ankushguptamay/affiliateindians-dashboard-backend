@@ -5,6 +5,7 @@ const cors = require("cors");
 const admin = require('./Routes/Admin/adminRoute');
 const superAdmin = require('./Routes/Admin/superAdminRoute');
 const user = require('./Routes/User/userRoute');
+const public = require('./Routes/publicRoute');
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use('/masterFile', express.static('./Resources/Master'));
 app.use("/api/admin", admin);
 app.use("/api/superAdmin", superAdmin);
 app.use("/api/user", user);
+app.use("/api", public);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');

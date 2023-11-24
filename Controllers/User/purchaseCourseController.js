@@ -28,7 +28,7 @@ exports.createPayment = async (req, res) => {
             if (error) {
                 return res.status(400).send(error.details[0].message);
             }
-            const { amount, currency, receipt, joinThrough, couponCode } = req.body; // receipt is id created for this order
+            const { amount, currency, receipt, joinThrough, couponCode, saleLinkTag } = req.body; // receipt is id created for this order
             const userId = req.user.id;
             const user = await User.findOne({
                 where: {
@@ -51,7 +51,8 @@ exports.createPayment = async (req, res) => {
                             verify: false,
                             referalId: user.referalId,
                             joinThrough: joinThrough,
-                            couponCode: couponCode
+                            couponCode: couponCode,
+                            saleLinkTag: saleLinkTag
                         })
                             .then(() => {
                                 res.status(201).send({
@@ -81,7 +82,7 @@ exports.createPayment = async (req, res) => {
             if (error) {
                 return res.status(400).send(error.details[0].message);
             }
-            const { amount, currency, receipt, name, email, mobileNumber, referalCode, joinThrough, termAndConditionAccepted, couponCode } = req.body; // receipt is id created for this order
+            const { amount, currency, receipt, name, email, mobileNumber, referalCode, joinThrough, termAndConditionAccepted, couponCode, saleLinkTag } = req.body; // receipt is id created for this order
             let isUser = await User.findOne({
                 where: {
                     email: email
@@ -167,7 +168,8 @@ exports.createPayment = async (req, res) => {
                             verify: false,
                             referalId: referalId,
                             joinThrough: joinThrough,
-                            couponCode: couponCode
+                            couponCode: couponCode,
+                            saleLinkTag: saleLinkTag
                         })
                             .then(() => {
                                 res.status(201).send({
