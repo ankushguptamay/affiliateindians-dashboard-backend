@@ -176,7 +176,7 @@ db.user.hasOne(db.userAccountDetail, { foreignKey: "userId" });
 db.userAccountDetail.belongsTo(db.user, { foreignKey: "userId" });
 
 // queryInterface.removeColumn("courses", "discription").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.addColumn("user_courses", "saleLinkTag", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.addColumn("user_courses", "saleLinkTag", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.addColumn("courses", "discription", { type: DataTypes.TEXT }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.dropTable("upSells").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 

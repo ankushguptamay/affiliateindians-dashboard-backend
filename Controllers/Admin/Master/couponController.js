@@ -263,6 +263,7 @@ exports.applyCouponToCourse = async (req, res) => {
                 couponId: coupon.id
             }
         });
+        let saveAmount;
         if (!isCourseHasCoupon) {
             res.status(400).send({
                 success: false,
@@ -278,10 +279,12 @@ exports.applyCouponToCourse = async (req, res) => {
                     });
                 } else {
                     discountAmount = parseFloat(course.price) - parseFloat(coupon.integerValue);
+                    saveAmount = parseFloat(coupon.integerValue);
                 }
             } else if (coupon.couponType === "PERCENT") {
-                const coupenDiscountAmount = parseFloat(course.price) * parseFloat(coupon.integerValue) / 100
+                const coupenDiscountAmount = parseFloat(course.price) * parseFloat(coupon.integerValue) / 100;
                 discountAmount = parseFloat(course.price) - parseFloat(coupenDiscountAmount);
+                saveAmount = coupenDiscountAmount;
             } else {
                 return res.status(201).send({
                     success: true,
@@ -292,7 +295,8 @@ exports.applyCouponToCourse = async (req, res) => {
                 success: true,
                 message: `Coupon applied to course ${course.title} successfully!`,
                 data: {
-                    discountAmount: discountAmount
+                    discountAmount: discountAmount,
+                    saveAmount: saveAmount
                 }
             });
         }

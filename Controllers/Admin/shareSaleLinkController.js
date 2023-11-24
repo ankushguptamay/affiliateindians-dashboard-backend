@@ -65,7 +65,7 @@ exports.generateSaleLinkTag = async (req, res) => {
 
 exports.redirectByTag = async (req, res) => {
     try {
-        const domain = process.env.FRONTDOAMIN; // IN case of it is different with admin then domain column should exist in admin table 
+        const domain = "https://affiliateindians.com/3step-htas"; // IN case of it is different with admin then domain column should exist in admin table 
         const saleLinkTag = req.params.tag
         // Find Original link in database
         const link = await ShareSaleLink.findOne({
