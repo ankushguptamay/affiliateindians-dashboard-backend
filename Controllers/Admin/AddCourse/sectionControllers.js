@@ -107,6 +107,7 @@ exports.getAllSectionByCourseIdForUser = async (req, res) => {
                 where: {
                     isPublic: true
                 },
+                required: false,
                 as: "lessons",
                 attributes: ["id", "lessonName", "isPublic"],
                 order: [

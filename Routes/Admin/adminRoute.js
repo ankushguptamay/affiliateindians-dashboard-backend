@@ -6,8 +6,8 @@ const { registerAdmin, loginAdmin } = require('../../Controllers/Admin/authAdmin
 // Master
 const { getTemplate } = require('../../Controllers/Admin/Master/templateController');
 const { getTag } = require('../../Controllers/Admin/Master/tagController');
-const { getCoupon, addCouponToCourse, createCoupon, UpdateCoupon, getCouponByCourseId } = require('../../Controllers/Admin/Master/couponController');
-const { getRatio, addRatio } = require('../../Controllers/Admin/Master/affiliateMarketingRatioController');
+const { getCoupon, addCouponToCourse, createCoupon, UpdateCoupon, getCouponByCourseId, hardDeleteCoupon } = require('../../Controllers/Admin/Master/couponController');
+const { getRatio, addRatio, updateRatio, hardDeleteRatio } = require('../../Controllers/Admin/Master/affiliateMarketingRatioController');
 
 // Course
 const { createSection, getAllSectionByCourseIdForAdmin, publicSection, unPublicSection, updateSection, hardeleteSection } = require('../../Controllers/Admin/AddCourse/sectionControllers');
@@ -46,11 +46,14 @@ router.get("/tags", verifyAdminToken, isAdmin, getTag);
 //Ratio
 router.get("/ratios", verifyAdminToken, isAdmin, getRatio);
 router.post("/addRatio", verifyAdminToken, isAdmin, addRatio);
+router.delete("/hardDeleteRatio/:id", verifyAdminToken, isAdmin, hardDeleteRatio);
+router.put("/updateRatio/:id", verifyAdminToken, isAdmin, updateRatio);
 //Coupon
 router.get("/coupons", verifyAdminToken, isAdmin, getCoupon);
 router.get("/couponByCourse/:courseId", verifyAdminToken, isAdmin, getCouponByCourseId);
 router.post("/createCoupon", verifyAdminToken, isAdmin, createCoupon);
 router.put("/addCouponToCourses", verifyAdminToken, isAdmin, addCouponToCourse);
+router.delete("/hardDeleteCoupon/:id", verifyAdminToken, isAdmin, hardDeleteCoupon);
 router.put("/UpdateCoupon/:id", verifyAdminToken, isAdmin, UpdateCoupon);
 
 // Teacher

@@ -7,7 +7,7 @@ const { getAllPaymentData } = require('../../Controllers/User/purchaseCourseCont
 // Master
 const { getTemplate, addTemplate, hardDeleteTemplate } = require('../../Controllers/Admin/Master/templateController');
 const { getTag, hardDeleteTag, addTag } = require('../../Controllers/Admin/Master/tagController');
-const { getRatio, addRatio, hardDeleteRatio } = require('../../Controllers/Admin/Master/affiliateMarketingRatioController');
+const { getRatio, addRatio, hardDeleteRatio, updateRatio } = require('../../Controllers/Admin/Master/affiliateMarketingRatioController');
 const { getCoupon, addCouponToCourse, createCoupon, hardDeleteCoupon, UpdateCoupon, getCouponByCourseId } = require('../../Controllers/Admin/Master/couponController');
 // Course
 const { createSection, getAllSectionByCourseIdForAdmin, publicSection, unPublicSection, updateSection, hardeleteSection } = require('../../Controllers/Admin/AddCourse/sectionControllers');
@@ -51,6 +51,8 @@ router.delete("/hardDeleteTag/:id", verifyAdminToken, isSuperAdmin, hardDeleteTa
 router.get("/ratios", verifyAdminToken, isSuperAdmin, getRatio);
 router.post("/addRatio", verifyAdminToken, isSuperAdmin, addRatio);
 router.delete("/hardDeleteRatio/:id", verifyAdminToken, isSuperAdmin, hardDeleteRatio);
+router.put("/updateRatio/:id", verifyAdminToken, isSuperAdmin, updateRatio);
+
 //Coupon
 router.get("/coupons", verifyAdminToken, isSuperAdmin, getCoupon);
 router.get("/couponByCourse/:courseId", verifyAdminToken, isSuperAdmin, getCouponByCourseId);

@@ -81,3 +81,12 @@ exports.ratioValidation = (data) => {
     }) // .options({ allowUnknown: true });
     return schema.validate(data);
 }
+
+exports.updateRatioValidation = (data) => {
+    const schema = joi.object().keys({
+        referalRatio: joi.string().required(), // userCommission
+        adminRatio: joi.string().required(), // adminCommision
+        ratioName: joi.string().required()
+    }) // .options({ allowUnknown: true });
+    return schema.validate(data);
+}
