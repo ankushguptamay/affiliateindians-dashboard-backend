@@ -61,6 +61,7 @@ db.userWallet = require('./User/walletModel.js')(sequelize, Sequelize);
 db.quizAnswer = require('./User/quizAnswerModel.js')(sequelize, Sequelize);
 db.userAccountDetail = require('./User/userAccountDetailsModel.js')(sequelize, Sequelize);
 db.assignmentAnswer = require('./User/assignmentAnswerModel.js')(sequelize, Sequelize);
+db.affiliateUserIdRequest = require('./User/affiliateUserIdRequestModel.js')(sequelize, Sequelize);
 
 // Admin Course Association
 db.admin.hasMany(db.course, { foreignKey: "adminId" });
@@ -207,6 +208,11 @@ db.section.hasMany(db.assignmentAnswer, { foreignKey: "sectionId", as: "assignme
 // assignmentAnswer Association with lesson
 db.lesson.hasMany(db.assignmentAnswer, { foreignKey: "lessonId", as: "assignmentAnswer" });
 
+// user Association assignmentAnswer
+db.user.hasOne(db.affiliateUserIdRequest, { foreignKey: "userId", as: "affiliateUserIdRequest" });
+db.affiliateUserIdRequest.belongsTo(db.user, { foreignKey: "userId", as: "affiliateUserIdRequest" });
+
+queryInterface.addColumn("users", "affiliateUserId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.addColumn("courses", "allowAffiliate", { type: DataTypes.BOOLEAN }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.dropTable("templateForms").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.dropTable("templates").then((res) => { console.log(res) }).catch((err) => { console.log(err) });

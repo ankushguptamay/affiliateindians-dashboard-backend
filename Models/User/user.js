@@ -44,6 +44,9 @@ module.exports = (sequelize, DataTypes) => {
     termAndConditionAccepted: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
+    },
+    affiliateUserId: {
+      type: DataTypes.STRING
     }
   }, {
     paranoid: true

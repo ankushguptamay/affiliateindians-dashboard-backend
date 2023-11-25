@@ -79,8 +79,8 @@ router.put("/addOrUpdateAuthorImage/:id", verifyAdminToken, isSuperAdmin, upload
 router.put("/addOrUpdateCourseImage/:id", verifyAdminToken, isSuperAdmin, uploadImage.single("courseImage"), addOrUpdateCourseImage);
 router.put("/publicCourse/:id", verifyAdminToken, isSuperAdmin, publicCourse);
 router.put("/unPublicCourse/:id", verifyAdminToken, isSuperAdmin, unPublicCourse);
-router.put("/allowAffiliateCourse/:id", verifyAdminToken, isAdmin, allowAffiliateCourse);
-router.put("/disAllowAffiliateCourse/:id", verifyAdminToken, isAdmin, disAllowAffiliateCourse);
+router.put("/allowAffiliateCourse/:id", verifyAdminToken, isSuperAdmin, allowAffiliateCourse);
+router.put("/disAllowAffiliateCourse/:id", verifyAdminToken, isSuperAdmin, disAllowAffiliateCourse);
 router.put("/updateCourse/:id", verifyAdminToken, isSuperAdmin, updateCourse);
 router.delete("/deleteAuthorImage/:id", verifyAdminToken, isSuperAdmin, deleteAuthorImage);
 router.delete("/deleteCourseImage/:id", verifyAdminToken, isSuperAdmin, deleteCourseImage);
