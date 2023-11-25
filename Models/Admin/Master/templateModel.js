@@ -18,6 +18,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(1234)
         }
        
+    }, {
+        paranoid: true
     });
     return Template;
 };

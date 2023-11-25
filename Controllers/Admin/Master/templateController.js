@@ -71,7 +71,7 @@ exports.hardDeleteTemplate = async (req, res) => {
         if (template.templateImage_Path) {
             deleteSingleFile(template.templateImage_Path);
         }
-        await template.destroy();
+        await template.destroy({ force: true });
         res.status(201).send({
             success: true,
             message: `Template deleted successfully!`

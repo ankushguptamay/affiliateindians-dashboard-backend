@@ -41,6 +41,7 @@ db.lessonVideo = require('./Admin/AddCourse/lessonVideoModel.js')(sequelize, Seq
 db.lessonFile = require('./Admin/AddCourse/lessonFileModel.js')(sequelize, Sequelize);
 db.videoComment = require('./Admin/AddCourse/videoCommentModel.js')(sequelize, Sequelize);
 db.upSell = require('./Admin/Master/upSellModel.js')(sequelize, Sequelize);
+db.assignment = require('./Admin/AddCourse/assignmentModel.js')(sequelize, Sequelize);
 
 // Teacher
 db.teacher = require('./Admin/Teacher/teacherModel.js')(sequelize, Sequelize);
@@ -59,6 +60,7 @@ db.user_course = require('./User/user_CourseModel.js')(sequelize, Sequelize);
 db.userWallet = require('./User/walletModel.js')(sequelize, Sequelize);
 db.quizAnswer = require('./User/quizAnswerModel.js')(sequelize, Sequelize);
 db.userAccountDetail = require('./User/userAccountDetailsModel.js')(sequelize, Sequelize);
+db.assignmentAnswer = require('./User/assignmentAnswerModel.js')(sequelize, Sequelize);
 
 // Admin Course Association
 db.admin.hasMany(db.course, { foreignKey: "adminId" });
@@ -184,9 +186,31 @@ db.admin.hasMany(db.templateForm, { foreignKey: "adminId", as: "templateForm" })
 db.course.hasMany(db.templateForm, { foreignKey: "courseId", as: "templateForm" });
 db.templateForm.belongsTo(db.course, { foreignKey: "courseId", as: "course" });
 
+// admin Association assignment
+db.admin.hasMany(db.assignment, { foreignKey: "adminId", as: "assignment" });
+// course Association with assignment
+db.course.hasMany(db.assignment, { foreignKey: "courseId", as: "assignment" });
+// Section Association with assignment
+db.section.hasMany(db.assignment, { foreignKey: "sectionId", as: "assignment" });
+// Lesson Association with assignment
+db.lesson.hasMany(db.assignment, { foreignKey: "lessonId", as: "assignment" });
+
+// user Association assignmentAnswer
+db.user.hasMany(db.assignmentAnswer, { foreignKey: "userId", as: "assignmentAnswer" });
+// course Association with assignmentAnswer
+db.assignment.hasMany(db.assignmentAnswer, { foreignKey: "assignmentId", as: "assignmentAnswer" });
+db.assignmentAnswer.belongsTo(db.assignment, { foreignKey: "assignmentId", as: "assignment" });
+// assignmentAnswer Association with course
+db.course.hasMany(db.assignmentAnswer, { foreignKey: "courseId", as: "assignmentAnswer" });
+// assignmentAnswer Association with section
+db.section.hasMany(db.assignmentAnswer, { foreignKey: "sectionId", as: "assignmentAnswer" });
+// assignmentAnswer Association with lesson
+db.lesson.hasMany(db.assignmentAnswer, { foreignKey: "lessonId", as: "assignmentAnswer" });
+
 // queryInterface.removeColumn("courses", "discription").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.addColumn("user_courses", "saleLinkTag", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.addColumn("courses", "discription", { type: DataTypes.TEXT }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-// queryInterface.dropTable("upSells").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.dropTable("templateForms").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.dropTable("templates").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 module.exports = db;

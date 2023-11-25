@@ -90,3 +90,18 @@ exports.updateRatioValidation = (data) => {
     }) // .options({ allowUnknown: true });
     return schema.validate(data);
 }
+
+exports.assignmentValidation = (data) => {
+    const schema = joi.object().keys({
+        question: joi.string().required(),
+        assignmentType: joi.string().required()
+    }) // .options({ allowUnknown: true });
+    return schema.validate(data);
+}
+
+exports.assignmentAnswerValidation = (data) => {
+    const schema = joi.object().keys({
+        answer: joi.string().required()
+    }) // .options({ allowUnknown: true });
+    return schema.validate(data);
+}
