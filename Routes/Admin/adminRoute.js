@@ -26,6 +26,7 @@ const { createAssignment, getAssignmentAnswerByLessonIdForAdmin } = require('../
 const { registerTeacher } = require("../../Controllers/Admin/Teacher/teacherController");
 // User
 const { findUserForAdmin } = require("../../Controllers/User/user");
+const { getAffiliateUserIdRequestForAdmin, acceptAffiliateUserIdRequest, blockAffiliateUserIdRequest,unblockAffiliateUserIdRequest } = require("../../Controllers/User/affiliateUserIdRequestController");
 
 //middleware
 const multer = require('multer');
@@ -127,5 +128,10 @@ router.get("/ getAssignmentAnswer/:id", verifyAdminToken, isAdmin, getAssignment
 
 // User
 router.get("/myUsers", verifyAdminToken, isAdmin, findUserForAdmin);
+// AffiliateUserIdRequest
+router.get("/getAffiliateUserIdRequest", verifyAdminToken, isAdmin, getAffiliateUserIdRequestForAdmin);
+router.put("/acceptAffiliateUserIdRequest/:id", verifyAdminToken, isAdmin, acceptAffiliateUserIdRequest);
+router.put("/blockAffiliateUserIdRequest/:id", verifyAdminToken, isAdmin, blockAffiliateUserIdRequest);
+router.put("/unblockAffiliateUserIdRequest/:id", verifyAdminToken, isAdmin, unblockAffiliateUserIdRequest);
 
 module.exports = router;

@@ -13,6 +13,8 @@ const { getAllVideoByLessonId } = require('../../Controllers/Admin/AddCourse/les
 const { addCommentForUser, hardDeleteCommentForUser, getCommentForUser } = require('../../Controllers/Admin/AddCourse/videoCommentController');
 const { createPayment, verifyPayment } = require('../../Controllers/User/purchaseCourseController');
 const { submitAssignmentAnswer, getAssignmentAnswerByLessonIdForUser } = require('../../Controllers/Admin/AddCourse/assignmentController');
+const { sendAffiliateUserIdRequest } = require("../../Controllers/User/affiliateUserIdRequestController");
+
 // Middleware
 const { verifyUserToken, verifyUserTokenForPayment } = require('../../Middlewares/varifyToken');
 const { isUser, isUserForPayment } = require('../../Middlewares/isPresent');
@@ -59,5 +61,8 @@ router.post("/addAccountDetails", verifyUserToken, isUser, addAccountDetails);
 router.get("/findUserAccountDetails", verifyUserToken, isUser, findUserAccountDetails);
 router.put("/updateAccountDetails/:id", verifyUserToken, isUser, updateAccountDetails);
 router.delete("/deleteAccountDetails/:id", verifyUserToken, isUser, deleteAccountDetails);
+
+// AffiliateUserIdRequest
+router.post("/sendAffiliateUserIdRequest", verifyUserToken, isUser, sendAffiliateUserIdRequest);
 
 module.exports = router;

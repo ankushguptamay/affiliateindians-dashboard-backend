@@ -210,9 +210,9 @@ db.lesson.hasMany(db.assignmentAnswer, { foreignKey: "lessonId", as: "assignment
 
 // user Association assignmentAnswer
 db.user.hasOne(db.affiliateUserIdRequest, { foreignKey: "userId", as: "affiliateUserIdRequest" });
-db.affiliateUserIdRequest.belongsTo(db.user, { foreignKey: "userId", as: "affiliateUserIdRequest" });
+db.affiliateUserIdRequest.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 
-queryInterface.addColumn("users", "affiliateUserId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.addColumn("users", "affiliateUserId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.addColumn("courses", "allowAffiliate", { type: DataTypes.BOOLEAN }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.dropTable("templateForms").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.dropTable("templates").then((res) => { console.log(res) }).catch((err) => { console.log(err) });

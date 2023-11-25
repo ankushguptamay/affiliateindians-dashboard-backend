@@ -25,6 +25,8 @@ const { createAssignment, getAssignmentAnswerByLessonIdForAdmin } = require('../
 
 const { findUserForSuperAdmin, findUserForAdmin, getAllUserWallet } = require("../../Controllers/User/user");
 const { bulkRegisterUserAndCreateCourseAndAssign, findAllUserForOnlyBulkCheck } = require("../../Controllers/User/bulk");
+const { getAffiliateUserIdRequestForAdmin, acceptAffiliateUserIdRequest, blockAffiliateUserIdRequest, unblockAffiliateUserIdRequest } = require("../../Controllers/User/affiliateUserIdRequestController");
+
 
 //middleware
 const multer = require('multer');
@@ -131,6 +133,11 @@ router.get("/ getAssignmentAnswer/:id", verifyAdminToken, isSuperAdmin, getAssig
 // User
 router.get("/users", verifyAdminToken, isSuperAdmin, findUserForSuperAdmin);
 router.get("/myUsers", verifyAdminToken, isSuperAdmin, findUserForAdmin);
+// AffiliateUserIdRequest
+router.get("/getAffiliateUserIdRequest", verifyAdminToken, isSuperAdmin, getAffiliateUserIdRequestForAdmin);
+router.put("/acceptAffiliateUserIdRequest/:id", verifyAdminToken, isSuperAdmin, acceptAffiliateUserIdRequest);
+router.put("/blockAffiliateUserIdRequest/:id", verifyAdminToken, isSuperAdmin, blockAffiliateUserIdRequest);
+router.put("/unblockAffiliateUserIdRequest/:id", verifyAdminToken, isSuperAdmin, unblockAffiliateUserIdRequest);
 
 // Payment Data
 router.get("/paymentData", verifyAdminToken, isSuperAdmin, getAllPaymentData);
