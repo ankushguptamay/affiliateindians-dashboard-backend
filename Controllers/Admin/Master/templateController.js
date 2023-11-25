@@ -32,9 +32,9 @@ exports.addTemplate = async (req, res) => {
     }
 };
 
-exports.getTemplate = async (req, res) => {
+exports.getTemplateByAdminId = async (req, res) => {
     try {
-        const template = await Template.findAll();
+        const template = await Template.findAll({ where: { adminId: req.admin.id } });
         res.status(201).send({
             success: true,
             message: `Template fetched successfully!`,

@@ -6,7 +6,8 @@ const { generateSaleLinkTag } = require('../../Controllers/Admin/shareSaleLinkCo
 
 const { getAllPaymentData } = require('../../Controllers/User/purchaseCourseController');
 // Master
-const { getTemplate, addTemplate, hardDeleteTemplate } = require('../../Controllers/Admin/Master/templateController');
+const { addTemplateFrom, getAllFormByAdminId } = require('../../Controllers/Admin/Master/templateFormController');
+const { getTemplateByAdminId, addTemplate, hardDeleteTemplate } = require('../../Controllers/Admin/Master/templateController');
 const { getTag, hardDeleteTag, addTag } = require('../../Controllers/Admin/Master/tagController');
 const { getRatio, addRatio, hardDeleteRatio, updateRatio } = require('../../Controllers/Admin/Master/affiliateMarketingRatioController');
 const { getCoupon, addCouponToCourse, createCoupon, hardDeleteCoupon, UpdateCoupon, getCouponByCourseId } = require('../../Controllers/Admin/Master/couponController');
@@ -44,9 +45,12 @@ router.post("/generateSaleLinkTag", verifyAdminToken, isSuperAdmin, generateSale
 
 // Master
 //Template
-router.get("/templates", verifyAdminToken, isSuperAdmin, getTemplate);
+router.get("/templates", verifyAdminToken, isSuperAdmin, getTemplateByAdminId);
 router.post("/addTemplate", verifyAdminToken, isSuperAdmin, addTemplate);
 router.delete("/hardDeleteTemplate/:id", verifyAdminToken, isSuperAdmin, hardDeleteTemplate);
+//TemplateForm
+router.get("/forms", verifyAdminToken, isSuperAdmin, getAllFormByAdminId);
+router.post("/addForm", verifyAdminToken, isSuperAdmin, addTemplateFrom);
 //Tag
 router.get("/tags", verifyAdminToken, isSuperAdmin, getTag);
 router.post("/addTag", verifyAdminToken, isSuperAdmin, addTag);

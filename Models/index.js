@@ -47,6 +47,7 @@ db.teacher = require('./Admin/Teacher/teacherModel.js')(sequelize, Sequelize);
 
 // Master
 db.template = require('./Admin/Master/templateModel.js')(sequelize, Sequelize);
+db.templateForm = require('./Admin/Master/templateFormModel.js')(sequelize, Sequelize);
 db.affiliateMarketingRatio = require('./Admin/Master/affiliateMarketingRatioModel.js')(sequelize, Sequelize);
 db.tag = require('./Admin/Master/tagModel.js')(sequelize, Sequelize);
 db.coupon = require('./Admin/Master/couponModel.js')(sequelize, Sequelize);
@@ -174,6 +175,14 @@ db.admin.hasMany(db.shareSaleLink, { foreignKey: "adminId", as: "shareSaleLink" 
 // user Association with userAccountDetail
 db.user.hasOne(db.userAccountDetail, { foreignKey: "userId" });
 db.userAccountDetail.belongsTo(db.user, { foreignKey: "userId" });
+
+// template Association templateForm
+db.template.hasMany(db.templateForm, { foreignKey: "templateId", as: "templateForm" });
+// admin Association templateForm
+db.admin.hasMany(db.templateForm, { foreignKey: "adminId", as: "templateForm" });
+// course Association with templateForm
+db.course.hasMany(db.templateForm, { foreignKey: "courseId", as: "templateForm" });
+db.templateForm.belongsTo(db.course, { foreignKey: "courseId", as: "course" });
 
 // queryInterface.removeColumn("courses", "discription").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.addColumn("user_courses", "saleLinkTag", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
