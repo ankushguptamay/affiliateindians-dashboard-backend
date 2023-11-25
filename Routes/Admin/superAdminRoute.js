@@ -46,7 +46,7 @@ router.post("/generateSaleLinkTag", verifyAdminToken, isSuperAdmin, generateSale
 // Master
 //Template
 router.get("/templates", verifyAdminToken, isSuperAdmin, getTemplateByAdminId);
-router.post("/addTemplate", verifyAdminToken, isSuperAdmin, addTemplate);
+router.post("/addTemplate", verifyAdminToken, isSuperAdmin, uploadImage.single("templateImage"), addTemplate);
 router.delete("/hardDeleteTemplate/:id", verifyAdminToken, isSuperAdmin, hardDeleteTemplate);
 //TemplateForm
 router.get("/forms", verifyAdminToken, isSuperAdmin, getAllFormByAdminId);
