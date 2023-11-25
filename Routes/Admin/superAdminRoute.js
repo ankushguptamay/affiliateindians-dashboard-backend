@@ -21,6 +21,7 @@ const { createLessonQuiz, getAllQuizByLessonId, hardDeleteLessonQuiz, updateLess
 const { addBanner, updateBanner, addPDF, hardDeletePDF, addResource, hardDeleteResource } = require('../../Controllers/Admin/AddCourse/lessonFileController');
 const { addCommentForAdmin, approveComment, hardDeleteCommentForAdmin, getCommentForAdmin } = require('../../Controllers/Admin/AddCourse/videoCommentController');
 const { addUpSell, deleteUpSell } = require('../../Controllers/Admin/Master/upSellController');
+const { createAssignment, getAssignmentAnswerByLessonIdForAdmin } = require('../../Controllers/Admin/AddCourse/assignmentController');
 
 const { findUserForSuperAdmin, findUserForAdmin, getAllUserWallet } = require("../../Controllers/User/user");
 const { bulkRegisterUserAndCreateCourseAndAssign, findAllUserForOnlyBulkCheck } = require("../../Controllers/User/bulk");
@@ -121,6 +122,9 @@ router.put("/approveComment/:id", verifyAdminToken, isSuperAdmin, approveComment
 //UpSell
 router.post("/addUpSell", verifyAdminToken, isSuperAdmin, addUpSell);
 router.delete("/deleteUpSell/:id", verifyAdminToken, isSuperAdmin, deleteUpSell);
+//Assignment
+router.post("/createAssignment/:id", verifyAdminToken, isSuperAdmin, createAssignment); // lessonId
+router.get("/ getAssignmentAnswer/:id", verifyAdminToken, isSuperAdmin, getAssignmentAnswerByLessonIdForAdmin); // lessonId
 
 // User
 router.get("/users", verifyAdminToken, isSuperAdmin, findUserForSuperAdmin);

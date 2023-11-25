@@ -207,10 +207,8 @@ db.section.hasMany(db.assignmentAnswer, { foreignKey: "sectionId", as: "assignme
 // assignmentAnswer Association with lesson
 db.lesson.hasMany(db.assignmentAnswer, { foreignKey: "lessonId", as: "assignmentAnswer" });
 
-// queryInterface.removeColumn("courses", "discription").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-// queryInterface.addColumn("user_courses", "saleLinkTag", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-// queryInterface.addColumn("courses", "discription", { type: DataTypes.TEXT }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.dropTable("templateForms").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.dropTable("templates").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("courses", "allowAffiliate", { type: DataTypes.BOOLEAN }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.dropTable("templateForms").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.dropTable("templates").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 module.exports = db;

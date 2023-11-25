@@ -20,6 +20,8 @@ const { createLessonQuiz, getAllQuizByLessonId, hardDeleteLessonQuiz, updateLess
 const { addBanner, updateBanner, addPDF, hardDeletePDF, addResource, hardDeleteResource } = require('../../Controllers/Admin/AddCourse/lessonFileController');
 const { addCommentForAdmin, approveComment, hardDeleteCommentForAdmin, getCommentForAdmin } = require('../../Controllers/Admin/AddCourse/videoCommentController');
 const { addUpSell, deleteUpSell } = require('../../Controllers/Admin/Master/upSellController');
+const { createAssignment, getAssignmentAnswerByLessonIdForAdmin } = require('../../Controllers/Admin/AddCourse/assignmentController');
+
 // Teacher
 const { registerTeacher } = require("../../Controllers/Admin/Teacher/teacherController");
 // User
@@ -117,6 +119,9 @@ router.put("/approveComment/:id", verifyAdminToken, isAdmin, approveComment);
 //UpSell
 router.post("/addUpSell", verifyAdminToken, isAdmin, addUpSell);
 router.delete("/deleteUpSell/:id", verifyAdminToken, isAdmin, deleteUpSell);
+//Assignment
+router.post("/createAssignment/:id", verifyAdminToken, isAdmin, createAssignment); // lessonId
+router.get("/ getAssignmentAnswer/:id", verifyAdminToken, isAdmin, getAssignmentAnswerByLessonIdForAdmin); // lessonId
 
 // User
 router.get("/myUsers", verifyAdminToken, isAdmin, findUserForAdmin);

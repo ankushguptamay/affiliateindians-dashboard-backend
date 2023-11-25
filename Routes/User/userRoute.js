@@ -12,6 +12,7 @@ const { getAllQuizByLessonId } = require('../../Controllers/Admin/AddCourse/less
 const { getAllVideoByLessonId } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
 const { addCommentForUser, hardDeleteCommentForUser, getCommentForUser } = require('../../Controllers/Admin/AddCourse/videoCommentController');
 const { createPayment, verifyPayment } = require('../../Controllers/User/purchaseCourseController');
+const { submitAssignmentAnswer, getAssignmentAnswerByLessonIdForUser } = require('../../Controllers/Admin/AddCourse/assignmentController');
 // Middleware
 const { verifyUserToken, verifyUserTokenForPayment } = require('../../Middlewares/varifyToken');
 const { isUser, isUserForPayment } = require('../../Middlewares/isPresent');
@@ -48,6 +49,10 @@ router.put("/applyCouponToCourse", verifyUserToken, isUser, applyCouponToCourse)
 // Quiz Answer
 router.post("/submitAnswer", verifyUserToken, isUser, submitAnswer);
 router.get("/results", verifyUserToken, isUser, checkResultForUser);
+
+// Assignment Answer
+router.post("/submitAssignmentAnswer/:id", verifyUserToken, isUser, submitAssignmentAnswer); // assignmentId
+router.get("/getAssignmentAnswer/:id", verifyUserToken, isUser, getAssignmentAnswerByLessonIdForUser); // lessonId
 
 // Account Details
 router.post("/addAccountDetails", verifyUserToken, isUser, addAccountDetails);

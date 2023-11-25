@@ -69,6 +69,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         authorDiscription: {
             type: DataTypes.TEXT
+        },
+        allowAffiliate: {
+            type: DataTypes.BOOLEAN
         }
     }, {
         paranoid: true
