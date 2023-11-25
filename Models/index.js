@@ -207,7 +207,7 @@ db.section.hasMany(db.assignmentAnswer, { foreignKey: "sectionId", as: "assignme
 // assignmentAnswer Association with lesson
 db.lesson.hasMany(db.assignmentAnswer, { foreignKey: "lessonId", as: "assignmentAnswer" });
 
-queryInterface.addColumn("courses", "allowAffiliate", { type: DataTypes.BOOLEAN }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.addColumn("courses", "allowAffiliate", { type: DataTypes.BOOLEAN }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.dropTable("templateForms").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.dropTable("templates").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 

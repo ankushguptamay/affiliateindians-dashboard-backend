@@ -814,3 +814,80 @@ exports.unPublicCourse = async (req, res) => {
         });
     }
 };
+
+exports.allowAffiliateCourse = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
+        // is course present
+        const course = await Course.findOne({
+            where: {
+                [Op.and]: condition
+            }
+        });
+        if (!course) {
+            return res.status(400).send({
+                success: false,
+                message: "Course is not present!"
+            });
+        }
+        // update allowAffiliate
+        await course.update({
+            ...course,
+            allowAffiliate: true,
+        });
+        res.status(200).send({
+            success: true,
+            message: `Affiliate course successfully!`
+        });
+    } catch (err) {
+        // console.log(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
+
+
+exports.disAllowAffiliateCourse = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
+        // is course present
+        const course = await Course.findOne({
+            where: {
+                [Op.and]: condition
+            }
+        });
+        if (!course) {
+            return res.status(400).send({
+                success: false,
+                message: "Course is not present!"
+            });
+        }
+        // update allowAffiliate
+        await course.update({
+            ...course,
+            allowAffiliate: false
+        });
+        res.status(200).send({
+            success: true,
+            message: `Disaffiliate course successfully!`
+        });
+    } catch (err) {
+        // console.log(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};

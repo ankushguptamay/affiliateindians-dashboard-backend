@@ -14,8 +14,8 @@ const { getCoupon, addCouponToCourse, createCoupon, hardDeleteCoupon, UpdateCoup
 // Course
 const { createSection, getAllSectionByCourseIdForAdmin, publicSection, unPublicSection, updateSection, hardeleteSection } = require('../../Controllers/Admin/AddCourse/sectionControllers');
 const { createLesson, getLessonByLessonIdForAdmin, publicLesson, unPublicLesson, updateLesson, hardDeleteLesson } = require('../../Controllers/Admin/AddCourse/lessonController');
-const { createCourse, getCourseForAdmin, getAllCourse, addOrUpdateAuthorImage, addOrUpdateCourseImage, updateCourse, getCourseById, hardDeleteCourse,
-    deleteAuthorImage, deleteCourseImage, publicCourse, unPublicCourse } = require('../../Controllers/Admin/AddCourse/courseController');
+const { createCourse, getCourseForAdmin, getAllCourse, addOrUpdateAuthorImage, addOrUpdateCourseImage, updateCourse, getCourseById, hardDeleteCourse, allowAffiliateCourse,
+    disAllowAffiliateCourse, deleteAuthorImage, deleteCourseImage, publicCourse, unPublicCourse } = require('../../Controllers/Admin/AddCourse/courseController');
 const { uploadLessonVideo, hardDeleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
 const { createLessonQuiz, getAllQuizByLessonId, hardDeleteLessonQuiz, updateLessonQuiz } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
 const { addBanner, updateBanner, addPDF, hardDeletePDF, addResource, hardDeleteResource } = require('../../Controllers/Admin/AddCourse/lessonFileController');
@@ -79,6 +79,8 @@ router.put("/addOrUpdateAuthorImage/:id", verifyAdminToken, isSuperAdmin, upload
 router.put("/addOrUpdateCourseImage/:id", verifyAdminToken, isSuperAdmin, uploadImage.single("courseImage"), addOrUpdateCourseImage);
 router.put("/publicCourse/:id", verifyAdminToken, isSuperAdmin, publicCourse);
 router.put("/unPublicCourse/:id", verifyAdminToken, isSuperAdmin, unPublicCourse);
+router.put("/allowAffiliateCourse/:id", verifyAdminToken, isAdmin, allowAffiliateCourse);
+router.put("/disAllowAffiliateCourse/:id", verifyAdminToken, isAdmin, disAllowAffiliateCourse);
 router.put("/updateCourse/:id", verifyAdminToken, isSuperAdmin, updateCourse);
 router.delete("/deleteAuthorImage/:id", verifyAdminToken, isSuperAdmin, deleteAuthorImage);
 router.delete("/deleteCourseImage/:id", verifyAdminToken, isSuperAdmin, deleteCourseImage);
