@@ -55,9 +55,6 @@ module.exports = (sequelize, DataTypes) => {
         courseCode: {
             type: DataTypes.STRING
         },
-        ratioId: {
-            type: DataTypes.STRING
-        },
         price: {
             type: DataTypes.STRING
         },
