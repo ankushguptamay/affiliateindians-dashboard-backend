@@ -19,180 +19,61 @@ const razorpayInstance = new Razorpay({
     key_secret: RAZORPAY_SECRET_ID
 });
 
-exports.createPayment = async (req, res) => {
+exports.createPaymentForRegisterUser = async (req, res) => {
     try {
         const courseId = req.params.id;
-        if (req.user) {
-            // Validate body
-            const { error } = purchaseCourseValidation(req.body);
-            if (error) {
-                return res.status(400).send(error.details[0].message);
-            }
-            const { amount, currency, receipt, joinThrough, couponCode, saleLinkTag } = req.body; // receipt is id created for this order
-            const userId = req.user.id;
-            const user = await User.findOne({
-                where: {
-                    id: userId
-                }
-            });
-            // initiate payment
-            razorpayInstance.orders.create({ amount, currency, receipt },
-                (err, order) => {
-                    if (!err) {
-                        User_Course.create({
-                            courseId: courseId,
-                            userId: userId,
-                            amount: amount / 100,
-                            currency: currency,
-                            receipt: receipt,
-                            razorpayOrderId: order.id,
-                            status: "created",
-                            razorpayTime: order.created_at,
-                            verify: false,
-                            referalId: user.referalId,
-                            joinThrough: joinThrough,
-                            couponCode: couponCode,
-                            saleLinkTag: saleLinkTag
-                        })
-                            .then(() => {
-                                res.status(201).send({
-                                    success: true,
-                                    message: `Purchase order craeted successfully!`,
-                                    data: order
-                                });
-                            })
-                            .catch((err) => {
-                                res.status(500).send({
-                                    success: false,
-                                    err: err.message
-                                });
-                            });
-                    }
-                    else {
-                        res.status(500).send({
-                            success: false,
-                            err: err.message
-                        });
-                    }
-                })
+        // Validate body
+        const { error } = purchaseCourseValidation(req.body);
+        if (error) {
+            return res.status(400).send(error.details[0].message);
         }
-        else {
-            // Validate body
-            const { error } = purchaseCourseByReferalValidation(req.body);
-            if (error) {
-                return res.status(400).send(error.details[0].message);
+        const { amount, currency, receipt, joinThrough, couponCode, saleLinkTag } = req.body; // receipt is id created for this order
+        const userId = req.user.id;
+        const user = await User.findOne({
+            where: {
+                id: userId
             }
-            const { amount, currency, receipt, name, email, mobileNumber, referalCode, joinThrough, termAndConditionAccepted, couponCode, saleLinkTag } = req.body; // receipt is id created for this order
-            let isUser = await User.findOne({
-                where: {
-                    email: email
-                }
-            });
-            if (!isUser) {
-                // Generating Code
-                // 1.Today Date
-                const date = JSON.stringify(new Date((new Date).getTime() - (24 * 60 * 60 * 1000)));
-                const today = `${date.slice(1, 12)}18:30:00.000Z`;
-                // 2.Today Day
-                const Day = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-                const dayNumber = (new Date).getDay();
-                // Get All Today Code
-                let code;
-                const isUserCode = await User.findAll({
-                    where: {
-                        createdAt: { [Op.gt]: today }
-                    },
-                    order: [
-                        ['createdAt', 'ASC']
-                    ],
-                    paranoid: false
-                });
-                const day = new Date().toISOString().slice(8, 10);
-                const year = new Date().toISOString().slice(2, 4);
-                const month = new Date().toISOString().slice(5, 7);
-                if (isUserCode.length == 0) {
-                    code = "AFUS" + day + month + year + Day[dayNumber] + 1;
-                } else {
-                    let lastCode = isUserCode[isUserCode.length - 1];
-                    let lastDigits = lastCode.userCode.substring(13);
-                    let incrementedDigits = parseInt(lastDigits, 10) + 1;
-                    code = "AFUS" + day + month + year + Day[dayNumber] + incrementedDigits;
-                }
-                const password = email.slice(0, 8);
-                const salt = await bcrypt.genSalt(10);
-                const bcPassword = await bcrypt.hash(password, salt);
-                // find Referal
-                let referalId;
-                const findUserReferal = await User.findOne({
-                    where: {
-                        userCode: referalCode
-                    }
-                });
-                const findAdminReferal = await Admin.findOne({
-                    where: {
-                        adminCode: referalCode
-                    }
-                });
-                if (findUserReferal) {
-                    referalId = findUserReferal.id;
-                } else if (findAdminReferal) {
-                    referalId = findAdminReferal.id;
-                } else {
-                    referalId = null;
-                }
-                // Create User
-                isUser = await User.create({
-                    name: name,
-                    email: email,
-                    mobileNumber: mobileNumber,
-                    password: bcPassword,
-                    userCode: code,
-                    referalId: referalId,
-                    joinThrough: joinThrough,
-                    termAndConditionAccepted: termAndConditionAccepted
-                });
-            }
-            // Initiate payment
-            razorpayInstance.orders.create({ amount, currency, receipt },
-                (err, order) => {
-                    if (!err) {
-                        User_Course.create({
-                            courseId: courseId,
-                            userId: isUser.id,
-                            amount: amount / 100,
-                            currency: currency,
-                            receipt: receipt,
-                            razorpayOrderId: order.id,
-                            status: "created",
-                            razorpayTime: order.created_at,
-                            verify: false,
-                            referalId: referalId,
-                            joinThrough: joinThrough,
-                            couponCode: couponCode,
-                            saleLinkTag: saleLinkTag
-                        })
-                            .then(() => {
-                                res.status(201).send({
-                                    success: true,
-                                    message: `Purchase order craeted successfully!`,
-                                    data: order
-                                });
-                            })
-                            .catch((err) => {
-                                res.status(500).send({
-                                    success: false,
-                                    err: err.message
-                                });
+        });
+        // initiate payment
+        razorpayInstance.orders.create({ amount, currency, receipt },
+            (err, order) => {
+                if (!err) {
+                    User_Course.create({
+                        courseId: courseId,
+                        userId: userId,
+                        amount: amount / 100,
+                        currency: currency,
+                        receipt: receipt,
+                        razorpayOrderId: order.id,
+                        status: "created",
+                        razorpayTime: order.created_at,
+                        verify: false,
+                        referalId: user.referalId,
+                        joinThrough: joinThrough,
+                        couponCode: couponCode,
+                        saleLinkTag: saleLinkTag
+                    })
+                        .then(() => {
+                            res.status(201).send({
+                                success: true,
+                                message: `Purchase order craeted successfully!`,
+                                data: order
                             });
-                    }
-                    else {
-                        res.status(500).send({
-                            success: false,
-                            err: err.message
+                        })
+                        .catch((err) => {
+                            res.status(500).send({
+                                success: false,
+                                err: err.message
+                            });
                         });
-                    }
-                })
-        }
+                }
+                else {
+                    res.status(500).send({
+                        success: false,
+                        err: err.message
+                    });
+                }
+            })
     }
     catch (err) {
         res.status(500).send({
@@ -335,3 +216,186 @@ exports.getAllPaymentData = async (req, res) => {
         });
     }
 };
+
+// exports.createPayment = async (req, res) => {
+//     try {
+//         const courseId = req.params.id;
+//         if (req.user) {
+//             // Validate body
+//             const { error } = purchaseCourseValidation(req.body);
+//             if (error) {
+//                 return res.status(400).send(error.details[0].message);
+//             }
+//             const { amount, currency, receipt, joinThrough, couponCode, saleLinkTag } = req.body; // receipt is id created for this order
+//             const userId = req.user.id;
+//             const user = await User.findOne({
+//                 where: {
+//                     id: userId
+//                 }
+//             });
+//             // initiate payment
+//             razorpayInstance.orders.create({ amount, currency, receipt },
+//                 (err, order) => {
+//                     if (!err) {
+//                         User_Course.create({
+//                             courseId: courseId,
+//                             userId: userId,
+//                             amount: amount / 100,
+//                             currency: currency,
+//                             receipt: receipt,
+//                             razorpayOrderId: order.id,
+//                             status: "created",
+//                             razorpayTime: order.created_at,
+//                             verify: false,
+//                             referalId: user.referalId,
+//                             joinThrough: joinThrough,
+//                             couponCode: couponCode,
+//                             saleLinkTag: saleLinkTag
+//                         })
+//                             .then(() => {
+//                                 res.status(201).send({
+//                                     success: true,
+//                                     message: `Purchase order craeted successfully!`,
+//                                     data: order
+//                                 });
+//                             })
+//                             .catch((err) => {
+//                                 res.status(500).send({
+//                                     success: false,
+//                                     err: err.message
+//                                 });
+//                             });
+//                     }
+//                     else {
+//                         res.status(500).send({
+//                             success: false,
+//                             err: err.message
+//                         });
+//                     }
+//                 })
+//         }
+//         else {
+//             // Validate body
+//             const { error } = purchaseCourseByReferalValidation(req.body);
+//             if (error) {
+//                 return res.status(400).send(error.details[0].message);
+//             }
+//             const { amount, currency, receipt, name, email, mobileNumber, referalCode, joinThrough, termAndConditionAccepted, couponCode, saleLinkTag } = req.body; // receipt is id created for this order
+//             let isUser = await User.findOne({
+//                 where: {
+//                     email: email
+//                 }
+//             });
+//             if (!isUser) {
+//                 // Generating Code
+//                 // 1.Today Date
+//                 const date = JSON.stringify(new Date((new Date).getTime() - (24 * 60 * 60 * 1000)));
+//                 const today = `${date.slice(1, 12)}18:30:00.000Z`;
+//                 // 2.Today Day
+//                 const Day = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+//                 const dayNumber = (new Date).getDay();
+//                 // Get All Today Code
+//                 let code;
+//                 const isUserCode = await User.findAll({
+//                     where: {
+//                         createdAt: { [Op.gt]: today }
+//                     },
+//                     order: [
+//                         ['createdAt', 'ASC']
+//                     ],
+//                     paranoid: false
+//                 });
+//                 const day = new Date().toISOString().slice(8, 10);
+//                 const year = new Date().toISOString().slice(2, 4);
+//                 const month = new Date().toISOString().slice(5, 7);
+//                 if (isUserCode.length == 0) {
+//                     code = "AFUS" + day + month + year + Day[dayNumber] + 1;
+//                 } else {
+//                     let lastCode = isUserCode[isUserCode.length - 1];
+//                     let lastDigits = lastCode.userCode.substring(13);
+//                     let incrementedDigits = parseInt(lastDigits, 10) + 1;
+//                     code = "AFUS" + day + month + year + Day[dayNumber] + incrementedDigits;
+//                 }
+//                 const password = email.slice(0, 8);
+//                 const salt = await bcrypt.genSalt(10);
+//                 const bcPassword = await bcrypt.hash(password, salt);
+//                 // find Referal
+//                 let referalId;
+//                 const findUserReferal = await User.findOne({
+//                     where: {
+//                         userCode: referalCode
+//                     }
+//                 });
+//                 const findAdminReferal = await Admin.findOne({
+//                     where: {
+//                         adminCode: referalCode
+//                     }
+//                 });
+//                 if (findUserReferal) {
+//                     referalId = findUserReferal.id;
+//                 } else if (findAdminReferal) {
+//                     referalId = findAdminReferal.id;
+//                 } else {
+//                     referalId = null;
+//                 }
+//                 // Create User
+//                 isUser = await User.create({
+//                     name: name,
+//                     email: email,
+//                     mobileNumber: mobileNumber,
+//                     password: bcPassword,
+//                     userCode: code,
+//                     referalId: referalId,
+//                     joinThrough: joinThrough,
+//                     termAndConditionAccepted: termAndConditionAccepted
+//                 });
+//             }
+//             // Initiate payment
+//             razorpayInstance.orders.create({ amount, currency, receipt },
+//                 (err, order) => {
+//                     if (!err) {
+//                         User_Course.create({
+//                             courseId: courseId,
+//                             userId: isUser.id,
+//                             amount: amount / 100,
+//                             currency: currency,
+//                             receipt: receipt,
+//                             razorpayOrderId: order.id,
+//                             status: "created",
+//                             razorpayTime: order.created_at,
+//                             verify: false,
+//                             referalId: referalId,
+//                             joinThrough: joinThrough,
+//                             couponCode: couponCode,
+//                             saleLinkTag: saleLinkTag
+//                         })
+//                             .then(() => {
+//                                 res.status(201).send({
+//                                     success: true,
+//                                     message: `Purchase order craeted successfully!`,
+//                                     data: order
+//                                 });
+//                             })
+//                             .catch((err) => {
+//                                 res.status(500).send({
+//                                     success: false,
+//                                     err: err.message
+//                                 });
+//                             });
+//                     }
+//                     else {
+//                         res.status(500).send({
+//                             success: false,
+//                             err: err.message
+//                         });
+//                     }
+//                 })
+//         }
+//     }
+//     catch (err) {
+//         res.status(500).send({
+//             success: false,
+//             err: err.message
+//         });
+//     }
+// };

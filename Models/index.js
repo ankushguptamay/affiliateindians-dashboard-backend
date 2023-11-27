@@ -31,6 +31,7 @@ db.sequelize = sequelize;
 db.admin = require('./Admin/admin')(sequelize, Sequelize);
 db.adminWallet = require('./Admin/adminWalletModel.js')(sequelize, Sequelize);
 db.shareSaleLink = require('./Admin/shareSaleLinkModel.js')(sequelize, Sequelize);
+db.emailCredential = require('./Admin/emailCredentialModel.js')(sequelize, Sequelize);
 
 // Admin AddCourse
 db.course = require('./Admin/AddCourse/courseModel.js')(sequelize, Sequelize);
@@ -56,6 +57,7 @@ db.course_coupon = require('./Admin/Master/course_CouponModel.js')(sequelize, Se
 
 // user
 db.user = require('./User/user.js')(sequelize, Sequelize);
+db.userEmailOTP = require('./User/emailOTP.js')(sequelize, Sequelize);
 db.user_course = require('./User/user_CourseModel.js')(sequelize, Sequelize);
 db.userWallet = require('./User/walletModel.js')(sequelize, Sequelize);
 db.quizAnswer = require('./User/quizAnswerModel.js')(sequelize, Sequelize);
@@ -66,6 +68,9 @@ db.affiliateUserIdRequest = require('./User/affiliateUserIdRequestModel.js')(seq
 // Admin Course Association
 db.admin.hasMany(db.course, { foreignKey: "adminId" });
 db.course.belongsTo(db.admin, { foreignKey: "adminId" });
+
+db.admin.hasMany(db.emailCredential, { foreignKey: "adminId" });
+db.emailCredential.belongsTo(db.admin, { foreignKey: "adminId" });
 
 db.admin.hasMany(db.section, { foreignKey: "adminId" });
 
@@ -211,6 +216,21 @@ db.lesson.hasMany(db.assignmentAnswer, { foreignKey: "lessonId", as: "assignment
 // user Association assignmentAnswer
 db.user.hasOne(db.affiliateUserIdRequest, { foreignKey: "userId", as: "affiliateUserIdRequest" });
 db.affiliateUserIdRequest.belongsTo(db.user, { foreignKey: "userId", as: "user" });
+
+db.emailCredential.findOne({
+    where: {
+        email: "affiliateindians@gmail.com"
+    }
+}).then((res) => {
+    console.log(res);
+    if (!res) {
+        db.emailCredential.create({
+            email: "affiliateindians@gmail.com",
+            plateForm: "BREVO",
+            EMAIL_API_KEY: "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"
+        });
+    }
+}).catch((err) => { console.log(err) });
 
 // queryInterface.addColumn("users", "affiliateUserId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.addColumn("courses", "allowAffiliate", { type: DataTypes.BOOLEAN }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });

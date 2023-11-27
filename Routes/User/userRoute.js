@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { create, changePassword, login, findUser, update } = require("../../Controllers/User/user");
+const { create, changePassword, login, findUser, update, sendOTPForForgetPassword, verifyOTP, generatePassword } = require("../../Controllers/User/user");
 const { addAccountDetails, findUserAccountDetails, deleteAccountDetails, updateAccountDetails } = require("../../Controllers/User/userAccountDetailsCont");
 const { submitAnswer, checkResultForUser } = require("../../Controllers/User/quizAnswerController");
 const { getCoupon, applyCouponToCourse } = require('../../Controllers/Admin/Master/couponController');
@@ -11,7 +11,7 @@ const { getLessonByLessonIdForUser } = require('../../Controllers/Admin/AddCours
 const { getAllQuizByLessonId } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
 const { getAllVideoByLessonId } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
 const { addCommentForUser, hardDeleteCommentForUser, getCommentForUser } = require('../../Controllers/Admin/AddCourse/videoCommentController');
-const { createPayment, verifyPayment } = require('../../Controllers/User/purchaseCourseController');
+const { createPaymentForRegisterUser, verifyPayment } = require('../../Controllers/User/purchaseCourseController');
 const { submitAssignmentAnswer, getAssignmentAnswerByLessonIdForUser } = require('../../Controllers/Admin/AddCourse/assignmentController');
 const { sendAffiliateUserIdRequest } = require("../../Controllers/User/affiliateUserIdRequestController");
 
@@ -23,6 +23,9 @@ const uploadImageAndPDF = require('../../Middlewares/UploadFile/uploadImageAndPD
 // User
 router.post("/register", create);
 router.post("/login", login);
+router.post("/sendOTP", sendOTPForForgetPassword);
+router.post("/verifyOTP", verifyOTP);
+router.post("/generatePassword", generatePassword);
 router.post("/changePassword", verifyUserToken, isUser, changePassword);
 router.get("/users", verifyUserToken, isUser, findUser);
 router.put("/update", verifyUserToken, isUser, update);
@@ -41,7 +44,7 @@ router.get("/comment/:lessonVideoId", verifyUserToken, isUser, getCommentForUser
 router.delete("/hardDeleteComment/:id", verifyUserToken, isUser, hardDeleteCommentForUser);
 
 // Purchase
-router.post("/createPayment/:id", verifyUserTokenForPayment, isUserForPayment, createPayment);
+router.post("/createPayment/:id", verifyUserTokenForPayment, isUserForPayment, createPaymentForRegisterUser);
 router.post("/verifyPayment", verifyPayment);
 
 //Coupon
