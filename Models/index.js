@@ -217,20 +217,20 @@ db.lesson.hasMany(db.assignmentAnswer, { foreignKey: "lessonId", as: "assignment
 db.user.hasOne(db.affiliateUserIdRequest, { foreignKey: "userId", as: "affiliateUserIdRequest" });
 db.affiliateUserIdRequest.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 
-db.emailCredential.findOne({
-    where: {
-        email: "affiliateindians@gmail.com"
-    }
-}).then((res) => {
-    console.log(res);
-    if (!res) {
-        db.emailCredential.create({
-            email: "affiliateindians@gmail.com",
-            plateForm: "BREVO",
-            EMAIL_API_KEY: "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"
-        });
-    }
-}).catch((err) => { console.log(err) });
+// db.emailCredential.findOne({
+//     where: {
+//         email: ""
+//     }
+// }).then((res) => {
+//     console.log(res);
+//     if (!res) {
+//         db.emailCredential.create({
+//             email: "",
+//             plateForm: "BREVO",
+//             EMAIL_API_KEY: ""
+//         });
+//     }
+// }).catch((err) => { console.log(err) });
 
 // queryInterface.addColumn("users", "affiliateUserId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.addColumn("courses", "allowAffiliate", { type: DataTypes.BOOLEAN }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
