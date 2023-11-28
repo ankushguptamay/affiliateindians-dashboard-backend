@@ -28,14 +28,16 @@ exports.addTemplateFrom = async (req, res) => {
             let incrementedDigits = parseInt(lastDigits, 10) + 1;
             code = "AFFOR" + incrementedDigits;
         }
-        const { templateId, courseId, registrationDetailsFields, paymentFields } = req.body;
+        const { templateId, courseId, registrationDetailsFields, paymentFields, HTMLCode, javaScriptCode } = req.body;
         await TemplateForm.create({
             registrationDetailsFields: registrationDetailsFields,
             paymentFields: paymentFields,
             courseId: courseId,
             formCode: code,
             adminId: req.admin.id,
-            templateId: templateId
+            templateId: templateId,
+            HTMLCode: HTMLCode,
+            javaScriptCode: javaScriptCode
         });
         res.status(201).send({
             success: true,
