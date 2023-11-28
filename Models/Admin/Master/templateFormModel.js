@@ -11,10 +11,15 @@ module.exports = (sequelize, DataTypes) => {
         paymentFields: {
             type: DataTypes.JSON
         },
-        formCode:{
+        formCode: {
             type: DataTypes.STRING
+        },
+        HTMLCode: {
+            type: DataTypes.TEXT
+        },
+        javaScriptCode: {
+            type: DataTypes.TEXT
         }
-
     }, {
         paranoid: true
     });

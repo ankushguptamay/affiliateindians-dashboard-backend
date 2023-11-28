@@ -232,8 +232,8 @@ db.affiliateUserIdRequest.belongsTo(db.user, { foreignKey: "userId", as: "user" 
 //     }
 // }).catch((err) => { console.log(err) });
 
-// queryInterface.addColumn("users", "affiliateUserId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-// queryInterface.addColumn("courses", "allowAffiliate", { type: DataTypes.BOOLEAN }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("templateForms", "HTMLCode", { type: DataTypes.TEXT }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("templateForms", "javaScriptCode", { type: DataTypes.TEXT }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.dropTable("templateForms").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.dropTable("templates").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
