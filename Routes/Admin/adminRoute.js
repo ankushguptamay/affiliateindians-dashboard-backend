@@ -6,6 +6,7 @@ const { generateSaleLinkTag } = require('../../Controllers/Admin/shareSaleLinkCo
 
 // Master
 const { getTemplateByAdminId, addTemplate, hardDeleteTemplate } = require('../../Controllers/Admin/Master/templateController');
+const { createSchedule, getPausedScheduleForAdmin, getUnPausedScheduleForAdmin } = require('../../Controllers/Admin/Master/scheduleCallBookingController');
 const { getTag } = require('../../Controllers/Admin/Master/tagController');
 const { getCoupon, addCouponToCourse, createCoupon, UpdateCoupon, getCouponByCourseId, hardDeleteCoupon } = require('../../Controllers/Admin/Master/couponController');
 const { getRatio, addRatio, updateRatio, hardDeleteRatio } = require('../../Controllers/Admin/Master/affiliateMarketingRatioController');
@@ -26,7 +27,7 @@ const { createAssignment, getAssignmentAnswerByLessonIdForAdmin } = require('../
 const { registerTeacher } = require("../../Controllers/Admin/Teacher/teacherController");
 // User
 const { findUserForAdmin } = require("../../Controllers/User/user");
-const { getAffiliateUserIdRequestForAdmin, acceptAffiliateUserIdRequest, blockAffiliateUserIdRequest,unblockAffiliateUserIdRequest } = require("../../Controllers/User/affiliateUserIdRequestController");
+const { getAffiliateUserIdRequestForAdmin, acceptAffiliateUserIdRequest, blockAffiliateUserIdRequest, unblockAffiliateUserIdRequest } = require("../../Controllers/User/affiliateUserIdRequestController");
 
 //middleware
 const multer = require('multer');
@@ -65,6 +66,10 @@ router.post("/createCoupon", verifyAdminToken, isAdmin, createCoupon);
 router.put("/addCouponToCourses", verifyAdminToken, isAdmin, addCouponToCourse);
 router.delete("/hardDeleteCoupon/:id", verifyAdminToken, isAdmin, hardDeleteCoupon);
 router.put("/UpdateCoupon/:id", verifyAdminToken, isAdmin, UpdateCoupon);
+//Schedule
+router.get("/pausedSchedule", verifyAdminToken, isAdmin, getPausedScheduleForAdmin);
+router.get("/unPausedSchedule", verifyAdminToken, isAdmin, getUnPausedScheduleForAdmin);
+router.post("/createSchedule", verifyAdminToken, isAdmin, createSchedule);
 
 // Teacher
 // router.post("/registerTeacher", verifyAdminToken, isAdmin, registerTeacher);

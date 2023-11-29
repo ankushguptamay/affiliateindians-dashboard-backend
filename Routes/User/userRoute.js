@@ -14,6 +14,7 @@ const { addCommentForUser, hardDeleteCommentForUser, getCommentForUser } = requi
 const { createPaymentForRegisterUser, verifyPayment } = require('../../Controllers/User/purchaseCourseController');
 const { submitAssignmentAnswer, getAssignmentAnswerByLessonIdForUser } = require('../../Controllers/Admin/AddCourse/assignmentController');
 const { sendAffiliateUserIdRequest } = require("../../Controllers/User/affiliateUserIdRequestController");
+const { getScheduleForUser, bookScheduleByUser } = require('../../Controllers/Admin/Master/scheduleCallBookingController');
 
 // Middleware
 const { verifyUserToken, verifyUserTokenForPayment } = require('../../Middlewares/varifyToken');
@@ -67,5 +68,9 @@ router.delete("/deleteAccountDetails/:id", verifyUserToken, isUser, deleteAccoun
 
 // AffiliateUserIdRequest
 router.post("/sendAffiliateUserIdRequest", verifyUserToken, isUser, sendAffiliateUserIdRequest);
+
+//Schedule
+router.post("/bookSchedule/:id", verifyUserToken, isUser, bookScheduleByUser);
+router.get("/schedules", verifyUserToken, isUser, getScheduleForUser);
 
 module.exports = router;

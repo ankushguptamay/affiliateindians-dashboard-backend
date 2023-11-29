@@ -7,6 +7,7 @@ const { generateSaleLinkTag } = require('../../Controllers/Admin/shareSaleLinkCo
 const { getAllPaymentData } = require('../../Controllers/User/purchaseCourseController');
 // Master
 const { addTemplateFrom, getAllFormByAdminId } = require('../../Controllers/Admin/Master/templateFormController');
+const { createSchedule, getPausedScheduleForAdmin, getUnPausedScheduleForAdmin } = require('../../Controllers/Admin/Master/scheduleCallBookingController');
 const { getTemplateByAdminId, addTemplate, hardDeleteTemplate } = require('../../Controllers/Admin/Master/templateController');
 const { getTag, hardDeleteTag, addTag } = require('../../Controllers/Admin/Master/tagController');
 const { getRatio, addRatio, hardDeleteRatio, updateRatio } = require('../../Controllers/Admin/Master/affiliateMarketingRatioController');
@@ -63,7 +64,6 @@ router.get("/ratios", verifyAdminToken, isSuperAdmin, getRatio);
 router.post("/addRatio", verifyAdminToken, isSuperAdmin, addRatio);
 router.delete("/hardDeleteRatio/:id", verifyAdminToken, isSuperAdmin, hardDeleteRatio);
 router.put("/updateRatio/:id", verifyAdminToken, isSuperAdmin, updateRatio);
-
 //Coupon
 router.get("/coupons", verifyAdminToken, isSuperAdmin, getCoupon);
 router.get("/couponByCourse/:courseId", verifyAdminToken, isSuperAdmin, getCouponByCourseId);
@@ -71,6 +71,10 @@ router.post("/createCoupon", verifyAdminToken, isSuperAdmin, createCoupon);
 router.delete("/hardDeleteCoupon/:id", verifyAdminToken, isSuperAdmin, hardDeleteCoupon);
 router.put("/addCouponToCourses", verifyAdminToken, isSuperAdmin, addCouponToCourse);
 router.put("/UpdateCoupon/:id", verifyAdminToken, isSuperAdmin, UpdateCoupon);
+//Schedule
+router.get("/pausedSchedule", verifyAdminToken, isSuperAdmin, getPausedScheduleForAdmin);
+router.get("/unPausedSchedule", verifyAdminToken, isSuperAdmin, getUnPausedScheduleForAdmin);
+router.post("/createSchedule", verifyAdminToken, isSuperAdmin, createSchedule);
 
 // Course
 router.post("/createCourse", verifyAdminToken, isSuperAdmin, createCourse);

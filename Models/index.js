@@ -32,6 +32,7 @@ db.admin = require('./Admin/admin')(sequelize, Sequelize);
 db.adminWallet = require('./Admin/adminWalletModel.js')(sequelize, Sequelize);
 db.shareSaleLink = require('./Admin/shareSaleLinkModel.js')(sequelize, Sequelize);
 db.emailCredential = require('./Admin/emailCredentialModel.js')(sequelize, Sequelize);
+db.scheduleCallBooking = require('./Admin/Master/scheduleCallBookingModel.js')(sequelize, Sequelize);
 
 // Admin AddCourse
 db.course = require('./Admin/AddCourse/courseModel.js')(sequelize, Sequelize);
@@ -216,6 +217,13 @@ db.lesson.hasMany(db.assignmentAnswer, { foreignKey: "lessonId", as: "assignment
 // user Association assignmentAnswer
 db.user.hasOne(db.affiliateUserIdRequest, { foreignKey: "userId", as: "affiliateUserIdRequest" });
 db.affiliateUserIdRequest.belongsTo(db.user, { foreignKey: "userId", as: "user" });
+
+// Schedule call association
+db.admin.hasMany(db.scheduleCallBooking, { foreignKey: "adminId", as: "scheduleBooking" });
+db.scheduleCallBooking.belongsTo(db.admin, { foreignKey: "adminId", as: "admin" });
+
+db.user.hasMany(db.scheduleCallBooking, { foreignKey: "userId", as: "scheduleBooking" });
+db.scheduleCallBooking.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 
 // db.emailCredential.findOne({
 //     where: {

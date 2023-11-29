@@ -11,3 +11,13 @@ exports.templateFormValidation = (data) => {
     }) // .options({ allowUnknown: true });
     return schema.validate(data);
 }
+
+exports.scheduleBookingValidation = (data) => {
+    const schema = joi.object().keys({
+        date: joi.string().required(),
+        month: joi.string().required(),
+        checkedTimes: joi.array().required(),
+        unCheckedTimes: joi.array().required()
+    });
+    return schema.validate(data);
+}
