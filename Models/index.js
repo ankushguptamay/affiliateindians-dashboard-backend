@@ -240,7 +240,7 @@ db.scheduleCallBooking.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 //     }
 // }).catch((err) => { console.log(err) });
 
-// queryInterface.addColumn("templateForms", "HTMLCode", { type: DataTypes.TEXT }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("lessonVideos", "encodeProgress", { type: DataTypes.INTEGER, defaultValue: 0 }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.addColumn("templateForms", "javaScriptCode", { type: DataTypes.TEXT }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 // queryInterface.dropTable("templateForms").then((res) => { console.log(res) }).catch((err) => { console.log(err) });

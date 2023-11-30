@@ -16,7 +16,7 @@ const { createSection, getAllSectionByCourseIdForAdmin, publicSection, unPublicS
 const { createLesson, getLessonByLessonIdForAdmin, publicLesson, unPublicLesson, updateLesson, hardDeleteLesson } = require('../../Controllers/Admin/AddCourse/lessonController');
 const { createCourse, getCourseForAdmin, addOrUpdateAuthorImage, addOrUpdateCourseImage, updateCourse, hardDeleteCourse, getCourseById, allowAffiliateCourse,
     disAllowAffiliateCourse, deleteAuthorImage, deleteCourseImage, publicCourse, unPublicCourse } = require('../../Controllers/Admin/AddCourse/courseController');
-const { uploadLessonVideo, hardDeleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail, getVideoProcessing } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
+const { uploadLessonVideo, hardDeleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
 const { createLessonQuiz, getAllQuizByLessonId, hardDeleteLessonQuiz, updateLessonQuiz } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
 const { addBanner, updateBanner, addPDF, hardDeletePDF, addResource, hardDeleteResource } = require('../../Controllers/Admin/AddCourse/lessonFileController');
 const { addCommentForAdmin, approveComment, hardDeleteCommentForAdmin, getCommentForAdmin } = require('../../Controllers/Admin/AddCourse/videoCommentController');
@@ -106,7 +106,6 @@ router.delete("/hardDeleteLesson/:id", verifyAdminToken, isAdmin, hardDeleteLess
 router.post("/uploadVideo/:lessonId", verifyAdminToken, isAdmin, upload.single("lessonVideo"), uploadLessonVideo);
 router.put("/addOrUpdateThumbNail/:id", verifyAdminToken, isAdmin, uploadImage.single("thumbnail"), addOrUpdateThumbNail);
 router.get("/videos/:lessonId", verifyAdminToken, isAdmin, getAllVideoByLessonId);
-router.get("/videoProcessing/:lessonVideoId", verifyAdminToken, isAdmin, getVideoProcessing);
 router.delete("/hardDeleteVideo/:id", verifyAdminToken, isAdmin, hardDeleteLessonVideo);
 // Quiz
 router.post("/createQuiz/:lessonId", verifyAdminToken, isAdmin, createLessonQuiz);

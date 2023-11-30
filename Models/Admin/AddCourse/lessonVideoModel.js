@@ -31,6 +31,10 @@ module.exports = (sequelize, DataTypes) => {
         },
         videoName: {
             type: DataTypes.STRING
+        },
+        lessonVideos: {
+            type: DataTypes.INTEGER,
+            defaultValue: 0
         }
     }, {
         paranoid: true

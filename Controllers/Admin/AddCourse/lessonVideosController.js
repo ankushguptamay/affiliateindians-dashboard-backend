@@ -259,6 +259,43 @@ exports.addOrUpdateThumbNail = async (req, res) => {
 
 exports.getAllVideoByLessonId = async (req, res) => {
     try {
+        // Updating encoding video
+        const findEncodeingVideo = await LessonVideo.findAll({
+            where: {
+                lessonId: req.params.lessonId,
+                encodeProgress: { [Op.lt]: 100 }
+            }
+        });
+        for (let i = 0; i < findEncodeingVideo.length; i++) {
+            // get to buuny video
+            const object = {
+                method: "GET",
+                url: `http://video.bunnycdn.com/library/${findEncodeingVideo[i].BUNNY_VIDEO_LIBRARY_ID}/videos/${findEncodeingVideo[i].Video_ID}`,
+                headers: {
+                    Accept: "application/json",
+                    AccessKey: findEncodeingVideo[i].BUNNY_LIBRARY_API_KEY,
+                }
+            };
+            let bunnyResopnse;
+            await axios
+                .request(object)
+                .then((response) => {
+                    // console.log("resposse: ", response.data);
+                    bunnyResopnse = response;
+                })
+                .catch((error) => {
+                    return res.status(400).json({
+                        success: false,
+                        message: "Error",
+                        bunnyMessage: error
+                    });
+                });
+            await LessonVideo.update({
+                encodeProgress: bunnyResopnse.data.encodeProgress
+            }, {
+                where: { id: findEncodeingVideo[i].id }
+            });
+        }
         const lessonVideo = await LessonVideo.findAll({
             where: {
                 lessonId: req.params.lessonId
@@ -271,56 +308,6 @@ exports.getAllVideoByLessonId = async (req, res) => {
             success: true,
             message: "Video fetched successfully!",
             data: lessonVideo
-        });
-    } catch (err) {
-        // console.log(err);
-        res.status(500).send({
-            success: false,
-            err: err.message
-        });
-    }
-};
-
-exports.getVideoProcessing = async (req, res) => {
-    try {
-        const lessonVideo = await LessonVideo.findOne({
-            where: {
-                lessonId: req.params.lessonVideoId
-            }
-        });
-        if (!lessonVideo) {
-            return res.status(400).send({
-                success: false,
-                message: "Lesson Video is not present!"
-            });
-        };
-        // get to buuny video
-        const object = {
-            method: "GET",
-            url: `http://video.bunnycdn.com/library/${lessonVideo.BUNNY_VIDEO_LIBRARY_ID}/videos/${lessonVideo.Video_ID}`,
-            headers: {
-                Accept: "application/json",
-                AccessKey: lessonVideo.BUNNY_LIBRARY_API_KEY,
-            }
-        };
-        let bunnyResopnse;
-        await axios
-            .request(object)
-            .then((response) => {
-                // console.log("resposse: ", response.data);
-                bunnyResopnse = response;
-            })
-            .catch((error) => {
-                return res.status(400).json({
-                    success: false,
-                    message: "Error",
-                    bunnyMessage: error
-                });
-            });
-        res.status(200).send({
-            success: true,
-            message: "Video processing fetched successfully!",
-            data: bunnyResopnse.data
         });
     } catch (err) {
         // console.log(err);
