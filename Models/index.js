@@ -244,6 +244,6 @@ db.scheduleCallBooking.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 // queryInterface.addColumn("templateForms", "javaScriptCode", { type: DataTypes.TEXT }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 // queryInterface.dropTable("templateForms").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.dropTable("scheduleCallBookings").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.dropTable("scheduleCallBookings").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 module.exports = db;
