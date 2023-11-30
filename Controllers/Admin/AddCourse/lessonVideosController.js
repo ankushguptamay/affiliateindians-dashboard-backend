@@ -83,7 +83,7 @@ exports.uploadLessonVideo = async (req, res) => {
                 });
             });
         // add new video in databse
-        await LessonVideo.create({
+        const lessonVideo = await LessonVideo.create({
             Video_ID: video_id,
             Iframe_URL: `https://iframe.mediadelivery.net/embed/${lesson.parentCourse.BUNNY_VIDEO_LIBRARY_ID}/${video_id}`,
             Direct_Play_URL: `https://iframe.mediadelivery.net/play/${lesson.parentCourse.BUNNY_VIDEO_LIBRARY_ID}/${video_id}`,
@@ -97,7 +97,8 @@ exports.uploadLessonVideo = async (req, res) => {
         });
         res.status(201).send({
             success: true,
-            message: `Lesson's video uploaded successfully!`
+            message: `Lesson's video uploaded successfully!`,
+            data: lessonVideo
         });
     }
     catch (err) {
@@ -270,6 +271,56 @@ exports.getAllVideoByLessonId = async (req, res) => {
             success: true,
             message: "Video fetched successfully!",
             data: lessonVideo
+        });
+    } catch (err) {
+        // console.log(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
+
+exports.getVideoProcessing = async (req, res) => {
+    try {
+        const lessonVideo = await LessonVideo.findOne({
+            where: {
+                lessonId: req.params.lessonVideoId
+            }
+        });
+        if (!lessonVideo) {
+            return res.status(400).send({
+                success: false,
+                message: "Lesson Video is not present!"
+            });
+        };
+        // get to buuny video
+        const object = {
+            method: "GET",
+            url: `http://video.bunnycdn.com/library/${lessonVideo.BUNNY_VIDEO_LIBRARY_ID}/videos/${lessonVideo.Video_ID}`,
+            headers: {
+                Accept: "application/json",
+                AccessKey: lessonVideo.BUNNY_LIBRARY_API_KEY,
+            }
+        };
+        let bunnyResopnse;
+        await axios
+            .request(object)
+            .then((response) => {
+                // console.log("resposse: ", response.data);
+                bunnyResopnse = response;
+            })
+            .catch((error) => {
+                return res.status(400).json({
+                    success: false,
+                    message: "Error",
+                    bunnyMessage: error
+                });
+            });
+        res.status(200).send({
+            success: true,
+            message: "Video processing fetched successfully!",
+            data: bunnyResopnse.data
         });
     } catch (err) {
         // console.log(err);
