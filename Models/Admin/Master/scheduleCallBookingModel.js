@@ -12,7 +12,7 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.DATEONLY,
     },
     timing: {
-      type: Sequelize.TIME,
+      type: Sequelize.STRING,
     },
     month: {
       type: Sequelize.STRING
