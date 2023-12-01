@@ -1,9 +1,9 @@
 module.exports = (sequelize, Sequelize) => {
   const ScheduleCallBooking = sequelize.define("scheduleCallBookings", {
     id: {
-      type: Sequelize.INTEGER,
-      primaryKey: true,
-      autoIncrement: true,
+      type: Sequelize.UUID,
+      defaultValue: Sequelize.UUIDV4,
+      primaryKey: true
     },
     userName: {
       type: Sequelize.STRING,

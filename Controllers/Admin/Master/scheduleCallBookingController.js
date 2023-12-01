@@ -1,5 +1,6 @@
 const db = require('../../../Models');
 const ScheduleCallBooking = db.scheduleCallBooking;
+const User = db.user;
 const { Op } = require('sequelize');
 const { scheduleBookingValidation } = require("../../../Middlewares/Validate/masterValidate");
 
@@ -135,10 +136,16 @@ exports.bookScheduleByUser = async (req, res) => {
                 message: "This schedule has already booked! Please choose other one!"
             });
         }
+        const user = await User.findOne({
+            where: {
+                id: req.user.id
+            }
+        });
         // date validation is not done
         // Book schedule
         await isSchedule.update({
             ...isSchedule,
+            userName: user.name,
             bookingStatus: "BOOKED",
             userId: req.user.id
         });

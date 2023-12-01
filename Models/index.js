@@ -265,7 +265,7 @@ db.affiliateLink.belongsTo(db.affiliateUserId, { foreignKey: "affiliateUserId", 
 // queryInterface.addColumn("lessonVideos", "encodeProgress", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.addColumn("user_courses", "saleLinkCode", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
-// queryInterface.dropTable("affiliateLinks").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.dropTable("scheduleCallBookings").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.dropTable("scheduleCallBookings").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 module.exports = db;
