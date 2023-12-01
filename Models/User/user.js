@@ -32,9 +32,6 @@ module.exports = (sequelize, DataTypes) => {
     password: {
       type: DataTypes.STRING,
     },
-    joinThrough: {
-      type: DataTypes.STRING // facebook, insta, ...
-    },
     userCode: {
       type: DataTypes.STRING
     },

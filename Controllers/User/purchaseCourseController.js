@@ -27,7 +27,7 @@ exports.createPaymentForRegisterUser = async (req, res) => {
         if (error) {
             return res.status(400).send(error.details[0].message);
         }
-        const { amount, currency, receipt, joinThrough, couponCode, saleLinkTag } = req.body; // receipt is id created for this order
+        const { amount, currency, receipt, couponCode } = req.body; // receipt is id created for this order
         const userId = req.user.id;
         const user = await User.findOne({
             where: {
@@ -49,9 +49,7 @@ exports.createPaymentForRegisterUser = async (req, res) => {
                         razorpayTime: order.created_at,
                         verify: false,
                         referalId: user.referalId,
-                        joinThrough: joinThrough,
-                        couponCode: couponCode,
-                        saleLinkTag: saleLinkTag
+                        couponCode: couponCode
                     })
                         .then(() => {
                             res.status(201).send({
@@ -83,7 +81,7 @@ exports.createPaymentForRegisterUser = async (req, res) => {
     }
 };
 
-exports.verifyPayment = async (req, res) => {
+exports.verifyPaymentForRegisterUser = async (req, res) => {
     try {
         const orderId = req.body.razorpay_order_id;
         const paymentId = req.body.razorpay_payment_id;
@@ -226,7 +224,7 @@ exports.getAllPaymentData = async (req, res) => {
 //             if (error) {
 //                 return res.status(400).send(error.details[0].message);
 //             }
-//             const { amount, currency, receipt, joinThrough, couponCode, saleLinkTag } = req.body; // receipt is id created for this order
+//             const { amount, currency, receipt, marketingTag, couponCode, saleLinkCode } = req.body; // receipt is id created for this order
 //             const userId = req.user.id;
 //             const user = await User.findOne({
 //                 where: {
@@ -248,9 +246,9 @@ exports.getAllPaymentData = async (req, res) => {
 //                             razorpayTime: order.created_at,
 //                             verify: false,
 //                             referalId: user.referalId,
-//                             joinThrough: joinThrough,
+//                             marketingTag: marketingTag,
 //                             couponCode: couponCode,
-//                             saleLinkTag: saleLinkTag
+//                             saleLinkCode: saleLinkCode
 //                         })
 //                             .then(() => {
 //                                 res.status(201).send({
@@ -280,7 +278,7 @@ exports.getAllPaymentData = async (req, res) => {
 //             if (error) {
 //                 return res.status(400).send(error.details[0].message);
 //             }
-//             const { amount, currency, receipt, name, email, mobileNumber, referalCode, joinThrough, termAndConditionAccepted, couponCode, saleLinkTag } = req.body; // receipt is id created for this order
+//             const { amount, currency, receipt, name, email, mobileNumber, referalCode, marketingTag, termAndConditionAccepted, couponCode, saleLinkCode } = req.body; // receipt is id created for this order
 //             let isUser = await User.findOne({
 //                 where: {
 //                     email: email
@@ -346,7 +344,6 @@ exports.getAllPaymentData = async (req, res) => {
 //                     password: bcPassword,
 //                     userCode: code,
 //                     referalId: referalId,
-//                     joinThrough: joinThrough,
 //                     termAndConditionAccepted: termAndConditionAccepted
 //                 });
 //             }
@@ -365,9 +362,9 @@ exports.getAllPaymentData = async (req, res) => {
 //                             razorpayTime: order.created_at,
 //                             verify: false,
 //                             referalId: referalId,
-//                             joinThrough: joinThrough,
+//                             marketingTag: marketingTag,
 //                             couponCode: couponCode,
-//                             saleLinkTag: saleLinkTag
+//                             saleLinkCode: saleLinkCode
 //                         })
 //                             .then(() => {
 //                                 res.status(201).send({

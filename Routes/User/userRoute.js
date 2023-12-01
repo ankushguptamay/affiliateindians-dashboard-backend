@@ -11,7 +11,7 @@ const { getLessonByLessonIdForUser } = require('../../Controllers/Admin/AddCours
 const { getAllQuizByLessonId } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
 const { getAllVideoByLessonId } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
 const { addCommentForUser, hardDeleteCommentForUser, getCommentForUser } = require('../../Controllers/Admin/AddCourse/videoCommentController');
-const { createPaymentForRegisterUser, verifyPayment } = require('../../Controllers/User/purchaseCourseController');
+const { createPaymentForRegisterUser, verifyPaymentForRegisterUser } = require('../../Controllers/User/purchaseCourseController');
 const { submitAssignmentAnswer, getAssignmentAnswerByLessonIdForUser } = require('../../Controllers/Admin/AddCourse/assignmentController');
 const { sendAffiliateUserIdRequest, getAffiliateUserIdForUser } = require("../../Controllers/User/affiliateUserIdController");
 const { getScheduleForUser, bookScheduleByUser } = require('../../Controllers/Admin/Master/scheduleCallBookingController');
@@ -46,7 +46,7 @@ router.delete("/hardDeleteComment/:id", verifyUserToken, isUser, hardDeleteComme
 
 // Purchase
 router.post("/createPayment/:id", verifyUserTokenForPayment, isUserForPayment, createPaymentForRegisterUser);
-router.post("/verifyPayment", verifyPayment);
+router.post("/verifyPayment", verifyPaymentForRegisterUser);
 
 //Coupon
 router.get("/coupons", verifyUserToken, isUser, getCoupon);

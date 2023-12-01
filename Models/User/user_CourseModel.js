@@ -33,13 +33,13 @@ module.exports = (sequelize, DataTypes) => {
     referalId: {
       type: DataTypes.STRING
     },
-    joinThrough: {
-      type: DataTypes.STRING // facebook, insta, ...
+    marketingTag: {
+      type: DataTypes.STRING
     },
     couponCode: {
       type: DataTypes.STRING
     },
-    saleLinkTag: {
+    saleLinkCode: {
       type: DataTypes.STRING
     }
   }, {

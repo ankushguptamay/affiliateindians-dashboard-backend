@@ -21,9 +21,15 @@ module.exports = (sequelize, DataTypes) => {
         linkType: {
             type: DataTypes.STRING
         },
-        affiliateUserId:{
+        affiliateUserId: {
             type: DataTypes.STRING
-        }
+        },
+        marketingTag: {
+            type: DataTypes.STRING
+        },
+        courseName: {
+            type: DataTypes.STRING
+        },
     }, {
         paranoid: true
     });
@@ -34,3 +40,4 @@ module.exports = (sequelize, DataTypes) => {
 // adminId
 // userId
 // courseId
+// affiliateUserId
