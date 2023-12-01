@@ -13,7 +13,7 @@ const { getAllVideoByLessonId } = require('../../Controllers/Admin/AddCourse/les
 const { addCommentForUser, hardDeleteCommentForUser, getCommentForUser } = require('../../Controllers/Admin/AddCourse/videoCommentController');
 const { createPaymentForRegisterUser, verifyPayment } = require('../../Controllers/User/purchaseCourseController');
 const { submitAssignmentAnswer, getAssignmentAnswerByLessonIdForUser } = require('../../Controllers/Admin/AddCourse/assignmentController');
-const { sendAffiliateUserIdRequest } = require("../../Controllers/User/affiliateUserIdRequestController");
+const { sendAffiliateUserIdRequest, getAffiliateUserIdForUser } = require("../../Controllers/User/affiliateUserIdController");
 const { getScheduleForUser, bookScheduleByUser } = require('../../Controllers/Admin/Master/scheduleCallBookingController');
 
 // Middleware
@@ -67,7 +67,8 @@ router.put("/updateAccountDetails/:id", verifyUserToken, isUser, updateAccountDe
 router.delete("/deleteAccountDetails/:id", verifyUserToken, isUser, deleteAccountDetails);
 
 // AffiliateUserIdRequest
-router.post("/sendAffiliateUserIdRequest", verifyUserToken, isUser, sendAffiliateUserIdRequest);
+router.post("/sendAffiliateUserIdRequest/:assignmentId", verifyUserToken, isUser, sendAffiliateUserIdRequest);
+router.get("/getAffiliateUserId/:courseId", verifyUserToken, isUser, getAffiliateUserIdForUser);
 
 //Schedule
 router.post("/bookSchedule/:id", verifyUserToken, isUser, bookScheduleByUser);

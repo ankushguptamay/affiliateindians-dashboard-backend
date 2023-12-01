@@ -26,7 +26,7 @@ const { createAssignment, getAssignmentAnswerByLessonIdForAdmin } = require('../
 
 const { findUserForSuperAdmin, findUserForAdmin, getAllUserWallet } = require("../../Controllers/User/user");
 const { bulkRegisterUserAndCreateCourseAndAssign, findAllUserForOnlyBulkCheck } = require("../../Controllers/User/bulk");
-const { getAffiliateUserIdRequestForAdmin, acceptAffiliateUserIdRequest, blockAffiliateUserIdRequest, unblockAffiliateUserIdRequest } = require("../../Controllers/User/affiliateUserIdRequestController");
+const { getAffiliateUserIdRequestForAdmin, acceptAffiliateUserIdRequest, blockAffiliateUserIdRequest, unblockAffiliateUserIdRequest } = require("../../Controllers/User/affiliateUserIdController");
 
 
 //middleware

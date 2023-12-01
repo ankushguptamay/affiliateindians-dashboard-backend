@@ -1,13 +1,23 @@
 const db = require('../../Models');
-const AffiliateUserIdRequest = db.affiliateUserIdRequest;
+const AffiliateUserId = db.affiliateUserId;
+const Course = db.course;
+const Assignment = db.assignment;
 const User = db.user;
 const { Op } = require('sequelize');
 
 exports.sendAffiliateUserIdRequest = async (req, res) => {
     try {
-        const isRequest = await AffiliateUserIdRequest.findOne({
+        const assignmentId = req.params.assignmentId;
+        const assignment = await Assignment.findOne({
             where: {
-                userId: req.user.id
+                id: assignmentId
+            }
+        });
+        const adminId = assignment.adminId;
+        const isRequest = await AffiliateUserId.findOne({
+            where: {
+                userId: req.user.id,
+                adminId: adminId
             },
             paranoid: false
         });
@@ -17,13 +27,14 @@ exports.sendAffiliateUserIdRequest = async (req, res) => {
                 message: `Request already present!`
             });
         }
-        await AffiliateUserIdRequest.create({
+        await AffiliateUserId.create({
             status: "PENDING",
-            userId: req.user.id
+            userId: req.user.id,
+            adminId: adminId
         });
         res.status(201).send({
             success: true,
-            message: `Account Details added successfully!`
+            message: `Affiliate Id request send successfully!`
         });
     }
     catch (err) {
@@ -46,9 +57,16 @@ exports.getAffiliateUserIdRequestForAdmin = async (req, res) => {
             currentPage = parseInt(page);
         }
         // Count All request
-        const totalRequest = await AffiliateUserIdRequest.count();
+        const totalRequest = await AffiliateUserId.count({
+            where: {
+                adminId: req.admin.id
+            }
+        });
         // All Request
-        const request = await AffiliateUserIdRequest.findAll({
+        const request = await AffiliateUserId.findAll({
+            where: {
+                adminId: req.admin.id
+            },
             order: [
                 ['createdAt', 'DESC']
             ],
@@ -75,9 +93,10 @@ exports.getAffiliateUserIdRequestForAdmin = async (req, res) => {
 
 exports.acceptAffiliateUserIdRequest = async (req, res) => {
     try {
-        const isRequest = await AffiliateUserIdRequest.findOne({
+        const isRequest = await AffiliateUserId.findOne({
             where: {
-                id: req.params.id
+                id: req.params.id,
+                adminId: req.admin.id
             }
         });
         if (!isRequest) {
@@ -88,33 +107,25 @@ exports.acceptAffiliateUserIdRequest = async (req, res) => {
         }
         // Generating Code
         let code;
-        const isCode = await AffiliateUserIdRequest.findAll({
+        const isCode = await AffiliateUserId.findAll({
             order: [
                 ['createdAt', 'ASC']
             ],
             paranoid: false
         });
         if (isCode.length == 0) {
-            code = "AL" + 1000;
+            code = "ALID" + 1000;
         } else {
             let lastCode = isCode[isCode.length - 1];
-            let lastDigits = lastCode.affiliateUserId.substring(2);
+            let lastDigits = lastCode.affiliateUserId.substring(4);
             let incrementedDigits = parseInt(lastDigits, 10) + 1;
-            code = "AL" + incrementedDigits;
+            code = "ALID" + incrementedDigits;
         }
+        // store code
         await isRequest.update({
             ...isRequest,
             affiliateUserId: code,
             status: "ACCEPT"
-        });
-        const user = await User.findOne({
-            where: {
-                id: isRequest.userId
-            }
-        });
-        await user.update({
-            ...user,
-            affiliateUserId: code
         });
         res.status(201).send({
             success: true,
@@ -131,9 +142,10 @@ exports.acceptAffiliateUserIdRequest = async (req, res) => {
 
 exports.blockAffiliateUserIdRequest = async (req, res) => {
     try {
-        const isRequest = await AffiliateUserIdRequest.findOne({
+        const isRequest = await AffiliateUserId.findOne({
             where: {
-                id: req.params.id
+                id: req.params.id,
+                adminId: req.admin.id
             }
         });
         if (!isRequest) {
@@ -161,9 +173,10 @@ exports.blockAffiliateUserIdRequest = async (req, res) => {
 
 exports.unblockAffiliateUserIdRequest = async (req, res) => {
     try {
-        const isRequest = await AffiliateUserIdRequest.findOne({
+        const isRequest = await AffiliateUserId.findOne({
             where: {
-                id: req.params.id
+                id: req.params.id,
+                adminId: req.admin.id
             }
         });
         if (!isRequest) {
@@ -179,6 +192,41 @@ exports.unblockAffiliateUserIdRequest = async (req, res) => {
         res.status(201).send({
             success: true,
             message: `Request unblocked successfully!`
+        });
+    }
+    catch (err) {
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
+
+exports.getAffiliateUserIdForUser = async (req, res) => {
+    try {
+        const courseId = req.params.courseId;
+        const course = await Course.findOne({
+            where: {
+                id: courseId
+            }
+        });
+        const adminId = course.adminId;
+        const isRequest = await AffiliateUserId.findOne({
+            where: {
+                userId: req.user.id,
+                adminId: adminId
+            }
+        });
+        if (!isRequest) {
+            return res.status(403).send({
+                success: false,
+                message: `Affiliate Id is not present!`
+            });
+        }
+        res.status(201).send({
+            success: true,
+            message: `Affiliate Id fetched successfully!`,
+            data: isRequest
         });
     }
     catch (err) {

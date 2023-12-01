@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const AffiliateUserIdRequest = sequelize.define("affiliateUserIdRequest", {
+    const AffiliateUserId = sequelize.define("affiliateUserId", {
         id: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
@@ -14,9 +14,11 @@ module.exports = (sequelize, DataTypes) => {
                 isIn: [['PENDING', 'BLOCK', 'UNBLOCK', 'ACCEPT']]
             }
         }
-
     }, {
         paranoid: true
     });
-    return AffiliateUserIdRequest;
+    return AffiliateUserId;
 };
+
+// userId
+// adminId

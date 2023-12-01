@@ -27,7 +27,7 @@ const { createAssignment, getAssignmentAnswerByLessonIdForAdmin } = require('../
 const { registerTeacher } = require("../../Controllers/Admin/Teacher/teacherController");
 // User
 const { findUserForAdmin } = require("../../Controllers/User/user");
-const { getAffiliateUserIdRequestForAdmin, acceptAffiliateUserIdRequest, blockAffiliateUserIdRequest, unblockAffiliateUserIdRequest } = require("../../Controllers/User/affiliateUserIdRequestController");
+const { getAffiliateUserIdRequestForAdmin, acceptAffiliateUserIdRequest, blockAffiliateUserIdRequest, unblockAffiliateUserIdRequest } = require("../../Controllers/User/affiliateUserIdController");
 
 //middleware
 const multer = require('multer');

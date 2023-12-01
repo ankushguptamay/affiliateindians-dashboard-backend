@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const ShareSaleLink = sequelize.define("shareSaleLinks", {
+    const AffiliateLink = sequelize.define("affiliateLinks", {
         id: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false
         },
-        saleLinkTag: {
+        saleLinkCode: {
             type: DataTypes.STRING,
             allowNull: false,
             unique: true
@@ -18,17 +18,19 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             defaultValue: 0
         },
-        socialMedia: {
+        linkType: {
             type: DataTypes.STRING
         },
-        productId: {
+        affiliateUserId:{
             type: DataTypes.STRING
         }
     }, {
         paranoid: true
     });
-    return ShareSaleLink;
+    return AffiliateLink;
 };
 
 // foreignKey
 // adminId
+// userId
+// courseId
