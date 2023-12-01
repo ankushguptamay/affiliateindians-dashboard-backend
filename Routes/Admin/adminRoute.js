@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const { registerAdmin, loginAdmin } = require('../../Controllers/Admin/authAdminController');
-const { generateSaleLinkTag } = require('../../Controllers/Admin/shareSaleLinkController');
+const { generateSaleLinkCode } = require('../../Controllers/Admin/affiliateLinkController');
 
 // Master
 const { getTemplateByAdminId, addTemplate, hardDeleteTemplate } = require('../../Controllers/Admin/Master/templateController');
@@ -43,7 +43,7 @@ const uploadImageDocumentPresentation = require('../../Middlewares/UploadFile/up
 router.post("/register", registerAdmin);
 router.post("/login", loginAdmin);
 // Sale Link
-router.post("/generateSaleLinkTag", verifyAdminToken, isAdmin, generateSaleLinkTag);
+router.post("/generateSaleLinkCode", verifyAdminToken, isAdmin, generateSaleLinkCode);
 // Master
 //Template
 router.get("/templates", verifyAdminToken, isAdmin, getTemplateByAdminId);

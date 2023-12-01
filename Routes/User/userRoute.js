@@ -15,6 +15,7 @@ const { createPaymentForRegisterUser, verifyPaymentForRegisterUser } = require('
 const { submitAssignmentAnswer, getAssignmentAnswerByLessonIdForUser } = require('../../Controllers/Admin/AddCourse/assignmentController');
 const { sendAffiliateUserIdRequest, getAffiliateUserIdForUser } = require("../../Controllers/User/affiliateUserIdController");
 const { getScheduleForUser, bookScheduleByUser } = require('../../Controllers/Admin/Master/scheduleCallBookingController');
+const { generateSaleLinkCode } = require('../../Controllers/Admin/affiliateLinkController');
 
 // Middleware
 const { verifyUserToken, verifyUserTokenForPayment } = require('../../Middlewares/varifyToken');
@@ -30,6 +31,10 @@ router.post("/generatePassword", generatePassword);
 router.post("/changePassword", verifyUserToken, isUser, changePassword);
 router.get("/users", verifyUserToken, isUser, findUser);
 router.put("/update", verifyUserToken, isUser, update);
+
+
+// Sale Link
+router.post("/generateSaleLinkCode", verifyUserToken, isUser, generateSaleLinkCode);
 
 // Course
 router.get("/courses", verifyUserToken, isUser, getAllCourse);

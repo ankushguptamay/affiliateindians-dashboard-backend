@@ -11,6 +11,8 @@ exports.createSchedule = async (req, res) => {
             return res.status(400).send(error.details[0].message);
         }
         const { month, date, checkedTimes, unCheckedTimes } = req.body;
+        // checkedTimes admin want to hold or not available PAUSED
+        // unCheckedTimes admin is available UNPAUSED
         // 7 days validation
         const date1 = JSON.stringify(new Date());
         const date2 = JSON.stringify(new Date((new Date).getTime() + (1 * 24 * 60 * 60 * 1000)));
@@ -32,7 +34,7 @@ exports.createSchedule = async (req, res) => {
                 month: month,
                 date: date,
                 timing: checkedTimes[i],
-                createrAvailablity: "UNPAUSED",
+                createrAvailablity: "PAUSED",
                 adminId: req.admin.id
             });
         }
@@ -41,7 +43,7 @@ exports.createSchedule = async (req, res) => {
                 month: month,
                 date: date,
                 timing: checkedTimes[i],
-                createrAvailablity: "PAUSED",
+                createrAvailablity: "UNPAUSED",
                 adminId: req.admin.id
             });
         }

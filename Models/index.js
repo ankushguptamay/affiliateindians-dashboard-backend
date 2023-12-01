@@ -30,7 +30,7 @@ db.sequelize = sequelize;
 // Admin
 db.admin = require('./Admin/admin')(sequelize, Sequelize);
 db.adminWallet = require('./Admin/adminWalletModel.js')(sequelize, Sequelize);
-// db.shareSaleLink = require('./Admin/shareSaleLinkModel.js')(sequelize, Sequelize);
+db.affiliateLink = require('./Admin/affiliateLinkModel.js')(sequelize, Sequelize);
 db.emailCredential = require('./Admin/emailCredentialModel.js')(sequelize, Sequelize);
 db.scheduleCallBooking = require('./Admin/Master/scheduleCallBookingModel.js')(sequelize, Sequelize);
 
@@ -228,6 +228,19 @@ db.scheduleCallBooking.belongsTo(db.admin, { foreignKey: "adminId", as: "admin" 
 db.user.hasMany(db.scheduleCallBooking, { foreignKey: "userId", as: "scheduleBooking" });
 db.scheduleCallBooking.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 
+// affiliateLink assocication
+db.admin.hasMany(db.affiliateLink, { foreignKey: "adminId", as: "affiliateLink" });
+db.affiliateLink.belongsTo(db.admin, { foreignKey: "adminId", as: "admin" });
+
+db.user.hasMany(db.affiliateLink, { foreignKey: "userId", as: "affiliateLink" });
+db.affiliateLink.belongsTo(db.user, { foreignKey: "userId", as: "user" });
+
+db.course.hasMany(db.affiliateLink, { foreignKey: "courseId", as: "affiliateLink" });
+db.affiliateLink.belongsTo(db.course, { foreignKey: "courseId", as: "course" });
+
+db.affiliateUserId.hasMany(db.affiliateLink, { foreignKey: "affiliateUserId", as: "affiliateLink" });
+db.affiliateLink.belongsTo(db.affiliateUserId, { foreignKey: "affiliateUserId", as: "affiliateUserIds" });
+
 // db.emailCredential.findOne({
 //     where: {
 //         email: ""
@@ -251,8 +264,8 @@ db.scheduleCallBooking.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 // queryInterface.removeColumn("user_courses", "saleLinkTag").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.addColumn("user_courses", "marketingTag", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.addColumn("user_courses", "saleLinkCode", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.dropTable("affiliateLinks").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
-// queryInterface.dropTable("templateForms").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.dropTable("scheduleCallBookings").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 module.exports = db;

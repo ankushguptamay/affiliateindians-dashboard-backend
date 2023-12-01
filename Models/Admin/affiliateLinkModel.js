@@ -19,10 +19,10 @@ module.exports = (sequelize, DataTypes) => {
             defaultValue: 0
         },
         linkType: {
-            type: DataTypes.STRING
-        },
-        affiliateUserId: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            validate: {
+                isIn: [['REGISTER', 'GETSTART']]
+            }
         },
         marketingTag: {
             type: DataTypes.STRING
@@ -30,6 +30,12 @@ module.exports = (sequelize, DataTypes) => {
         courseName: {
             type: DataTypes.STRING
         },
+        craetor: {
+            type: DataTypes.STRING,
+            validate: {
+                isIn: [['USER', 'ADMIN']]
+            }
+        }
     }, {
         paranoid: true
     });
