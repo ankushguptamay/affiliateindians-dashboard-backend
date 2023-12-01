@@ -246,11 +246,11 @@ db.scheduleCallBooking.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 // queryInterface.dropTable("shareSaleLinks").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.dropTable("affiliateUserIdRequests").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.removeColumn("users", "affiliateUserId").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.removeColumn("users", "joinThrough").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.removeColumn("user_courses", "joinThrough").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.removeColumn("user_courses", "saleLinkTag").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-// queryInterface.addColumn("user_courses", "marketingTag", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-// queryInterface.addColumn("user_courses", "saleLinkCode", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.removeColumn("users", "joinThrough").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.removeColumn("user_courses", "joinThrough").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.removeColumn("user_courses", "saleLinkTag").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("user_courses", "marketingTag", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("user_courses", "saleLinkCode", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 // queryInterface.dropTable("templateForms").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.dropTable("scheduleCallBookings").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
