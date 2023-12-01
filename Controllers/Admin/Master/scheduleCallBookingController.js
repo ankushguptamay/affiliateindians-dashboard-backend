@@ -63,12 +63,15 @@ exports.createSchedule = async (req, res) => {
 
 exports.getUnPausedScheduleForAdmin = async (req, res) => {
     try {
-        const date = req.query.date;
+        const todayDate = JSON.stringify(new Date());
+        const date = (req.query.date) ? req.query.date : `${todayDate.slice(1, 11)}`;
+        const condition = {
+            adminId: req.admin.id,
+            createrAvailablity: "UNPAUSED",
+            date: date
+        };
         const unPausedSchedule = await ScheduleCallBooking.findAll({
-            where: {
-                adminId: req.admin.id,
-                createrAvailablity: "UNPAUSED"
-            }
+            where: condition
         });
         res.status(201).send({
             success: true,
@@ -86,12 +89,15 @@ exports.getUnPausedScheduleForAdmin = async (req, res) => {
 
 exports.getPausedScheduleForAdmin = async (req, res) => {
     try {
-        const date = req.query.date;
+        const todayDate = JSON.stringify(new Date());
+        const date = (req.query.date) ? req.query.date : `${todayDate.slice(1, 11)}`;
+        const condition = {
+            adminId: req.admin.id,
+            createrAvailablity: "PAUSED",
+            date: date
+        };
         const unPausedSchedule = await ScheduleCallBooking.findAll({
-            where: {
-                adminId: req.admin.id,
-                createrAvailablity: "PAUSED"
-            }
+            where: condition
         });
         res.status(201).send({
             success: true,
