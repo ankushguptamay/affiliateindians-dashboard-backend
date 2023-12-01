@@ -43,7 +43,7 @@ exports.createSchedule = async (req, res) => {
             await ScheduleCallBooking.create({
                 month: month,
                 date: date,
-                timing: checkedTimes[i],
+                timing: unCheckedTimes[i],
                 createrAvailablity: "UNPAUSED",
                 adminId: req.admin.id
             });
