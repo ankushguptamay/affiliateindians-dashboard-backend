@@ -157,7 +157,7 @@ exports.bookScheduleByUser = async (req, res) => {
 
 exports.getScheduleForUser = async (req, res) => {
     try {
-        const adminId = req.body.adminId;
+        const adminId = req.query.adminId;
         const todayDate = JSON.stringify(new Date());
         const date = (req.body.date) ? req.body.date : `${todayDate.slice(1, 11)}`;
         // find schedule

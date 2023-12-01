@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
         videoName: {
             type: DataTypes.STRING
         },
-        lessonVideos: {
+        encodeProgress: {
             type: DataTypes.INTEGER,
             defaultValue: 0
         }
