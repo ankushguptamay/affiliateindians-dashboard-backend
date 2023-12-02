@@ -41,7 +41,7 @@ const uploadImageDocumentPresentation = require('../../Middlewares/UploadFile/up
 
 // Route
 // Super Admin 
-router.post("/register", registerAdmin);
+// router.post("/register", registerAdmin);
 router.post("/login", loginAdmin);
 
 // Sale Link
