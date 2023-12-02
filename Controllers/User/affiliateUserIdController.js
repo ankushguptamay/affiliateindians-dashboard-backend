@@ -27,9 +27,26 @@ exports.sendAffiliateUserIdRequest = async (req, res) => {
                 message: `Request already present!`
             });
         }
+        // Generating Code
+        let code;
+        const isCode = await AffiliateUserId.findAll({
+            order: [
+                ['createdAt', 'ASC']
+            ],
+            paranoid: false
+        });
+        if (isCode.length === 0) {
+            code = "ALID" + 1000;
+        } else {
+            let lastCode = isCode[isCode.length - 1];
+            let lastDigits = lastCode.affiliateUserId.substring(4);
+            let incrementedDigits = parseInt(lastDigits, 10) + 1;
+            code = "ALID" + incrementedDigits;
+        }
         await AffiliateUserId.create({
             status: "PENDING",
             userId: req.user.id,
+            affiliateUserId: code,
             adminId: adminId
         });
         res.status(201).send({
@@ -105,26 +122,9 @@ exports.acceptAffiliateUserIdRequest = async (req, res) => {
                 message: `Request is not present!`
             });
         }
-        // Generating Code
-        let code;
-        const isCode = await AffiliateUserId.findAll({
-            order: [
-                ['createdAt', 'ASC']
-            ],
-            paranoid: false
-        });
-        if (isCode.length == 0) {
-            code = "ALID" + 1000;
-        } else {
-            let lastCode = isCode[isCode.length - 1];
-            let lastDigits = lastCode.affiliateUserId.substring(4);
-            let incrementedDigits = parseInt(lastDigits, 10) + 1;
-            code = "ALID" + incrementedDigits;
-        }
         // store code
         await isRequest.update({
             ...isRequest,
-            affiliateUserId: code,
             status: "ACCEPT"
         });
         res.status(201).send({
