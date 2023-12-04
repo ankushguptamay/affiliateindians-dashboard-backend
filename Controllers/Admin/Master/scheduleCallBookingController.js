@@ -96,13 +96,13 @@ exports.getPausedScheduleForAdmin = async (req, res) => {
             createrAvailablity: "PAUSED",
             date: date
         };
-        const unPausedSchedule = await ScheduleCallBooking.findAll({
+        const pausedSchedule = await ScheduleCallBooking.findAll({
             where: condition
         });
         res.status(201).send({
             success: true,
             message: `${date},s paused schedule booking fetched successfully!`,
-            data: unPausedSchedule
+            data: pausedSchedule
         });
     }
     catch (err) {
@@ -147,6 +147,8 @@ exports.bookScheduleByUser = async (req, res) => {
                 id: req.user.id
             }
         });
+        // book schedule before 1 hours
+        const scheduleTime = `${isSchedule.date}T${(isSchedule.timing).slice(1, 6)}:00`
         // date validation is not done
         // Book schedule
         await isSchedule.update({
@@ -171,15 +173,25 @@ exports.bookScheduleByUser = async (req, res) => {
 exports.getScheduleForUser = async (req, res) => {
     try {
         const adminId = req.query.adminId;
+        // If current time is greater then 16:30 then user will show tomorrow schedule
         const todayDate = JSON.stringify(new Date());
-        const date = (req.body.date) ? req.body.date : `${todayDate.slice(1, 11)}`;
+        const tomorrowDate = JSON.stringify(new Date((new Date).getTime() + (1 * 24 * 60 * 60 * 1000)));
+        const ISTCurrentDate = (new Date).getTime() + (330 * 60 * 1000);
+        const ISTFourAndHalfDate = new Date(`${todayDate.slice(1, 11)}T16:30:00`).getTime() + (330 * 60 * 1000);
+        let date = (req.query.date) ? req.query.date : `${todayDate.slice(1, 11)}`;
+        if (parseInt(ISTCurrentDate) > parseInt(ISTFourAndHalfDate)) {
+            date = (req.query.date) ? req.query.date : `${tomorrowDate.slice(1, 11)}`;
+        }
         // find schedule
         const schedule = await ScheduleCallBooking.findAll({
             where: {
                 adminId: adminId,
                 date: date,
                 createrAvailablity: "UNPAUSED",
-            }
+            },
+            order: [
+                ['createdAt', 'ASC']
+            ]
         });
         res.status(201).send({
             success: true,
@@ -194,3 +206,5 @@ exports.getScheduleForUser = async (req, res) => {
         });
     }
 };
+
+// 4:30

@@ -141,3 +141,47 @@ exports.getAssignmentAnswerByLessonIdForUser = async (req, res) => {
         });
     }
 };
+
+exports.hardDeleteAssignment = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const adminId = req.admin.id;
+        const condition = [{ id: id }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
+        // find Assignment
+        const assignment = await Assignment.findOne({
+            where: {
+                [Op.and]: condition
+            }
+        });
+        if (!assignment) {
+            return res.status(400).send({
+                success: false,
+                message: "Assignment is not present!"
+            });
+        };
+        // FindAll Assignment Answer
+        const assignmentAnswer = await AssignmentAnswer.findAll({
+            where: {
+                assignmentId: id,
+            }
+        });
+        if (assignmentAnswer.length > 0) {
+            await assignmentAnswer.destroy({ force: true });
+        }
+        // Hard delete assignment
+        await assignment.destroy({ force: true });
+        res.status(200).send({
+            success: true,
+            message: `Assignment deleted seccessfully!`
+        });
+    } catch (err) {
+        // console.log(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};

@@ -35,6 +35,15 @@ module.exports = (sequelize, DataTypes) => {
         encodeProgress: {
             type: DataTypes.INTEGER,
             defaultValue: 0
+        },
+        embeddedVideoCode: {
+            type: DataTypes.TEXT
+        },
+        videoType: {
+            type: DataTypes.STRING,
+            validate: {
+                isIn: [['EMBEDDEDCODE', 'VIDEO']]
+            }
         }
     }, {
         paranoid: true

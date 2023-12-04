@@ -42,6 +42,7 @@ exports.generateSaleLinkCode = async (req, res) => {
             }
         });
         // Check user generate AID from this admin
+        let affiliateUserId;
         if (craetor === "USER") {
             if (!aid) {
                 return res.status(400).send({
@@ -49,7 +50,7 @@ exports.generateSaleLinkCode = async (req, res) => {
                     message: "AffiliateId should be present!"
                 });
             }
-            const affiliateUserId = await AffiliateUserId.findOne({
+            affiliateUserId = await AffiliateUserId.findOne({
                 where: {
                     affiliateUserId: aid,
                     userId: creatorId,
@@ -105,7 +106,7 @@ exports.generateSaleLinkCode = async (req, res) => {
                 craetor: craetor,
                 linkType: linkType,
                 courseName: course.title,
-                affiliateUserId: aid
+                affiliateUserId: affiliateUserId.id
             });
         } else {
             await AffiliateLink.create({

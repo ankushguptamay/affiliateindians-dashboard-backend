@@ -342,7 +342,13 @@ exports.hardDeleteCourse = async (req, res) => {
         const lessonFileArray = [];
         const thumbnailArray = [];
         // hard Delete Lesson video 
-        const video = await LessonVideo.findAll({ where: { courseId: id } });
+        const video = await LessonVideo.findAll({
+            where:
+            {
+                courseId: id,
+                videoType: "VIDEO"
+            }
+        });
         if (video.length > 0) {
             // delete video from bunny
             for (let i = 0; i < video.length; i++) {

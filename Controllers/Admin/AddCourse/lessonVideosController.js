@@ -5,6 +5,7 @@ const Course = db.course;
 const LessonVideo = db.lessonVideo;
 const VideoComment = db.videoComment;
 const { deleteSingleFile, deleteMultiFile } = require("../../../Util/deleteFile");
+const { videoEmbeddedCodeValidation } = require("../../../Middlewares/Validate/validateCourse");
 const axios = require('axios');
 
 // uploadLessonVideo
@@ -93,6 +94,7 @@ exports.uploadLessonVideo = async (req, res) => {
             BUNNY_VIDEO_LIBRARY_ID: lesson.parentCourse.BUNNY_VIDEO_LIBRARY_ID,
             BUNNY_LIBRARY_API_KEY: lesson.parentCourse.BUNNY_LIBRARY_API_KEY,
             adminId: req.admin.id,
+            videoType: "VIDEO",
             videoName: req.file.originalname
         });
         res.status(201).send({
@@ -129,28 +131,30 @@ exports.hardDeleteLessonVideo = async (req, res) => {
                 message: "Lesson Video is not present!"
             });
         };
-        // delete video from bunny
-        const deleteVideo = {
-            method: "DELETE",
-            url: `http://video.bunnycdn.com/library/${lessonVideo.BUNNY_VIDEO_LIBRARY_ID}/videos/${lessonVideo.Video_ID}`,
-            headers: {
-                AccessKey: lessonVideo.BUNNY_LIBRARY_API_KEY,
-            }
-        };
+        if (lessonVideo.videoType === "VIDEO") {
+            // delete video from bunny
+            const deleteVideo = {
+                method: "DELETE",
+                url: `http://video.bunnycdn.com/library/${lessonVideo.BUNNY_VIDEO_LIBRARY_ID}/videos/${lessonVideo.Video_ID}`,
+                headers: {
+                    AccessKey: lessonVideo.BUNNY_LIBRARY_API_KEY,
+                }
+            };
 
-        await axios
-            .request(deleteVideo)
-            .then((response) => {
-                // console.log("delete: ", response.data);
-            })
-            .catch((error) => {
-                // console.log(error);
-                return res.status(400).send({
-                    success: false,
-                    message: "Delete request of video failed from bunny. try to delete again!",
-                    bunnyMessage: error.message
+            await axios
+                .request(deleteVideo)
+                .then((response) => {
+                    // console.log("delete: ", response.data);
+                })
+                .catch((error) => {
+                    // console.log(error);
+                    return res.status(400).send({
+                        success: false,
+                        message: "Delete request of video failed from bunny. try to delete again!",
+                        bunnyMessage: error.message
+                    });
                 });
-            });
+        }
         // delete lesson from database
         if (lessonVideo.Thumbnail_Path) {
             deleteSingleFile(lessonVideo.Thumbnail_Path);
@@ -205,32 +209,34 @@ exports.addOrUpdateThumbNail = async (req, res) => {
                 message: "Lesson Video is not present!"
             });
         };
-        // add to buuny video
-        const setThumbNail = {
-            method: "POST",
-            url: `http://video.bunnycdn.com/library/${lessonVideo.BUNNY_VIDEO_LIBRARY_ID}/videos/${lessonVideo.Video_ID}/thumbnail`,
-            params: {
-                thumbnailUrl: req.file.path
-            },
-            headers: {
-                Accept: "application/json",
-                AccessKey: lessonVideo.BUNNY_LIBRARY_API_KEY,
-            }
-        };
-        await axios
-            .request(setThumbNail)
-            .then((response) => {
-                // console.log("resposse: ", response.data);
-            })
-            .catch((error) => {
-                // console.log(error);
-                deleteSingleFile(req.file.path);
-                return res.status(400).json({
-                    success: false,
-                    message: "failed to upload thumbnail! upload again",
-                    bunnyMessage: error.message
+        if (lessonVideo.videoType === "VIDEO") {
+            // add to buuny video
+            const setThumbNail = {
+                method: "POST",
+                url: `http://video.bunnycdn.com/library/${lessonVideo.BUNNY_VIDEO_LIBRARY_ID}/videos/${lessonVideo.Video_ID}/thumbnail`,
+                params: {
+                    thumbnailUrl: req.file.path
+                },
+                headers: {
+                    Accept: "application/json",
+                    AccessKey: lessonVideo.BUNNY_LIBRARY_API_KEY,
+                }
+            };
+            await axios
+                .request(setThumbNail)
+                .then((response) => {
+                    // console.log("resposse: ", response.data);
+                })
+                .catch((error) => {
+                    // console.log(error);
+                    deleteSingleFile(req.file.path);
+                    return res.status(400).json({
+                        success: false,
+                        message: "failed to upload thumbnail! upload again",
+                        bunnyMessage: error.message
+                    });
                 });
-            });
+        }
         // delete existing file
         let message = "added";
         if (lessonVideo.Thumbnail_Path) {
@@ -263,7 +269,8 @@ exports.getAllVideoByLessonId = async (req, res) => {
         const findEncodeingVideo = await LessonVideo.findAll({
             where: {
                 lessonId: req.params.lessonId,
-                encodeProgress: { [Op.lt]: 100 }
+                encodeProgress: { [Op.lt]: 100 },
+                videoType: "VIDEO"
             }
         });
         for (let i = 0; i < findEncodeingVideo.length; i++) {
@@ -341,3 +348,47 @@ exports.getAllVideoByLessonId = async (req, res) => {
 //         });
 //     }
 // };
+
+exports.uploadVideoEmbeddedCode = async (req, res) => {
+    try {
+        // Validate Body
+        const { error } = videoEmbeddedCodeValidation(req.body);
+        if (error) {
+            return res.status(400).send(error.details[0].message);
+        }
+        const lessonId = req.params.lessonId;
+        const lesson = await Lesson.findOne({
+            where: {
+                id: lessonId,
+                adminId: req.admin.id
+            }
+        });
+        if (!lesson) {
+            return res.status(400).send({
+                success: false,
+                message: "Lesson is not present!"
+            });
+        }
+        const { embeddedCode, videoName } = req.body;
+        // add new video in databse
+        await LessonVideo.create({
+            courseId: lesson.courseId,
+            sectionId: lesson.sectionId,
+            lessonId: lessonId,
+            adminId: req.admin.id,
+            videoType: "EMBEDDEDCODE",
+            videoName: videoName,
+            embeddedCode: embeddedCode
+        });
+        res.status(201).send({
+            success: true,
+            message: `Lesson's video uploaded successfully!`
+        });
+    }
+    catch (err) {
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};

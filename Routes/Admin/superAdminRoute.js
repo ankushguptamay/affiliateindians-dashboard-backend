@@ -17,12 +17,12 @@ const { createSection, getAllSectionByCourseIdForAdmin, publicSection, unPublicS
 const { createLesson, getLessonByLessonIdForAdmin, publicLesson, unPublicLesson, updateLesson, hardDeleteLesson } = require('../../Controllers/Admin/AddCourse/lessonController');
 const { createCourse, getCourseForAdmin, getAllCourse, addOrUpdateAuthorImage, addOrUpdateCourseImage, updateCourse, getCourseById, hardDeleteCourse, allowAffiliateCourse,
     disAllowAffiliateCourse, deleteAuthorImage, deleteCourseImage, publicCourse, unPublicCourse } = require('../../Controllers/Admin/AddCourse/courseController');
-const { uploadLessonVideo, hardDeleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
+const { uploadLessonVideo, hardDeleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail, uploadVideoEmbeddedCode } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
 const { createLessonQuiz, getAllQuizByLessonId, hardDeleteLessonQuiz, updateLessonQuiz } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
 const { addBanner, updateBanner, addPDF, hardDeletePDF, addResource, hardDeleteResource } = require('../../Controllers/Admin/AddCourse/lessonFileController');
 const { addCommentForAdmin, approveComment, hardDeleteCommentForAdmin, getCommentForAdmin } = require('../../Controllers/Admin/AddCourse/videoCommentController');
 const { addUpSell, deleteUpSell } = require('../../Controllers/Admin/Master/upSellController');
-const { createAssignment, getAssignmentAnswerByLessonIdForAdmin } = require('../../Controllers/Admin/AddCourse/assignmentController');
+const { createAssignment, getAssignmentAnswerByLessonIdForAdmin, hardDeleteAssignment } = require('../../Controllers/Admin/AddCourse/assignmentController');
 
 const { findUserForSuperAdmin, findUserForAdmin, getAllUserWallet } = require("../../Controllers/User/user");
 const { bulkRegisterUserAndCreateCourseAndAssign, findAllUserForOnlyBulkCheck } = require("../../Controllers/User/bulk");
@@ -122,6 +122,7 @@ router.post("/uploadVideo/:lessonId", verifyAdminToken, isSuperAdmin, upload.sin
 router.put("/addOrUpdateThumbNail/:id", verifyAdminToken, isSuperAdmin, uploadImage.single("thumbnail"), addOrUpdateThumbNail);
 router.get("/videos/:lessonId", verifyAdminToken, isSuperAdmin, getAllVideoByLessonId);
 router.delete("/hardDeleteVideo/:id", verifyAdminToken, isSuperAdmin, hardDeleteLessonVideo);
+router.post("/uploadVideoEmbeddedCode/:lessonId", verifyAdminToken, isSuperAdmin, uploadVideoEmbeddedCode);
 // Comment
 router.post("/addComment/:lessonVideoId", verifyAdminToken, isSuperAdmin, uploadImageAndPDF.array("commentFile", 10), addCommentForAdmin);
 router.get("/comment/:lessonVideoId", verifyAdminToken, isSuperAdmin, getCommentForAdmin);
@@ -133,6 +134,7 @@ router.delete("/deleteUpSell/:id", verifyAdminToken, isSuperAdmin, deleteUpSell)
 //Assignment
 router.post("/createAssignment/:id", verifyAdminToken, isSuperAdmin, createAssignment); // lessonId
 router.get("/ getAssignmentAnswer/:id", verifyAdminToken, isSuperAdmin, getAssignmentAnswerByLessonIdForAdmin); // lessonId
+router.delete("/ hardDeleteAnswer/:id", verifyAdminToken, isSuperAdmin, hardDeleteAssignment); // assignmentId
 
 // User
 router.get("/users", verifyAdminToken, isSuperAdmin, findUserForSuperAdmin);

@@ -105,3 +105,11 @@ exports.assignmentAnswerValidation = (data) => {
     }) // .options({ allowUnknown: true });
     return schema.validate(data);
 }
+
+exports.videoEmbeddedCodeValidation = (data) => {
+    const schema = joi.object().keys({
+        videoName: joi.string().required(),
+        embeddedCode: joi.string().required()
+    }) // .options({ allowUnknown: true });
+    return schema.validate(data);
+}

@@ -126,7 +126,10 @@ exports.getLessonByLessonIdForAdmin = async (req, res) => {
             }, {
                 model: Assignment,
                 as: "assignment",
-            }]
+            }],
+            order: [
+                ['createdAt', 'ASC']
+            ]
         });
         if (!lesson) {
             return res.status(400).send({
@@ -218,7 +221,10 @@ exports.getLessonByLessonIdForUser = async (req, res) => {
             }, {
                 model: Assignment,
                 as: "assignment",
-            }]
+            }],
+            order: [
+                ['createdAt', 'ASC']
+            ]
         });
         if (!lesson) {
             return res.status(400).send({
@@ -397,7 +403,12 @@ exports.hardDeleteLesson = async (req, res) => {
             });
         };
         // delete associated video
-        const video = await LessonVideo.findAll({ where: { lessonId: id } });
+        const video = await LessonVideo.findAll({
+            where: {
+                lessonId: id,
+                videoType: "VIDEO"
+            }
+        });
         const commentFileArray = [];
         const thumbnailArray = [];
         const lessonFileArray = [];
