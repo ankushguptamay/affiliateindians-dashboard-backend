@@ -256,8 +256,8 @@ db.affiliateLink.belongsTo(db.affiliateUserId, { foreignKey: "affiliateUserId", 
 //     }
 // }).catch((err) => { console.log(err) });
 
-queryInterface.addColumn("lessonVideos", "embeddedVideoCode", { type: DataTypes.TEXT }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.addColumn("lessonVideos", "videoType", { type: DataTypes.STRING, validate: { isIn: [['EMBEDDEDCODE', 'VIDEO']] } }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.addColumn("lessonVideos", "embeddedVideoCode", { type: DataTypes.TEXT }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.addColumn("lessonVideos", "videoType", { type: DataTypes.STRING, validate: { isIn: [['EMBEDDEDCODE', 'VIDEO']] } }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 // queryInterface.dropTable("scheduleCallBookings").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.dropTable("scheduleCallBookings").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
