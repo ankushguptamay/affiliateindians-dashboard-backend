@@ -64,7 +64,8 @@ exports.getLessonByLessonIdForAdmin = async (req, res) => {
         const findEncodeingVideo = await LessonVideo.findAll({
             where: {
                 lessonId: lessonId,
-                encodeProgress: { [Op.lt]: 100 }
+                encodeProgress: { [Op.lt]: 100 },
+                videoType: "VIDEO"
             }
         });
         for (let i = 0; i < findEncodeingVideo.length; i++) {
@@ -158,7 +159,8 @@ exports.getLessonByLessonIdForUser = async (req, res) => {
         const findEncodeingVideo = await LessonVideo.findAll({
             where: {
                 lessonId: lessonId,
-                encodeProgress: { [Op.lt]: 100 }
+                encodeProgress: { [Op.lt]: 100 },
+                videoType: "VIDEO"
             }
         });
         for (let i = 0; i < findEncodeingVideo.length; i++) {
