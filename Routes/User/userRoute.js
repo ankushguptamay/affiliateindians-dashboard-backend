@@ -5,7 +5,7 @@ const { create, changePassword, login, findUser, update, sendOTPForForgetPasswor
 const { addAccountDetails, findUserAccountDetails, deleteAccountDetails, updateAccountDetails } = require("../../Controllers/User/userAccountDetailsCont");
 const { submitAnswer, checkResultForUser } = require("../../Controllers/User/quizAnswerController");
 const { getCoupon, applyCouponToCourse } = require('../../Controllers/Admin/Master/couponController');
-const { getAllCourse, getUsersCourse } = require('../../Controllers/Admin/AddCourse/courseController');
+const { getAllCourse, getUsersCourse, getCourseByTitleForUser } = require('../../Controllers/Admin/AddCourse/courseController');
 const { getAllSectionByCourseIdForUser } = require('../../Controllers/Admin/AddCourse/sectionControllers');
 const { getLessonByLessonIdForUser } = require('../../Controllers/Admin/AddCourse/lessonController');
 const { getAllQuizByLessonId } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
@@ -38,6 +38,7 @@ router.post("/generateSaleLinkCode", verifyUserToken, isUser, generateSaleLinkCo
 
 // Course
 router.get("/courses", verifyUserToken, isUser, getAllCourse);
+router.get("/courses/:title", verifyUserToken, isUser, getCourseByTitleForUser);
 router.get("/myCourses", verifyUserToken, isUser, getUsersCourse);
 router.get("/sections/:courseId", verifyUserToken, isUser, getAllSectionByCourseIdForUser);
 router.get("/lesson/:id", verifyUserToken, isUser, getLessonByLessonIdForUser);

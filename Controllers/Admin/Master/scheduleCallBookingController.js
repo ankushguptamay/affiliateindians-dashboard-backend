@@ -148,6 +148,7 @@ exports.bookScheduleByUser = async (req, res) => {
             }
         });
         // book schedule before 1 hours
+        const time = isSchedule.timing;
         const scheduleTime = `${isSchedule.date}T${(isSchedule.timing).slice(1, 6)}:00`
         // date validation is not done
         // Book schedule

@@ -897,3 +897,51 @@ exports.disAllowAffiliateCourse = async (req, res) => {
         });
     }
 };
+
+exports.getCourseByTitleForUser = async (req, res) => {
+    try {
+        // find Course
+        const course = await Course.findOne({
+            where: {
+                id: req.params.title,
+                isPublic: true
+            },
+            include: [{
+                model: Section,
+                as: "sections",
+                where: {
+                    isPublic: true
+                },
+                required: false,
+            }, {
+                model: Course_Coupon,
+                as: "course_coupons",
+                where: {
+                    type: "DEFAULT"
+                },
+                required: false,
+                include: [{
+                    model: Coupon,
+                    as: "coupon"
+                }]
+            }],
+        });
+        if (!course) {
+            return res.status(400).send({
+                success: false,
+                message: "Course is not present!"
+            });
+        }
+        res.status(200).send({
+            success: true,
+            message: "Course fetched successfully!",
+            data: course
+        });
+    } catch (err) {
+        // console.log(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
