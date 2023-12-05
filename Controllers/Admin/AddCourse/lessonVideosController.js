@@ -378,7 +378,7 @@ exports.uploadVideoEmbeddedCode = async (req, res) => {
             adminId: req.admin.id,
             videoType: "EMBEDDEDCODE",
             videoName: videoName,
-            embeddedCode: embeddedCode
+            embeddedVideoCode: embeddedCode
         });
         res.status(201).send({
             success: true,
