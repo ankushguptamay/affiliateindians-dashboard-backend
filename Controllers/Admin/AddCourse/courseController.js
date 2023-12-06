@@ -898,12 +898,12 @@ exports.disAllowAffiliateCourse = async (req, res) => {
     }
 };
 
-exports.getCourseByTitleForUser = async (req, res) => {
+exports.getCourseByIdForUser = async (req, res) => {
     try {
         // find Course
         const course = await Course.findOne({
             where: {
-                id: req.params.title,
+                id: req.params.id,
                 isPublic: true
             },
             include: [{

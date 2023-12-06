@@ -11,13 +11,11 @@ exports.userRegistration = (data) => {
             .min(8),
         mobileNumber: joi.string().length(10).optional(),
         termAndConditionAccepted: joi.boolean().required(),
-        referalCode: joi.string().optional(),
         address: joi.string().optional(),
         city: joi.string().optional(),
         state: joi.string().optional(),
         country: joi.string().optional(),
         pinCode: joi.string().optional(),
-        joinThrough: joi.string().optional(),
         confirmPassword: joi.string().required()
     }) // .options({ allowUnknown: true });
     return schema.validate(data);

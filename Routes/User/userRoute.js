@@ -5,13 +5,13 @@ const { create, changePassword, login, findUser, update, sendOTPForForgetPasswor
 const { addAccountDetails, findUserAccountDetails, deleteAccountDetails, updateAccountDetails } = require("../../Controllers/User/userAccountDetailsCont");
 const { submitAnswer, checkResultForUser } = require("../../Controllers/User/quizAnswerController");
 const { getCoupon, applyCouponToCourse } = require('../../Controllers/Admin/Master/couponController');
-const { getAllCourse, getUsersCourse, getCourseByTitleForUser } = require('../../Controllers/Admin/AddCourse/courseController');
+const { getAllCourse, getUsersCourse, getCourseByIdForUser } = require('../../Controllers/Admin/AddCourse/courseController');
 const { getAllSectionByCourseIdForUser } = require('../../Controllers/Admin/AddCourse/sectionControllers');
 const { getLessonByLessonIdForUser } = require('../../Controllers/Admin/AddCourse/lessonController');
 const { getAllQuizByLessonId } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
 const { getAllVideoByLessonId } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
 const { addCommentForUser, hardDeleteCommentForUser, getCommentForUser } = require('../../Controllers/Admin/AddCourse/videoCommentController');
-const { createPaymentForRegisterUser, verifyPaymentForRegisterUser } = require('../../Controllers/User/purchaseCourseController');
+const { createPaymentForRegisterUser, verifyPaymentForRegisterUser, registerNewUser, createPaymentForNewUser, verifyPaymentForNewUser } = require('../../Controllers/User/purchaseCourseController');
 const { submitAssignmentAnswer, getAssignmentAnswerByLessonIdForUser } = require('../../Controllers/Admin/AddCourse/assignmentController');
 const { sendAffiliateUserIdRequest, getAffiliateUserIdForUser } = require("../../Controllers/User/affiliateUserIdController");
 const { getScheduleForUser, bookScheduleByUser } = require('../../Controllers/Admin/Master/scheduleCallBookingController');
@@ -37,7 +37,7 @@ router.put("/update", verifyUserToken, isUser, update);
 router.post("/generateSaleLinkCode", verifyUserToken, isUser, generateCodeForUser);
 // Course
 router.get("/courses", verifyUserToken, isUser, getAllCourse);
-router.get("/courses/:title", verifyUserToken, isUser, getCourseByTitleForUser);
+router.get("/courses/:id", verifyUserToken, isUser, getCourseByIdForUser);
 router.get("/myCourses", verifyUserToken, isUser, getUsersCourse);
 router.get("/sections/:courseId", verifyUserToken, isUser, getAllSectionByCourseIdForUser);
 router.get("/lesson/:id", verifyUserToken, isUser, getLessonByLessonIdForUser);
@@ -50,8 +50,12 @@ router.get("/comment/:lessonVideoId", verifyUserToken, isUser, getCommentForUser
 router.delete("/hardDeleteComment/:id", verifyUserToken, isUser, hardDeleteCommentForUser);
 
 // Purchase
+
+router.post("/registerNewUser", verifyUserTokenForPayment, isUserForPayment, registerNewUser);
 router.post("/createPayment/:id", verifyUserTokenForPayment, isUserForPayment, createPaymentForRegisterUser);
 router.post("/verifyPayment", verifyPaymentForRegisterUser);
+router.post("/createPaymentNewUser/:id", verifyUserTokenForPayment, isUserForPayment, createPaymentForNewUser);
+router.post("/verifyPaymentNewUser", verifyPaymentForNewUser);
 
 //Coupon
 router.get("/coupons", verifyUserToken, isUser, getCoupon);
