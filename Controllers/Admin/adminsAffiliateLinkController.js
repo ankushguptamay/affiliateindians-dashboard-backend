@@ -1,17 +1,13 @@
 const db = require('../../Models');
 const AdminsAffiliateLink = db.adminsAffiliateLinks;
+const UsersAffiliateLink = db.usersAffiliateLinks;
+const AffiliateUserIdRequest = db.affiliateUserIdRequest;
 const Course = db.course;
 const { Op } = require('sequelize');
 
 exports.generateCodeForAdmin = async (req, res) => {
     try {
-        const { originalLink, marketingTag, courseId, linkType } = req.body;
-        if (!linkType) {
-            return res.status(400).send({
-                success: false,
-                message: "Link type is required! GETSTART or REGISTER?"
-            });
-        }
+        const { originalLink, marketingTag, courseId } = req.body;
         if (!originalLink && courseId) {
             return res.status(400).send({
                 success: false,
@@ -66,14 +62,13 @@ exports.generateCodeForAdmin = async (req, res) => {
             saleLinkCode: code,
             courseId: courseId,
             adminId: req.admin.id,
-            linkType: linkType,
             courseName: course.title
         });
         res.status(201).send({
             success: true,
             message: "Sale link tag created successfully!",
             data: {
-                saleLinkTag: code
+                generatedLink: `${originalLink}/${code}`
             }
         });
     }
@@ -88,44 +83,105 @@ exports.generateCodeForAdmin = async (req, res) => {
 exports.redirectByTag = async (req, res) => {
     try {
         const saleLinkCode = req.params.saleLinkCode
-        // Find Original link in database
-        const link = await AdminsAffiliateLink.findOne({
-            where: {
-                saleLinkCode: saleLinkCode
+        if (saleLinkCode.slice(0, 3) === "USE") {
+            // Find Original link in database
+            const link = await UsersAffiliateLink.findOne({
+                where: {
+                    saleLinkCode: saleLinkCode
+                }
+            });
+            if (!link) {
+                return res.status(404).send({
+                    success: false,
+                    message: "Link is not valid!"
+                });
             }
-        });
-        if (!link) {
-            return res.status(404).send({
+            // Check couse
+            const course = await Course.findOne({
+                where: {
+                    id: link.courseId,
+                    allowAffiliate: true
+                }
+            });
+            if (!course) {
+                return res.status(400).send({
+                    success: false,
+                    message: "Link is not valid!"
+                });
+            } // Aid validation
+            const affiliateUserIdRequest = await AffiliateUserIdRequest.findOne({
+                where: {
+                    aid: link.aid,
+                    userId: link.userId,
+                    adminId: link.adminId,
+                    status: "ACCEPT"
+                }
+            });
+            if (!affiliateUserIdRequest) {
+                return res.status(400).send({
+                    success: false,
+                    message: "Link is not valid!"
+                });
+            }
+            // Increase numberOfHit
+            const numberOfHit = parseInt(link.numberOfHit) + 1;
+            await link.update({
+                ...link,
+                numberOfHit: numberOfHit
+            });
+            res.status(200).send({
+                success: true,
+                message: "Fetched successfully!",
+                data: {
+                    course: course,
+                    saleLinkCode: saleLinkCode
+                }
+            });
+        } else if (saleLinkCode.slice(0, 3) === "ADD") {
+            // Find Original link in database
+            const link = await AdminsAffiliateLink.findOne({
+                where: {
+                    saleLinkCode: saleLinkCode
+                }
+            });
+            if (!link) {
+                return res.status(404).send({
+                    success: false,
+                    message: "Link is not valid!"
+                });
+            }
+            const course = await Course.findOne({
+                where: {
+                    id: link.courseId,
+                    allowAffiliate: true
+                }
+            });
+            if (!course) {
+                return res.status(400).send({
+                    success: false,
+                    message: "Link is not valid!"
+                });
+            }
+            // Increase numberOfHit
+            const numberOfHit = parseInt(link.numberOfHit) + 1;
+            await link.update({
+                ...link,
+                numberOfHit: numberOfHit
+            });
+            res.status(200).send({
+                success: true,
+                message: "Fetched successfully!",
+                data: {
+                    course: course,
+                    saleLinkCode: saleLinkCode
+                }
+            });
+        } else {
+            res.status(400).send({
                 success: false,
-                message: "Link not found!"
+                message: "Link is not valid!"
             });
         }
-        const course = await Course.findOne({
-            where: {
-                id: link.courseId,
-                allowAffiliate: true
-            }
-        });
-        if (!course) {
-            return res.status(400).send({
-                success: false,
-                message: "Affiliate link is not allow on this course?"
-            });
-        }
-        // Increase numberOfHit
-        const numberOfHit = parseInt(link.numberOfHit) + 1;
-        await link.update({
-            ...link,
-            numberOfHit: numberOfHit
-        });
-        res.status(200).send({
-            success: true,
-            message: "Fetched successfully!",
-            data: {
-                course: course,
-                saleLinkCode: saleLinkCode
-            }
-        });
     }
     catch (err) {
         res.status(500).send({

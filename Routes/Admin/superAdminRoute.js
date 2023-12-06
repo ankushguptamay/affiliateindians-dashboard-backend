@@ -44,7 +44,7 @@ const uploadImageDocumentPresentation = require('../../Middlewares/UploadFile/up
 // router.post("/register", registerAdmin);
 router.post("/login", loginAdmin);
 
-// Sale Link
+// Affiliate Link
 router.post("/generateSaleLinkCode", verifyAdminToken, isSuperAdmin, generateCodeForAdmin);
 
 // Master

@@ -29,6 +29,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         courseName: {
             type: DataTypes.STRING
+        },
+        aid: {
+            type: DataTypes.STRING
         }
     }, {
         paranoid: true
