@@ -73,7 +73,7 @@ const { Op } = require('sequelize');
 //         });
 //         res.status(201).send({
 //             success: true,
-//             message: "Admin registered successfully"
+//             message: "Admin registered successfully",
 //         });
 //     }
 //     catch (err) {

@@ -267,7 +267,7 @@ db.usersAffiliateLinks.belongsTo(db.affiliateUserIdRequest, { foreignKey: "affil
 // queryInterface.addColumn("usersAffiliateLinks", "aid", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.removeColumn("usersAffiliateLinks", "linkType").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.removeColumn("adminsAffiliateLinks", "linkType").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.changeColumn("users", "userCode", { type: DataTypes.STRING, allowNull: false, unique: true }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.changeColumn("users", "userCode", { type: DataTypes.STRING, allowNull: false, unique: true }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 // queryInterface.dropTable("affiliateLinks")
 //     .then((res) => {

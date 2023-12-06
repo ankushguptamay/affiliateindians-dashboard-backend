@@ -18,7 +18,7 @@ const { Op } = require('sequelize');
 
 const getData = () => {
     return new Promise(async (resolve, reject) => {
-        fs.readFile(__dirname + "/../../Data/BM.json", function (err, data) {
+        fs.readFile(__dirname + "/../../Data/3SHTAS.json", function (err, data) {
             if (err) {
                 reject(err);
             } else {
@@ -31,9 +31,9 @@ const getData = () => {
 exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
     try {
         const obj = await getData();
-        let newRegister = 0;
+        let newRegister = 1;
         let oldRegister = 0;
-        const Title = 'BEGINNER MEMBERSHIP';
+        const Title = '1. 3-STEP HIGH TICKET AFFILIATE SYSTEM';
         for (let i = 0; i < obj.length; i++) {
             const isUser = await User.findOne({ where: { email: obj[i].email } });
             if (!isUser) {
@@ -45,38 +45,17 @@ exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
                 const Day = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
                 const dayNumber = (new Date).getDay();
                 // Get All Today Code
-                let code;
-                const isUserCode = await User.findAll({
-                    where: {
-                        updatedAt: { [Op.gt]: today }
-                    },
-                    order: [
-                        ['updatedAt', 'ASC']
-                    ],
-                    paranoid: false
-                });
                 const day = new Date().toISOString().slice(8, 10);
                 const year = new Date().toISOString().slice(2, 4);
                 const month = new Date().toISOString().slice(5, 7);
-                if (isUserCode.length == 0) {
-                    code = "AFUS" + day + month + year + Day[dayNumber] + 1;
-                } else {
-                    let lastCode = isUserCode[isUserCode.length - 1];
-                    let lastDigits = lastCode.userCode.substring(13);
-                    let incrementedDigits = parseInt(lastDigits, 10) + 1;
-                    code = "AFUS" + day + month + year + Day[dayNumber] + incrementedDigits;
-                }
+                let code = "AFUS" + day + month + year + Day[dayNumber] + newRegister;
                 const salt = await bcrypt.genSalt(10);
                 const bcPassword = await bcrypt.hash(`${(obj[i].email).slice(0, 8)}`, salt);
                 newRegister = parseInt(newRegister) + 1;
-                const country = (obj[i].country).length <= 1 ? null : obj[i].country;
-                const joinTime = (obj[i].joined_at).length <= 1 ? null : obj[i].joined_at;
                 const user = await User.create({
                     name: obj[i].fullname,
                     email: obj[i].email,
                     password: bcPassword,
-                    createdAt: joinTime,
-                    country: country,
                     userCode: code,
                     termAndConditionAccepted: true
                 });
@@ -87,15 +66,14 @@ exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
                 const isCourse = await Course.findOne({ where: { title: Title } });
                 const isUserCourse = await User_Course.findOne({ where: { courseId: isCourse.id, userId: user.id } });
                 if (!isUserCourse) {
-                    await User_Course.create({ courseId: isCourse.id, userId: user.id });
+                    await User_Course.create({ courseId: isCourse.id, userId: user.id, verify: true, status: "paid" });
                 }
-
             } else {
                 oldRegister = parseInt(oldRegister) + 1;
                 const isCourse = await Course.findOne({ where: { title: Title } });
                 const isUserCourse = await User_Course.findOne({ where: { courseId: isCourse.id, userId: isUser.id } });
                 if (!isUserCourse) {
-                    await User_Course.create({ courseId: isCourse.id, userId: isUser.id });
+                    await User_Course.create({ courseId: isCourse.id, userId: user.id, verify: true, status: "paid" });
                 }
             }
         }
