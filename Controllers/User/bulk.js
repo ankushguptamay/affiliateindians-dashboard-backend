@@ -73,7 +73,7 @@ exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
                 const isCourse = await Course.findOne({ where: { title: Title } });
                 const isUserCourse = await User_Course.findOne({ where: { courseId: isCourse.id, userId: isUser.id } });
                 if (!isUserCourse) {
-                    await User_Course.create({ courseId: isCourse.id, userId: user.id, verify: true, status: "paid" });
+                    await User_Course.create({ courseId: isCourse.id, userId: isUser.id, verify: true, status: "paid" });
                 }
             }
         }
