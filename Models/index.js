@@ -264,8 +264,9 @@ db.usersAffiliateLinks.belongsTo(db.affiliateUserIdRequest, { foreignKey: "affil
 //     }
 // }).catch((err) => { console.log(err) });
 
-queryInterface.addColumn("usersAffiliateLinks", "aid", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-// queryInterface.addColumn("lessonVideos", "videoType", { type: DataTypes.STRING, validate: { isIn: [['EMBEDDEDCODE', 'VIDEO']] } }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.addColumn("usersAffiliateLinks", "aid", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.removeColumn("usersAffiliateLinks", "linkType").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.removeColumn("adminsAffiliateLinks", "linkType").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 // queryInterface.dropTable("affiliateLinks")
 //     .then((res) => {

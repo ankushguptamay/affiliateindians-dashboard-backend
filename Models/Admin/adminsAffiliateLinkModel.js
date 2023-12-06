@@ -18,12 +18,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             defaultValue: 0
         },
-        linkType: {
-            type: DataTypes.STRING,
-            validate: {
-                isIn: [['REGISTER', 'GETSTART']]
-            }
-        },
         marketingTag: {
             type: DataTypes.STRING
         },
