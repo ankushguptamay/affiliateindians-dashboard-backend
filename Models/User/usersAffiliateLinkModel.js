@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    const AffiliateLink = sequelize.define("affiliateLinks", {
+    const UsersAffiliateLink = sequelize.define("usersAffiliateLinks", {
         id: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
@@ -29,21 +29,15 @@ module.exports = (sequelize, DataTypes) => {
         },
         courseName: {
             type: DataTypes.STRING
-        },
-        craetor: {
-            type: DataTypes.STRING,
-            validate: {
-                isIn: [['USER', 'ADMIN']]
-            }
         }
     }, {
         paranoid: true
     });
-    return AffiliateLink;
+    return UsersAffiliateLink;
 };
 
 // foreignKey
 // adminId
-// userId
 // courseId
+// userId
 // affiliateUserId

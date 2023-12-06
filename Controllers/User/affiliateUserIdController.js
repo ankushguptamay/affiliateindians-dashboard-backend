@@ -1,5 +1,5 @@
 const db = require('../../Models');
-const AffiliateUserId = db.affiliateUserId;
+const AffiliateUserIdRequest = db.affiliateUserIdRequest;
 const Course = db.course;
 const Assignment = db.assignment;
 const User = db.user;
@@ -14,7 +14,7 @@ exports.sendAffiliateUserIdRequest = async (req, res) => {
             }
         });
         const adminId = assignment.adminId;
-        const isRequest = await AffiliateUserId.findOne({
+        const isRequest = await AffiliateUserIdRequest.findOne({
             where: {
                 userId: req.user.id,
                 adminId: adminId
@@ -29,7 +29,7 @@ exports.sendAffiliateUserIdRequest = async (req, res) => {
         }
         // Generating Code
         let code;
-        const isCode = await AffiliateUserId.findAll({
+        const isCode = await AffiliateUserIdRequest.findAll({
             order: [
                 ['createdAt', 'ASC']
             ],
@@ -39,14 +39,14 @@ exports.sendAffiliateUserIdRequest = async (req, res) => {
             code = "ALID" + 1000;
         } else {
             let lastCode = isCode[isCode.length - 1];
-            let lastDigits = lastCode.affiliateUserId.substring(4);
+            let lastDigits = lastCode.aid.substring(4);
             let incrementedDigits = parseInt(lastDigits, 10) + 1;
             code = "ALID" + incrementedDigits;
         }
-        await AffiliateUserId.create({
+        await AffiliateUserIdRequest.create({
             status: "PENDING",
             userId: req.user.id,
-            affiliateUserId: code,
+            aid: code,
             adminId: adminId
         });
         res.status(201).send({
@@ -74,13 +74,13 @@ exports.getAffiliateUserIdRequestForAdmin = async (req, res) => {
             currentPage = parseInt(page);
         }
         // Count All request
-        const totalRequest = await AffiliateUserId.count({
+        const totalRequest = await AffiliateUserIdRequest.count({
             where: {
                 adminId: req.admin.id
             }
         });
         // All Request
-        const request = await AffiliateUserId.findAll({
+        const request = await AffiliateUserIdRequest.findAll({
             where: {
                 adminId: req.admin.id
             },
@@ -110,7 +110,7 @@ exports.getAffiliateUserIdRequestForAdmin = async (req, res) => {
 
 exports.acceptAffiliateUserIdRequest = async (req, res) => {
     try {
-        const isRequest = await AffiliateUserId.findOne({
+        const isRequest = await AffiliateUserIdRequest.findOne({
             where: {
                 id: req.params.id,
                 adminId: req.admin.id
@@ -142,7 +142,7 @@ exports.acceptAffiliateUserIdRequest = async (req, res) => {
 
 exports.blockAffiliateUserIdRequest = async (req, res) => {
     try {
-        const isRequest = await AffiliateUserId.findOne({
+        const isRequest = await AffiliateUserIdRequest.findOne({
             where: {
                 id: req.params.id,
                 adminId: req.admin.id
@@ -173,7 +173,7 @@ exports.blockAffiliateUserIdRequest = async (req, res) => {
 
 exports.unblockAffiliateUserIdRequest = async (req, res) => {
     try {
-        const isRequest = await AffiliateUserId.findOne({
+        const isRequest = await AffiliateUserIdRequest.findOne({
             where: {
                 id: req.params.id,
                 adminId: req.admin.id
@@ -211,7 +211,7 @@ exports.getAffiliateUserIdForUser = async (req, res) => {
             }
         });
         const adminId = course.adminId;
-        const isRequest = await AffiliateUserId.findOne({
+        const isRequest = await AffiliateUserIdRequest.findOne({
             where: {
                 userId: req.user.id,
                 adminId: adminId

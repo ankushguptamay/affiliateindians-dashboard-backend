@@ -1,11 +1,11 @@
 module.exports = (sequelize, DataTypes) => {
-    const AffiliateUserId = sequelize.define("affiliateUserId", {
+    const AffiliateUserIdRequest = sequelize.define("affiliateUserIdRequest", {
         id: {
             type: DataTypes.UUID,
             defaultValue: DataTypes.UUIDV4,
             primaryKey: true
         },
-        affiliateUserId: {
+        aid: {
             type: DataTypes.STRING
         },
         status: {
@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     }, {
         paranoid: true
     });
-    return AffiliateUserId;
+    return AffiliateUserIdRequest;
 };
 
 // userId

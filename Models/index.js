@@ -30,7 +30,7 @@ db.sequelize = sequelize;
 // Admin
 db.admin = require('./Admin/admin')(sequelize, Sequelize);
 db.adminWallet = require('./Admin/adminWalletModel.js')(sequelize, Sequelize);
-db.affiliateLink = require('./Admin/affiliateLinkModel.js')(sequelize, Sequelize);
+db.adminsAffiliateLinks = require('./Admin/adminsAffiliateLinkModel.js')(sequelize, Sequelize);
 db.emailCredential = require('./Admin/emailCredentialModel.js')(sequelize, Sequelize);
 db.scheduleCallBooking = require('./Admin/Master/scheduleCallBookingModel.js')(sequelize, Sequelize);
 
@@ -64,7 +64,8 @@ db.userWallet = require('./User/walletModel.js')(sequelize, Sequelize);
 db.quizAnswer = require('./User/quizAnswerModel.js')(sequelize, Sequelize);
 db.userAccountDetail = require('./User/userAccountDetailsModel.js')(sequelize, Sequelize);
 db.assignmentAnswer = require('./User/assignmentAnswerModel.js')(sequelize, Sequelize);
-db.affiliateUserId = require('./User/affiliateUserIdModel.js')(sequelize, Sequelize);
+db.affiliateUserIdRequest = require('./User/affiliateUserIdRequestModel.js')(sequelize, Sequelize);
+db.usersAffiliateLinks = require('./User/usersAffiliateLinkModel.js')(sequelize, Sequelize);
 
 // Admin Course Association
 db.admin.hasMany(db.course, { foreignKey: "adminId" });
@@ -215,11 +216,11 @@ db.section.hasMany(db.assignmentAnswer, { foreignKey: "sectionId", as: "assignme
 db.lesson.hasMany(db.assignmentAnswer, { foreignKey: "lessonId", as: "assignmentAnswer" });
 
 // user Association assignmentAnswer
-db.user.hasMany(db.affiliateUserId, { foreignKey: "userId", as: "affiliateUserId" });
-db.affiliateUserId.belongsTo(db.user, { foreignKey: "userId", as: "user" });
+db.user.hasMany(db.affiliateUserIdRequest, { foreignKey: "userId", as: "affiliateUserIdRequest" });
+db.affiliateUserIdRequest.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 // admin Association assignmentAnswer
-db.admin.hasMany(db.affiliateUserId, { foreignKey: "adminId", as: "affiliateUserId" });
-db.affiliateUserId.belongsTo(db.admin, { foreignKey: "adminId", as: "admin" });
+db.admin.hasMany(db.affiliateUserIdRequest, { foreignKey: "adminId", as: "affiliateUserIdRequest" });
+db.affiliateUserIdRequest.belongsTo(db.admin, { foreignKey: "adminId", as: "admin" });
 
 // Schedule call association
 db.admin.hasMany(db.scheduleCallBooking, { foreignKey: "adminId", as: "scheduleBooking" });
@@ -228,18 +229,25 @@ db.scheduleCallBooking.belongsTo(db.admin, { foreignKey: "adminId", as: "admin" 
 db.user.hasMany(db.scheduleCallBooking, { foreignKey: "userId", as: "scheduleBooking" });
 db.scheduleCallBooking.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 
-// affiliateLink assocication
-db.admin.hasMany(db.affiliateLink, { foreignKey: "adminId", as: "affiliateLink" });
-db.affiliateLink.belongsTo(db.admin, { foreignKey: "adminId", as: "admin" });
+// adminsAffiliateLink assocication
+db.admin.hasMany(db.adminsAffiliateLinks, { foreignKey: "adminId", as: "adminsAffiliateLink" });
+db.adminsAffiliateLinks.belongsTo(db.admin, { foreignKey: "adminId", as: "admin" });
 
-db.user.hasMany(db.affiliateLink, { foreignKey: "userId", as: "affiliateLink" });
-db.affiliateLink.belongsTo(db.user, { foreignKey: "userId", as: "user" });
+db.course.hasMany(db.adminsAffiliateLinks, { foreignKey: "courseId", as: "adminsAffiliateLink" });
+db.adminsAffiliateLinks.belongsTo(db.course, { foreignKey: "courseId", as: "course" });
 
-db.course.hasMany(db.affiliateLink, { foreignKey: "courseId", as: "affiliateLink" });
-db.affiliateLink.belongsTo(db.course, { foreignKey: "courseId", as: "course" });
+// usersAffiliateLink assocication
+db.user.hasMany(db.usersAffiliateLinks, { foreignKey: "userId", as: "usersAffiliateLinks" });
+db.usersAffiliateLinks.belongsTo(db.user, { foreignKey: "userId", as: "user" });
 
-db.affiliateUserId.hasMany(db.affiliateLink, { foreignKey: "affiliateUserId", as: "affiliateLink" });
-db.affiliateLink.belongsTo(db.affiliateUserId, { foreignKey: "affiliateUserId", as: "affiliateUserIds" });
+db.admin.hasMany(db.usersAffiliateLinks, { foreignKey: "adminId", as: "usersAffiliateLinks" });
+db.usersAffiliateLinks.belongsTo(db.admin, { foreignKey: "adminId", as: "admin" });
+
+db.course.hasMany(db.usersAffiliateLinks, { foreignKey: "courseId", as: "usersAffiliateLinks" });
+db.usersAffiliateLinks.belongsTo(db.course, { foreignKey: "courseId", as: "course" });
+
+db.affiliateUserIdRequest.hasMany(db.usersAffiliateLinks, { foreignKey: "affiliateUserId", as: "usersAffiliateLinks" });
+db.usersAffiliateLinks.belongsTo(db.affiliateUserIdRequest, { foreignKey: "affiliateUserId", as: "affiliateUserIdRequest" });
 
 // db.emailCredential.findOne({
 //     where: {
@@ -259,7 +267,19 @@ db.affiliateLink.belongsTo(db.affiliateUserId, { foreignKey: "affiliateUserId", 
 // queryInterface.addColumn("lessonVideos", "embeddedVideoCode", { type: DataTypes.TEXT }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.addColumn("lessonVideos", "videoType", { type: DataTypes.STRING, validate: { isIn: [['EMBEDDEDCODE', 'VIDEO']] } }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
-// queryInterface.dropTable("scheduleCallBookings").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-// queryInterface.dropTable("scheduleCallBookings").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.dropTable("affiliateLinks")
+    .then((res) => {
+        console.log(res);
+        queryInterface.dropTable("affiliateUserIds")
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    })
+    .catch((err) => {
+        console.log(err);
+    });
 
 module.exports = db;
