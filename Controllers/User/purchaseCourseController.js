@@ -215,7 +215,7 @@ exports.getAllPaymentData = async (req, res) => {
     }
 };
 
-// exports.createPayment = async (req, res) => {
+// exports.createPaymentForNewUser = async (req, res) => {
 //     try {
 //         const courseId = req.params.id;
 //         if (req.user) {
