@@ -559,7 +559,7 @@ exports.verifyPaymentForNewUser = async (req, res) => {
                         <p>Dear ${user.name} you purchased ${course.title} successfully. Your login credential...</p>
                         <h3>Email: ${user.email}</h3><br>
                         <h3>Password: ${password}</h3><br>
-                        change your password`;
+                        change your password..`;
                         sendSmtpEmail.to = [
                             { "email": user.email, "name": user.name }
                         ];

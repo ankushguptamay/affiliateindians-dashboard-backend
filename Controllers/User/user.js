@@ -557,7 +557,7 @@ exports.sendOTPForForgetPassword = async (req, res) => {
             sendSmtpEmail.sender = { "name": "Affiliate Indian", "email": finaliseEmailCredential.email };
             sendSmtpEmail.replyTo = { "email": finaliseEmailCredential.email, "name": "Affiliate Indian" };
             sendSmtpEmail.headers = { "OTP for regenerate password": isUser.userCode };
-            sendSmtpEmail.htmlContent = `OTP <h4>${otp}</h4> Expires in ${parseInt(FORGET_OTP_VALIDITY) / 1000 / 60} minutes!<h4>This is otp</h4>`;
+            sendSmtpEmail.htmlContent = `OTP ${otp} Expires in ${parseInt(FORGET_OTP_VALIDITY) / 1000 / 60} minutes!`;
             sendSmtpEmail.to = [
                 { "email": email, "name": isUser.name }
             ];
