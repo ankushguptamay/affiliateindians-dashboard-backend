@@ -31,7 +31,7 @@ const getData = () => {
 exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
     try {
         const obj = await getData();
-        let newRegister = 1;
+        let newRegister = 250;
         let oldRegister = 0;
         const Title = '1. 3-STEP HIGH TICKET AFFILIATE SYSTEM';
         for (let i = 0; i < obj.length; i++) {
