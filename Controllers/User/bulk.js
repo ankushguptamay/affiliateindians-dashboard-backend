@@ -31,7 +31,7 @@ const getData = () => {
 exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
     try {
         const obj = await getData();
-        let newRegister = 250;
+        let newRegister = 1132;
         let oldRegister = 0;
         const Title = '1. 3-STEP HIGH TICKET AFFILIATE SYSTEM';
         for (let i = 0; i < obj.length; i++) {
@@ -70,6 +70,12 @@ exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
                 }
             } else {
                 oldRegister = parseInt(oldRegister) + 1;
+                const findWallet = await UserWallet.findOne({ where: { userId: isUser.id } });
+                if (!findWallet) {
+                    await UserWallet.create({
+                        userId: isUser.id
+                    });
+                }
                 const isCourse = await Course.findOne({ where: { title: Title } });
                 const isUserCourse = await User_Course.findOne({ where: { courseId: isCourse.id, userId: isUser.id } });
                 if (!isUserCourse) {
