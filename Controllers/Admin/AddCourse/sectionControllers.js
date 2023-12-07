@@ -67,6 +67,25 @@ exports.getAllSectionByCourseIdForAdmin = async (req, res) => {
                     order: [
                         ['createdAt', 'ASC']
                     ]
+                }, {
+                    model: LessonFile,
+                    as: "lessonFiles",
+                    order: [
+                        ['fileName', 'ASC'],
+                        ['createdAt', 'ASC']
+                    ]
+                }, {
+                    model: LessonQuiz,
+                    as: "lessonQuizs",
+                    order: [
+                        ['createdAt', 'DESC']
+                    ]
+                }, {
+                    model: Assignment,
+                    as: "assignment",
+                    order: [
+                        ['createdAt', 'DESC']
+                    ]
                 }]
             }],
             order: [
@@ -118,6 +137,25 @@ exports.getAllSectionByCourseIdForUser = async (req, res) => {
                     as: "lessonVideos",
                     order: [
                         ['createdAt', 'ASC']
+                    ]
+                }, {
+                    model: LessonFile,
+                    as: "lessonFiles",
+                    order: [
+                        ['fileName', 'ASC'],
+                        ['createdAt', 'ASC']
+                    ]
+                }, {
+                    model: LessonQuiz,
+                    as: "lessonQuizs",
+                    order: [
+                        ['createdAt', 'DESC']
+                    ]
+                }, {
+                    model: Assignment,
+                    as: "assignment",
+                    order: [
+                        ['createdAt', 'DESC']
                     ]
                 }]
             }],
