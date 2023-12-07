@@ -191,7 +191,7 @@ exports.getAllCourse = async (req, res) => {
         }
         // Search 
         const condition = [];
-        if (req.user) {
+        if (!req.admin) {
             condition.push({ isPublic: true });
         }
         if (search) {

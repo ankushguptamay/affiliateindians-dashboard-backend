@@ -50,10 +50,9 @@ router.get("/comment/:lessonVideoId", verifyUserToken, isUser, getCommentForUser
 router.delete("/hardDeleteComment/:id", verifyUserToken, isUser, hardDeleteCommentForUser);
 
 // Purchase
-
-router.post("/registerNewUser", verifyUserTokenForPayment, isUserForPayment, registerNewUser);
 router.post("/createPayment/:id", verifyUserTokenForPayment, isUserForPayment, createPaymentForRegisterUser);
 router.post("/verifyPayment", verifyPaymentForRegisterUser);
+router.post("/registerNewUser", verifyUserTokenForPayment, isUserForPayment, registerNewUser);
 router.post("/createPaymentNewUser/:id", verifyUserTokenForPayment, isUserForPayment, createPaymentForNewUser);
 router.post("/verifyPaymentNewUser", verifyPaymentForNewUser);
 
