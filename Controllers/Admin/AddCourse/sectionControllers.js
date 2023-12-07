@@ -71,28 +71,31 @@ exports.getAllSectionByCourseIdForAdmin = async (req, res) => {
                 }, {
                     model: LessonFile,
                     as: "lessonFiles",
-                    order: [
-                        ['fileName', 'ASC'],
-                        ['createdAt', 'ASC']
-                    ]
+                    // order: [
+                    //     ['fileName', 'ASC'],
+                    //     ['createdAt', 'ASC']
+                    // ]
                 }, {
                     model: LessonQuiz,
                     as: "lessonQuizs",
-                    order: [
-                        ['createdAt', 'ASC']
-                    ]
+                    // order: [
+                    //     ['createdAt', 'ASC']
+                    // ]
                 }, {
                     model: Assignment,
                     as: "assignment",
-                    order: [
-                        ['createdAt', 'ASC']
-                    ]
+                    // order: [
+                    //     ['createdAt', 'ASC']
+                    // ]
                 }]
             }],
             order: [
                 ['createdAt', 'ASC'],
                 [{ model: Lesson, as: "lessons" }, 'createdAt', 'ASC'],
                 [{ model: Lesson, as: "lessons" }, { model: LessonVideo, as: "lessonVideos" }, 'createdAt', 'ASC'],
+                [{ model: Lesson, as: "lessons" }, { model: LessonFile, as: "lessonFiles" }, 'createdAt', 'ASC'],
+                [{ model: Lesson, as: "lessons" }, { model: LessonQuiz, as: "lessonQuizs" }, 'createdAt', 'ASC'],
+                [{ model: Lesson, as: "lessons" }, { model: Assignment, as: "assignment" }, 'createdAt', 'ASC']
             ]
         });
         res.status(200).send({
