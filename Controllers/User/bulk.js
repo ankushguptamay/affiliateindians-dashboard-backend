@@ -31,7 +31,7 @@ const getData = () => {
 exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
     try {
         const obj = await getData();
-        let newRegister = 18;
+        let newRegister = 20;
         let oldRegister = 0;
         const Title = '8. SUPER AFFILIATE MEMBERSHIP';
         for (let i = 0; i < obj.length; i++) {
@@ -107,7 +107,6 @@ exports.findAllUserForOnlyBulkCheck = async (req, res) => {
         let SixCount = 0;
         let SevenCount = 0;
         let EightCount = 0;
-        const threeCourseUser = [];
         for (let i = 0; i < users.length; i++) {
             const course = users[i].user_courses;
             // console.log(course);
@@ -117,7 +116,6 @@ exports.findAllUserForOnlyBulkCheck = async (req, res) => {
                 TwoCount = TwoCount + 1;
             } else if (course.length === 3) {
                 ThreeCount = ThreeCount + 1;
-                threeCourseUser.push(users[i]);
             } else if (course.length === 4) {
                 FourCount = FourCount + 1;
             } else if (course.length === 5) {
@@ -134,7 +132,7 @@ exports.findAllUserForOnlyBulkCheck = async (req, res) => {
         res.status(200).send({
             success: true,
             message: `All User fetched successfully!`,
-            data: { data: data, threeCourseUser: threeCourseUser, length: users.length }
+            data: { data: data, length: users.length }
         });
     } catch (err) {
         console.log(err);
