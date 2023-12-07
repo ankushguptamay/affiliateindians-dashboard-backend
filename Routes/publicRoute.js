@@ -8,4 +8,5 @@ router.post("/redirectByTag/:saleLinkCode", redirectByTag); // In this controlle
 // Course
 router.get("/courses", getAllCourse);
 router.get("/courses/:id", getCourseByIdForUser);
+
 module.exports = router;
