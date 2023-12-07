@@ -7,6 +7,7 @@ const User_Course = db.user_course;
 const LessonFile = db.lessonFile;
 const LessonVideo = db.lessonVideo;
 const VideoComment = db.videoComment;
+const Assignment = db.assignment;
 const LessonQuiz = db.lessonQuiz;
 const axios = require('axios');
 const { deleteMultiFile } = require("../../../Util/deleteFile")
