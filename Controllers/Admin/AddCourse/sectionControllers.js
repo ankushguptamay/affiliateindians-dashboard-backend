@@ -49,7 +49,7 @@ exports.getAllSectionByCourseIdForAdmin = async (req, res) => {
             where: {
                 id: req.params.courseId
             },
-            attributes: ["id", "title", "isPublic"]
+            attributes: ["id", "title", "isPublic", "createdAt"]
         });
         const section = await Section.findAll({
             where: {
@@ -58,7 +58,7 @@ exports.getAllSectionByCourseIdForAdmin = async (req, res) => {
             include: [{
                 model: Lesson,
                 as: "lessons",
-                attributes: ["id", "lessonName", "isPublic"],
+                attributes: ["id", "lessonName", "isPublic", "createdAt"],
                 order: [
                     ['createdAt', 'ASC']
                 ],
@@ -115,7 +115,7 @@ exports.getAllSectionByCourseIdForUser = async (req, res) => {
                 id: req.params.courseId,
                 isPublic: true
             },
-            attributes: ["id", "title", "isPublic"]
+            attributes: ["id", "title", "isPublic", "createdAt"]
         });
         const section = await Section.findAll({
             where: {
@@ -129,7 +129,7 @@ exports.getAllSectionByCourseIdForUser = async (req, res) => {
                 },
                 required: false,
                 as: "lessons",
-                attributes: ["id", "lessonName", "isPublic"],
+                attributes: ["id", "lessonName", "isPublic", "createdAt"],
                 order: [
                     ['createdAt', 'ASC']
                 ],
