@@ -18,7 +18,7 @@ const { Op } = require('sequelize');
 
 const getData = () => {
     return new Promise(async (resolve, reject) => {
-        fs.readFile(__dirname + "/../../Data/CM.json", function (err, data) {
+        fs.readFile(__dirname + "/../../Data/SAM.json", function (err, data) {
             if (err) {
                 reject(err);
             } else {
@@ -31,9 +31,9 @@ const getData = () => {
 exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
     try {
         const obj = await getData();
-        let newRegister = 1;
+        let newRegister = 18;
         let oldRegister = 0;
-        const Title = '4. CLICKBANK MASTERY';
+        const Title = '8. SUPER AFFILIATE MEMBERSHIP';
         for (let i = 0; i < obj.length; i++) {
             const isUser = await User.findOne({ where: { email: obj[i].email } });
             if (!isUser) {
@@ -107,6 +107,7 @@ exports.findAllUserForOnlyBulkCheck = async (req, res) => {
         let SixCount = 0;
         let SevenCount = 0;
         let EightCount = 0;
+        let threeCourseUser;
         for (let i = 0; i < users.length; i++) {
             const course = users[i].user_courses;
             // console.log(course);
@@ -116,6 +117,7 @@ exports.findAllUserForOnlyBulkCheck = async (req, res) => {
                 TwoCount = TwoCount + 1;
             } else if (course.length === 3) {
                 ThreeCount = ThreeCount + 1;
+                threeCourseUser = users[i];
             } else if (course.length === 4) {
                 FourCount = FourCount + 1;
             } else if (course.length === 5) {
@@ -132,7 +134,7 @@ exports.findAllUserForOnlyBulkCheck = async (req, res) => {
         res.status(200).send({
             success: true,
             message: `All User fetched successfully!`,
-            data: data
+            data: { data: data, threeCourseUser: threeCourseUser }
         });
     } catch (err) {
         console.log(err);
