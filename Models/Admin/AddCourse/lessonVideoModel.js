@@ -36,15 +36,15 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             defaultValue: 0
         },
-        // embeddedVideoCode: {
-        //     type: DataTypes.TEXT
-        // },
-        // videoType: {
-        //     type: DataTypes.STRING,
-        //     validate: {
-        //         isIn: [['EMBEDDEDCODE', 'VIDEO']]
-        //     }
-        // }
+        embeddedVideoCode: {
+            type: DataTypes.TEXT
+        },
+        videoType: {
+            type: DataTypes.STRING,
+            validate: {
+                isIn: [['EMBEDDEDCODE', 'VIDEO']]
+            }
+        }
     }, {
         paranoid: true
     });
