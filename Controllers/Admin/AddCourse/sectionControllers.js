@@ -59,15 +59,15 @@ exports.getAllSectionByCourseIdForAdmin = async (req, res) => {
                 model: Lesson,
                 as: "lessons",
                 attributes: ["id", "lessonName", "isPublic", "createdAt"],
-                order: [
-                    ['createdAt', 'ASC']
-                ],
+                // order: [
+                //     ['createdAt', 'ASC']
+                // ],
                 include: [{
                     model: LessonVideo,
                     as: "lessonVideos",
-                    order: [
-                        ['createdAt', 'ASC']
-                    ]
+                    // order: [
+                    //     ['createdAt', 'ASC']
+                    // ]
                 }, {
                     model: LessonFile,
                     as: "lessonFiles",
@@ -90,7 +90,9 @@ exports.getAllSectionByCourseIdForAdmin = async (req, res) => {
                 }]
             }],
             order: [
-                ['createdAt', 'ASC']
+                ['createdAt', 'ASC'],
+                [{ model: Lesson, as: "lessons" }, 'createdAt', 'ASC'],
+                [{ model: Lesson, as: "lessons" }, { model: LessonVideo, as: "lessonVideos" }, 'createdAt', 'ASC'],
             ]
         });
         res.status(200).send({
