@@ -18,7 +18,7 @@ const { Op } = require('sequelize');
 
 const getData = () => {
     return new Promise(async (resolve, reject) => {
-        fs.readFile(__dirname + "/../../Data/3SHTAS.json", function (err, data) {
+        fs.readFile(__dirname + "/../../Data/CM.json", function (err, data) {
             if (err) {
                 reject(err);
             } else {
@@ -31,16 +31,13 @@ const getData = () => {
 exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
     try {
         const obj = await getData();
-        let newRegister = 1132;
+        let newRegister = 1;
         let oldRegister = 0;
-        const Title = '1. 3-STEP HIGH TICKET AFFILIATE SYSTEM';
+        const Title = '4. CLICKBANK MASTERY';
         for (let i = 0; i < obj.length; i++) {
             const isUser = await User.findOne({ where: { email: obj[i].email } });
             if (!isUser) {
                 // Generating Code
-                // 1.Today Date
-                const date = JSON.stringify(new Date((new Date).getTime() - (24 * 60 * 60 * 1000)));
-                const today = `${date.slice(1, 12)}18:30:00.000Z`;
                 // 2.Today Day
                 const Day = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
                 const dayNumber = (new Date).getDay();
@@ -51,7 +48,6 @@ exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
                 let code = "AFUS" + day + month + year + Day[dayNumber] + newRegister;
                 const salt = await bcrypt.genSalt(10);
                 const bcPassword = await bcrypt.hash(`${(obj[i].email).slice(0, 8)}`, salt);
-                newRegister = parseInt(newRegister) + 1;
                 const user = await User.create({
                     name: obj[i].fullname,
                     email: obj[i].email,
@@ -59,6 +55,7 @@ exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
                     userCode: code,
                     termAndConditionAccepted: true
                 });
+                newRegister = parseInt(newRegister) + 1;
                 // Creating Wallet
                 await UserWallet.create({
                     userId: user.id
