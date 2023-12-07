@@ -113,7 +113,7 @@ exports.getLessonByLessonIdForAdmin = async (req, res) => {
                 model: LessonQuiz,
                 as: "lessonQuizs",
                 order: [
-                    ['createdAt', 'DESC']
+                    ['createdAt', 'ASC']
                 ]
             }, {
                 model: LessonVideo,
@@ -209,7 +209,7 @@ exports.getLessonByLessonIdForUser = async (req, res) => {
                 model: LessonQuiz,
                 as: "lessonQuizs",
                 order: [
-                    ['createdAt', 'DESC']
+                    ['createdAt', 'ASC']
                 ]
             }, {
                 model: LessonVideo,

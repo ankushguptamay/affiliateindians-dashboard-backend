@@ -79,13 +79,13 @@ exports.getAllSectionByCourseIdForAdmin = async (req, res) => {
                     model: LessonQuiz,
                     as: "lessonQuizs",
                     order: [
-                        ['createdAt', 'DESC']
+                        ['createdAt', 'ASC']
                     ]
                 }, {
                     model: Assignment,
                     as: "assignment",
                     order: [
-                        ['createdAt', 'DESC']
+                        ['createdAt', 'ASC']
                     ]
                 }]
             }],
@@ -150,13 +150,13 @@ exports.getAllSectionByCourseIdForUser = async (req, res) => {
                     model: LessonQuiz,
                     as: "lessonQuizs",
                     order: [
-                        ['createdAt', 'DESC']
+                        ['createdAt', 'ASC']
                     ]
                 }, {
                     model: Assignment,
                     as: "assignment",
                     order: [
-                        ['createdAt', 'DESC']
+                        ['createdAt', 'ASC']
                     ]
                 }]
             }],
