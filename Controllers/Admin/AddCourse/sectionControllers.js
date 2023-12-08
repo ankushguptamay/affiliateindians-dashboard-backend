@@ -59,34 +59,18 @@ exports.getAllSectionByCourseIdForAdmin = async (req, res) => {
                 model: Lesson,
                 as: "lessons",
                 attributes: ["id", "lessonName", "isPublic", "createdAt"],
-                // order: [
-                //     ['createdAt', 'ASC']
-                // ],
                 include: [{
                     model: LessonVideo,
                     as: "lessonVideos",
-                    // order: [
-                    //     ['createdAt', 'ASC']
-                    // ]
                 }, {
                     model: LessonFile,
                     as: "lessonFiles",
-                    // order: [
-                    //     ['fileName', 'ASC'],
-                    //     ['createdAt', 'ASC']
-                    // ]
                 }, {
                     model: LessonQuiz,
                     as: "lessonQuizs",
-                    // order: [
-                    //     ['createdAt', 'ASC']
-                    // ]
                 }, {
                     model: Assignment,
                     as: "assignment",
-                    // order: [
-                    //     ['createdAt', 'ASC']
-                    // ]
                 }]
             }],
             order: [
@@ -135,38 +119,27 @@ exports.getAllSectionByCourseIdForUser = async (req, res) => {
                 required: false,
                 as: "lessons",
                 attributes: ["id", "lessonName", "isPublic", "createdAt"],
-                order: [
-                    ['createdAt', 'ASC']
-                ],
                 include: [{
                     model: LessonVideo,
                     as: "lessonVideos",
-                    order: [
-                        ['createdAt', 'ASC']
-                    ]
                 }, {
                     model: LessonFile,
                     as: "lessonFiles",
-                    order: [
-                        ['fileName', 'ASC'],
-                        ['createdAt', 'ASC']
-                    ]
                 }, {
                     model: LessonQuiz,
                     as: "lessonQuizs",
-                    order: [
-                        ['createdAt', 'ASC']
-                    ]
                 }, {
                     model: Assignment,
                     as: "assignment",
-                    order: [
-                        ['createdAt', 'ASC']
-                    ]
                 }]
             }],
             order: [
-                ['createdAt', 'ASC']
+                ['createdAt', 'ASC'],
+                [{ model: Lesson, as: "lessons" }, 'createdAt', 'ASC'],
+                [{ model: Lesson, as: "lessons" }, { model: LessonVideo, as: "lessonVideos" }, 'createdAt', 'ASC'],
+                [{ model: Lesson, as: "lessons" }, { model: LessonFile, as: "lessonFiles" }, 'createdAt', 'ASC'],
+                [{ model: Lesson, as: "lessons" }, { model: LessonQuiz, as: "lessonQuizs" }, 'createdAt', 'ASC'],
+                [{ model: Lesson, as: "lessons" }, { model: Assignment, as: "assignment" }, 'createdAt', 'ASC']
             ]
         });
         if (course.isPaid === true) {

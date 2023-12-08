@@ -23,7 +23,6 @@ db.sequelize = sequelize;
 // db.advisor = require('./Admin/advisor.js')(sequelize, Sequelize);
 // db.member = require('./Admin/member.js')(sequelize, Sequelize);
 // db.lead = require('./Admin/lead.js')(sequelize, Sequelize);
-// db.scheduleBooking = require('./Admin/scheduleBooking.js')(sequelize, Sequelize);
 // db.myBooking = require('./Admin/myBooking.js')(sequelize, Sequelize);
 // db.eWallet = require('./Admin/eWallet.js')(sequelize, Sequelize);
 

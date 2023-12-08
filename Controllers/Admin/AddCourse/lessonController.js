@@ -105,22 +105,12 @@ exports.getLessonByLessonIdForAdmin = async (req, res) => {
             include: [{
                 model: LessonFile,
                 as: "lessonFiles",
-                order: [
-                    ['fileName', 'ASC'],
-                    ['createdAt', 'ASC']
-                ]
             }, {
                 model: LessonQuiz,
                 as: "lessonQuizs",
-                order: [
-                    ['createdAt', 'ASC']
-                ]
             }, {
                 model: LessonVideo,
                 as: "lessonVideos",
-                order: [
-                    ['createdAt', 'ASC']
-                ]
             }, {
                 model: UpSell,
                 as: "upSell",
@@ -129,7 +119,11 @@ exports.getLessonByLessonIdForAdmin = async (req, res) => {
                 as: "assignment",
             }],
             order: [
-                ['createdAt', 'ASC']
+                ['createdAt', 'ASC'],
+                [{ model: LessonFile, as: "lessonFiles" }, 'createdAt', 'ASC'],
+                [{ model: LessonQuiz, as: "lessonQuizs" }, 'createdAt', 'ASC'],
+                [{ model: LessonVideo, as: "lessonVideos" }, 'createdAt', 'ASC'],
+                [{ model: Assignment, as: "assignment" }, 'createdAt', 'ASC']
             ]
         });
         if (!lesson) {
@@ -200,23 +194,13 @@ exports.getLessonByLessonIdForUser = async (req, res) => {
             },
             include: [{
                 model: LessonFile,
-                as: "lessonFiles",
-                order: [
-                    ['fileName', 'ASC'],
-                    ['createdAt', 'ASC']
-                ]
+                as: "lessonFiles"
             }, {
                 model: LessonQuiz,
-                as: "lessonQuizs",
-                order: [
-                    ['createdAt', 'ASC']
-                ]
+                as: "lessonQuizs"
             }, {
                 model: LessonVideo,
-                as: "lessonVideos",
-                order: [
-                    ['createdAt', 'ASC']
-                ]
+                as: "lessonVideos"
             }, {
                 model: UpSell,
                 as: "upSell",
@@ -225,7 +209,11 @@ exports.getLessonByLessonIdForUser = async (req, res) => {
                 as: "assignment",
             }],
             order: [
-                ['createdAt', 'ASC']
+                ['createdAt', 'ASC'],
+                [{ model: LessonFile, as: "lessonFiles" }, 'createdAt', 'ASC'],
+                [{ model: LessonQuiz, as: "lessonQuizs" }, 'createdAt', 'ASC'],
+                [{ model: LessonVideo, as: "lessonVideos" }, 'createdAt', 'ASC'],
+                [{ model: Assignment, as: "assignment" }, 'createdAt', 'ASC']
             ]
         });
         if (!lesson) {

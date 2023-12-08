@@ -11,6 +11,7 @@ const AdminsAffiliateLink = db.adminsAffiliateLinks;
 const EmailCredential = db.emailCredential
 const Course = db.course;
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const { Op } = require('sequelize');
 const { purchaseCourseValidation, purchaseCourseByReferalValidation, affiliateUserRegistration } = require("../../Middlewares/Validate/userCoursePurchaseValidation");
 const { RAZORPAY_KEY_ID, RAZORPAY_SECRET_ID } = process.env;
