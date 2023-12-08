@@ -9,13 +9,13 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING
         },
         codeExample: {
-            type: DataTypes.TEXT
+            type: DataTypes.TEXT("long")
         },
         customCode: {
-            type: DataTypes.TEXT
+            type: DataTypes.TEXT("long")
         },
         richTextEditor: {
-            type: DataTypes.TEXT
+            type: DataTypes.TEXT("long")
         },
         isPublic: {
             type: DataTypes.BOOLEAN,
