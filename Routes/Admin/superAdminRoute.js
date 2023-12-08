@@ -153,8 +153,8 @@ router.get("/adminWallet", verifyAdminToken, isSuperAdmin, getAllAdminWallet);
 router.get("/userWallet", verifyAdminToken, isSuperAdmin, getAllUserWallet);
 
 // Bulk
-router.post("/bulkRegister", verifyAdminToken, isSuperAdmin, bulkRegisterUserAndCreateCourseAndAssign);
+// router.post("/bulkRegister", verifyAdminToken, isSuperAdmin, bulkRegisterUserAndCreateCourseAndAssign);
 router.get("/bulkCheck", verifyAdminToken, isSuperAdmin, findAllUserForOnlyBulkCheck);
-router.post("/addUserToAllCourse/:id", verifyAdminToken, isSuperAdmin, addUserToAllCourse);
+// router.post("/addUserToAllCourse/:id", verifyAdminToken, isSuperAdmin, addUserToAllCourse);
 
 module.exports = router;

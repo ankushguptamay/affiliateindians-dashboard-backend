@@ -263,9 +263,9 @@ db.usersAffiliateLinks.belongsTo(db.affiliateUserIdRequest, { foreignKey: "affil
 //     }
 // }).catch((err) => { console.log(err) });
 
-queryInterface.changeColumn("lessons", "codeExample", { type: DataTypes.TEXT("long")}).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.changeColumn("lessons", "customCode", { type: DataTypes.TEXT("long")}).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.changeColumn("lessons", "richTextEditor", { type: DataTypes.TEXT("long")}).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.changeColumn("lessons", "codeExample", { type: DataTypes.TEXT("long")}).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.changeColumn("lessons", "customCode", { type: DataTypes.TEXT("long")}).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.changeColumn("lessons", "richTextEditor", { type: DataTypes.TEXT("long")}).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 // queryInterface.dropTable("affiliateLinks")
 //     .then((res) => {
