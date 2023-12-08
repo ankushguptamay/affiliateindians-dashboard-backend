@@ -139,3 +139,34 @@ exports.findAllUserForOnlyBulkCheck = async (req, res) => {
         res.status(500).send(err);
     }
 };
+
+exports.addUserToAllCourse = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const user = await User.findOne({ where: { id: userId } });
+        if (!user) {
+            return res.send("User is not present!")
+        }
+        const findAllCourse = await Course.findAll({
+            order: [
+                ['createdAt', 'ASC']
+            ]
+        });
+        let num = 0;
+        for (let i = 0; i < findAllCourse.length; i++) {
+            const isUserCourse = await User_Course.findOne({ where: { courseId: findAllCourse[i].id, userId: userId } });
+            if (!isUserCourse) {
+                await User_Course.create({ courseId: findAllCourse[i].id, userId: userId, verify: true, status: "paid", amount: findAllCourse[i].price });
+                num = num + 1;
+            }
+        }
+        res.status(201).send({
+            success: true,
+            message: `Total course ${findAllCourse.length} assign to user ${num}!`
+        });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+};

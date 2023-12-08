@@ -25,7 +25,7 @@ const { addUpSell, deleteUpSell } = require('../../Controllers/Admin/Master/upSe
 const { createAssignment, getAssignmentAnswerByLessonIdForAdmin, hardDeleteAssignment } = require('../../Controllers/Admin/AddCourse/assignmentController');
 
 const { findUserForSuperAdmin, findUserForAdmin, getAllUserWallet } = require("../../Controllers/User/user");
-const { bulkRegisterUserAndCreateCourseAndAssign, findAllUserForOnlyBulkCheck } = require("../../Controllers/User/bulk");
+const { bulkRegisterUserAndCreateCourseAndAssign, findAllUserForOnlyBulkCheck, addUserToAllCourse } = require("../../Controllers/User/bulk");
 const { getAffiliateUserIdRequestForAdmin, acceptAffiliateUserIdRequest, blockAffiliateUserIdRequest, unblockAffiliateUserIdRequest } = require("../../Controllers/User/affiliateUserIdController");
 
 
@@ -155,5 +155,6 @@ router.get("/userWallet", verifyAdminToken, isSuperAdmin, getAllUserWallet);
 // Bulk
 router.post("/bulkRegister", verifyAdminToken, isSuperAdmin, bulkRegisterUserAndCreateCourseAndAssign);
 router.get("/bulkCheck", verifyAdminToken, isSuperAdmin, findAllUserForOnlyBulkCheck);
+router.post("/addUserToAllCourse/:id", verifyAdminToken, isSuperAdmin, addUserToAllCourse);
 
 module.exports = router;
