@@ -56,7 +56,6 @@ exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
                     termAndConditionAccepted: true
                 });
                 newRegister = parseInt(newRegister) + 1;
-                // Creating Wallet
                 await UserWallet.create({
                     userId: user.id
                 });
