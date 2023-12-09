@@ -68,7 +68,7 @@ exports.generateCodeForAdmin = async (req, res) => {
             success: true,
             message: "Sale link tag created successfully!",
             data: {
-                generatedLink: `${originalLink}/${code}`
+                generatedLink: `${originalLink}?tid=${code}`
             }
         });
     }

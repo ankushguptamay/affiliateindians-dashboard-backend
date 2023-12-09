@@ -85,86 +85,83 @@ const getData = () => {
 //     }
 // };
 
-exports.findAllUserForOnlyBulkCheck = async (req, res) => {
-    try {
-        const users = await User.findAll({
-            include: [{
-                model: User_Course,
-                as: "user_courses"
-            }]
-        });
-        let OneCount = 0;
-        let TwoCount = 0;
-        let ThreeCount = 0;
-        let FourCount = 0;
-        let FiveCount = 0;
-        let SixCount = 0;
-        let SevenCount = 0;
-        let EightCount = 0;
-        let moreThenEight =0;
-        for (let i = 0; i < users.length; i++) {
-            const course = users[i].user_courses;
-            // console.log(course);
-            if (course.length === 1) {
-                OneCount = OneCount + 1;
-            } else if (course.length === 2) {
-                TwoCount = TwoCount + 1;
-            } else if (course.length === 3) {
-                ThreeCount = ThreeCount + 1;
-            } else if (course.length === 4) {
-                FourCount = FourCount + 1;
-            } else if (course.length === 5) {
-                FiveCount = FiveCount + 1;
-            } else if (course.length === 6) {
-                SixCount = SixCount + 1;
-            } else if (course.length === 7) {
-                SevenCount = SevenCount + 1;
-            } else if (course.length === 8) {
-                EightCount = EightCount + 1;
-            } else if(course.length>8){
-                moreThenEight=moreThenEight+1;
-            }
-        }
-        const data = `${OneCount} One, ${TwoCount} Two, ${ThreeCount} Three, ${FourCount} Four, ${FiveCount} Five, ${SixCount} Six, 
-        ${SevenCount} Seven, ${EightCount} Eight, ${moreThenEight} MoreThenEight`;
-        res.status(200).send({
-            success: true,
-            message: `All User fetched successfully!`,
-            data: { data: data, length: users.length }
-        });
-    } catch (err) {
-        console.log(err);
-        res.status(500).send(err);
-    }
-};
+// exports.findAllUserForOnlyBulkCheck = async (req, res) => {
+//     try {
+//         const users = await User.findAll({
+//          
+//         });
+//         let OneCount = 0;
+//         let TwoCount = 0;
+//         let ThreeCount = 0;
+//         let FourCount = 0;
+//         let FiveCount = 0;
+//         let SixCount = 0;
+//         let SevenCount = 0;
+//         let EightCount = 0;
+//         let moreThenEight =0;
+//         for (let i = 0; i < users.length; i++) {
+//             const course = users[i].user_courses;
+//             // console.log(course);
+//             if (course.length === 1) {
+//                 OneCount = OneCount + 1;
+//             } else if (course.length === 2) {
+//                 TwoCount = TwoCount + 1;
+//             } else if (course.length === 3) {
+//                 ThreeCount = ThreeCount + 1;
+//             } else if (course.length === 4) {
+//                 FourCount = FourCount + 1;
+//             } else if (course.length === 5) {
+//                 FiveCount = FiveCount + 1;
+//             } else if (course.length === 6) {
+//                 SixCount = SixCount + 1;
+//             } else if (course.length === 7) {
+//                 SevenCount = SevenCount + 1;
+//             } else if (course.length === 8) {
+//                 EightCount = EightCount + 1;
+//             } else if(course.length>8){
+//                 moreThenEight=moreThenEight+1;
+//             }
+//         }
+//         const data = `${OneCount} One, ${TwoCount} Two, ${ThreeCount} Three, ${FourCount} Four, ${FiveCount} Five, ${SixCount} Six, 
+//         ${SevenCount} Seven, ${EightCount} Eight, ${moreThenEight} MoreThenEight`;
+//         res.status(200).send({
+//             success: true,
+//             message: `All User fetched successfully!`,
+//             data: { data: data, length: users.length }
+//         });
+//     } catch (err) {
+//         console.log(err);
+//         res.status(500).send(err);
+//     }
+// };
 
-exports.addUserToAllCourse = async (req, res) => {
-    try {
-        const userId = req.params.id;
-        const user = await User.findOne({ where: { id: userId } });
-        if (!user) {
-            return res.send("User is not present!")
-        }
-        const findAllCourse = await Course.findAll({
-            order: [
-                ['createdAt', 'ASC']
-            ]
-        });
-        let num = 0;
-        for (let i = 0; i < findAllCourse.length; i++) {
-            const isUserCourse = await User_Course.findOne({ where: { courseId: findAllCourse[i].id, userId: userId, verify: true, status: "paid" } });
-            if (!isUserCourse) {
-                await User_Course.create({ courseId: findAllCourse[i].id, userId: userId, verify: true, status: "paid", amount: findAllCourse[i].price });
-                num = num + 1;
-            }
-        }
-        res.status(201).send({
-            success: true,
-            message: `Total course ${findAllCourse.length} assign to user ${num}!`
-        });
-    }
-    catch (err) {
-        console.log(err);
-        res.status(500).send(err);
-    }
-};
+// exports.addUserToAllCourse = async (req, res) => {
+//     try {
+//         const userId = req.params.id;
+//         const user = await User.findOne({ where: { id: userId } });
+//         if (!user) {
+//             return res.send("User is not present!")
+//         }
+//         const findAllCourse = await Course.findAll({
+//             order: [
+//                 ['createdAt', 'ASC']
+//             ]
+//         });
+//         let num = 0;
+//         for (let i = 0; i < findAllCourse.length; i++) {
+//             const isUserCourse = await User_Course.findOne({ where: { courseId: findAllCourse[i].id, userId: userId, verify: true, status: "paid" } });
+//             if (!isUserCourse) {
+//                 await User_Course.create({ courseId: findAllCourse[i].id, userId: userId, verify: true, status: "paid", amount: findAllCourse[i].price });
+//                 num = num + 1;
+//             }
+//         }
+//         res.status(201).send({
+//             success: true,
+//             message: `Total course ${findAllCourse.length} assign to user ${num}!`
+//         });
+//     }
+//     catch (err) {
+//         console.log(err);
+//         res.status(500).send(err);
+//     }
+// };
