@@ -18,7 +18,7 @@ const { Op } = require('sequelize');
 
 const getData = () => {
     return new Promise(async (resolve, reject) => {
-        fs.readFile(__dirname + "/../../Data/3SHTAS.json", function (err, data) {
+        fs.readFile(__dirname + "/../../Data/CM.json", function (err, data) {
             if (err) {
                 reject(err);
             } else {
@@ -30,9 +30,9 @@ const getData = () => {
 exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
     try {
         const obj = await getData();
-        let newRegister = 1;
+        let newRegister = 20;
         let oldRegister = 0;
-        const Title = '1. 3-STEP HIGH TICKET AFFILIATE SYSTEM';
+        const Title = '4. CLICKBANK MASTERY';
         for (let i = 0; i < obj.length; i++) {
             const isUser = await User.findOne({ where: { email: obj[i].email } });
             if (!isUser) {
