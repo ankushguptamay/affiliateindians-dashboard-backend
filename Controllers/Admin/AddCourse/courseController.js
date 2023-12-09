@@ -9,6 +9,7 @@ const LessonVideo = db.lessonVideo;
 const VideoComment = db.videoComment;
 const LessonQuiz = db.lessonQuiz;
 const Section = db.section
+const LessonText = db.lessonText;
 const AffiliateMarketingRatio = db.affiliateMarketingRatio;
 const { deleteSingleFile, deleteMultiFile } = require("../../../Util/deleteFile");
 const { courseValidation } = require("../../../Middlewares/Validate/validateCourse");
@@ -404,6 +405,12 @@ exports.hardDeleteCourse = async (req, res) => {
         });
         // delete VideoComment from database
         await VideoComment.destroy({
+            where: {
+                courseId: id
+            }, force: true
+        });
+        // delete lessonText from database
+        await LessonText.destroy({
             where: {
                 courseId: id
             }, force: true

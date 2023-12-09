@@ -43,6 +43,7 @@ db.lessonFile = require('./Admin/AddCourse/lessonFileModel.js')(sequelize, Seque
 db.videoComment = require('./Admin/AddCourse/videoCommentModel.js')(sequelize, Sequelize);
 db.upSell = require('./Admin/Master/upSellModel.js')(sequelize, Sequelize);
 db.assignment = require('./Admin/AddCourse/assignmentModel.js')(sequelize, Sequelize);
+db.lessonText = require('./Admin/AddCourse/lessonTextModel.js')(sequelize, Sequelize);
 
 // Teacher
 db.teacher = require('./Admin/Teacher/teacherModel.js')(sequelize, Sequelize);
@@ -248,6 +249,12 @@ db.usersAffiliateLinks.belongsTo(db.course, { foreignKey: "courseId", as: "cours
 db.affiliateUserIdRequest.hasMany(db.usersAffiliateLinks, { foreignKey: "affiliateUserId", as: "usersAffiliateLinks" });
 db.usersAffiliateLinks.belongsTo(db.affiliateUserIdRequest, { foreignKey: "affiliateUserId", as: "affiliateUserIdRequest" });
 
+// lesson text association
+db.admin.hasMany(db.lessonText, { foreignKey: "adminId", as: "lessonTexts" });
+db.course.hasMany(db.lessonText, { foreignKey: "courseId", as: "lessonTexts" });
+db.section.hasMany(db.lessonText, { foreignKey: "sectionId", as: "lessonTexts" });
+db.lesson.hasMany(db.lessonText, { foreignKey: "lessonId", as: "lessonTexts" });
+
 // db.emailCredential.findOne({
 //     where: {
 //         email: ""
@@ -263,9 +270,9 @@ db.usersAffiliateLinks.belongsTo(db.affiliateUserIdRequest, { foreignKey: "affil
 //     }
 // }).catch((err) => { console.log(err) });
 
-// queryInterface.changeColumn("lessons", "codeExample", { type: DataTypes.TEXT("long")}).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-// queryInterface.changeColumn("lessons", "customCode", { type: DataTypes.TEXT("long")}).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-// queryInterface.changeColumn("lessons", "richTextEditor", { type: DataTypes.TEXT("long")}).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.removeColumn("lessons", "codeExample").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.removeColumn("lessons", "customCode").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.removeColumn("lessons", "richTextEditor").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 // queryInterface.dropTable("affiliateLinks")
 //     .then((res) => {

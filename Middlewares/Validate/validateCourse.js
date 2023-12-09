@@ -113,3 +113,11 @@ exports.videoEmbeddedCodeValidation = (data) => {
     }) // .options({ allowUnknown: true });
     return schema.validate(data);
 }
+
+exports.lessonTextValidation = (data) => {
+    const schema = joi.object().keys({
+        text: joi.string().required(),
+        textType: joi.string().required()
+    }) // .options({ allowUnknown: true });
+    return schema.validate(data);
+}

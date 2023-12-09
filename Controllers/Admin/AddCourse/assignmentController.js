@@ -21,7 +21,7 @@ exports.createAssignment = async (req, res) => {
                 courseId: lesson.courseId,
                 sectionId: lesson.sectionId,
                 lessonId: lessonId,
-                assignmentType: assignmentType,
+                assignmentType: assignmentTypeUpperCase,
                 question: question,
                 adminId: req.admin.id
             });

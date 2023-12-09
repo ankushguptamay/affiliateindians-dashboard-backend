@@ -9,6 +9,7 @@ const Course = db.course;
 const VideoComment = db.videoComment;
 const User_Course = db.user_course;
 const Section = db.section;
+const LessonText = db.lessonText;
 const { deleteSingleFile, deleteMultiFile } = require("../../../Util/deleteFile");
 const axios = require('axios');
 const { Op } = require('sequelize');
@@ -117,13 +118,17 @@ exports.getLessonByLessonIdForAdmin = async (req, res) => {
             }, {
                 model: Assignment,
                 as: "assignment",
+            }, {
+                model: LessonText,
+                as: "lessonTexts"
             }],
             order: [
                 ['createdAt', 'ASC'],
                 [{ model: LessonFile, as: "lessonFiles" }, 'createdAt', 'ASC'],
                 [{ model: LessonQuiz, as: "lessonQuizs" }, 'createdAt', 'ASC'],
                 [{ model: LessonVideo, as: "lessonVideos" }, 'createdAt', 'ASC'],
-                [{ model: Assignment, as: "assignment" }, 'createdAt', 'ASC']
+                [{ model: Assignment, as: "assignment" }, 'createdAt', 'ASC'],
+                [{ model: LessonText, as: "lessonTexts" }, 'createdAt', 'ASC']
             ]
         });
         if (!lesson) {
@@ -207,13 +212,17 @@ exports.getLessonByLessonIdForUser = async (req, res) => {
             }, {
                 model: Assignment,
                 as: "assignment",
+            }, {
+                model: LessonText,
+                as: "lessonTexts"
             }],
             order: [
                 ['createdAt', 'ASC'],
                 [{ model: LessonFile, as: "lessonFiles" }, 'createdAt', 'ASC'],
                 [{ model: LessonQuiz, as: "lessonQuizs" }, 'createdAt', 'ASC'],
                 [{ model: LessonVideo, as: "lessonVideos" }, 'createdAt', 'ASC'],
-                [{ model: Assignment, as: "assignment" }, 'createdAt', 'ASC']
+                [{ model: Assignment, as: "assignment" }, 'createdAt', 'ASC'],
+                [{ model: LessonText, as: "lessonTexts" }, 'createdAt', 'ASC']
             ]
         });
         if (!lesson) {
@@ -458,6 +467,12 @@ exports.hardDeleteLesson = async (req, res) => {
         });
         // delete VideoComment from database
         await VideoComment.destroy({
+            where: {
+                lessonId: id
+            }, force: true
+        });
+        // delete lessonText from database
+        await LessonText.destroy({
             where: {
                 lessonId: id
             }, force: true

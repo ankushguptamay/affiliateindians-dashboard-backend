@@ -8,15 +8,6 @@ module.exports = (sequelize, DataTypes) => {
         lessonName: {
             type: DataTypes.STRING
         },
-        codeExample: {
-            type: DataTypes.TEXT("long")
-        },
-        customCode: {
-            type: DataTypes.TEXT("long")
-        },
-        richTextEditor: {
-            type: DataTypes.TEXT("long")
-        },
         isPublic: {
             type: DataTypes.BOOLEAN,
             defaultValue: false

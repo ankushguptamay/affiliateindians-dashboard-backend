@@ -9,6 +9,7 @@ const LessonVideo = db.lessonVideo;
 const VideoComment = db.videoComment;
 const Assignment = db.assignment;
 const LessonQuiz = db.lessonQuiz;
+const LessonText = db.lessonText;
 const axios = require('axios');
 const { deleteMultiFile } = require("../../../Util/deleteFile")
 
@@ -58,19 +59,21 @@ exports.getAllSectionByCourseIdForAdmin = async (req, res) => {
             include: [{
                 model: Lesson,
                 as: "lessons",
-                attributes: ["id", "lessonName", "isPublic", "createdAt"],
                 include: [{
                     model: LessonVideo,
-                    as: "lessonVideos",
+                    as: "lessonVideos"
                 }, {
                     model: LessonFile,
-                    as: "lessonFiles",
+                    as: "lessonFiles"
                 }, {
                     model: LessonQuiz,
-                    as: "lessonQuizs",
+                    as: "lessonQuizs"
                 }, {
                     model: Assignment,
-                    as: "assignment",
+                    as: "assignment"
+                }, {
+                    model: LessonText,
+                    as: "lessonTexts"
                 }]
             }],
             order: [
@@ -79,7 +82,8 @@ exports.getAllSectionByCourseIdForAdmin = async (req, res) => {
                 [{ model: Lesson, as: "lessons" }, { model: LessonVideo, as: "lessonVideos" }, 'createdAt', 'ASC'],
                 [{ model: Lesson, as: "lessons" }, { model: LessonFile, as: "lessonFiles" }, 'createdAt', 'ASC'],
                 [{ model: Lesson, as: "lessons" }, { model: LessonQuiz, as: "lessonQuizs" }, 'createdAt', 'ASC'],
-                [{ model: Lesson, as: "lessons" }, { model: Assignment, as: "assignment" }, 'createdAt', 'ASC']
+                [{ model: Lesson, as: "lessons" }, { model: Assignment, as: "assignment" }, 'createdAt', 'ASC'],
+                [{ model: Lesson, as: "lessons" }, { model: LessonText, as: "lessonTexts" }, 'createdAt', 'ASC']
             ]
         });
         res.status(200).send({
@@ -118,7 +122,6 @@ exports.getAllSectionByCourseIdForUser = async (req, res) => {
                 },
                 required: false,
                 as: "lessons",
-                attributes: ["id", "lessonName", "isPublic", "createdAt"],
                 include: [{
                     model: LessonVideo,
                     as: "lessonVideos",
@@ -131,6 +134,9 @@ exports.getAllSectionByCourseIdForUser = async (req, res) => {
                 }, {
                     model: Assignment,
                     as: "assignment",
+                }, {
+                    model: LessonText,
+                    as: "lessonTexts"
                 }]
             }],
             order: [
@@ -139,7 +145,8 @@ exports.getAllSectionByCourseIdForUser = async (req, res) => {
                 [{ model: Lesson, as: "lessons" }, { model: LessonVideo, as: "lessonVideos" }, 'createdAt', 'ASC'],
                 [{ model: Lesson, as: "lessons" }, { model: LessonFile, as: "lessonFiles" }, 'createdAt', 'ASC'],
                 [{ model: Lesson, as: "lessons" }, { model: LessonQuiz, as: "lessonQuizs" }, 'createdAt', 'ASC'],
-                [{ model: Lesson, as: "lessons" }, { model: Assignment, as: "assignment" }, 'createdAt', 'ASC']
+                [{ model: Lesson, as: "lessons" }, { model: Assignment, as: "assignment" }, 'createdAt', 'ASC'],
+                [{ model: Lesson, as: "lessons" }, { model: LessonText, as: "lessonTexts" }, 'createdAt', 'ASC']
             ]
         });
         if (course.isPaid === true) {
@@ -258,6 +265,12 @@ exports.hardeleteSection = async (req, res) => {
         });
         // delete VideoComment from database
         await VideoComment.destroy({
+            where: {
+                sectionId: id
+            }, force: true
+        });
+         // delete lessonText from database
+         await LessonText.destroy({
             where: {
                 sectionId: id
             }, force: true
