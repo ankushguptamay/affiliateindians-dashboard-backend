@@ -14,7 +14,14 @@ const AffiliateMarketingRatio = db.affiliateMarketingRatio;
 const { deleteSingleFile, deleteMultiFile } = require("../../../Util/deleteFile");
 const { courseValidation } = require("../../../Middlewares/Validate/validateCourse");
 const axios = require('axios');
+const cloudinary = require("cloudinary").v2;
 const { Op } = require('sequelize');
+
+cloudinary.config({
+    cloud_name: 'dbrdiwzr5',
+    api_key: '534226559833717',
+    api_secret: 'N7p-R_DMI0QrjZnoMlV9MWlKwoM'
+});
 
 // createCourse in this route Title is required.
 // getCourseForAdmin
@@ -581,6 +588,13 @@ exports.addOrUpdateCourseImage = async (req, res) => {
                 message: "Course is not present!"
             });
         }
+        console.log(req.file);
+        const imagePath = `./Resources/Course/${req.file.filename}`
+        console.log(imagePath)
+        const image = await cloudinary.uploader.upload(imagePath);
+        deleteSingleFile(req.file.path);
+        console.log(image);
+        return res.send("OK");
         // delete file if present
         let message = "added"
         if (course.courseImagePath) {
@@ -602,7 +616,7 @@ exports.addOrUpdateCourseImage = async (req, res) => {
         // console.log(err);
         res.status(500).send({
             success: false,
-            err: err.message
+            err: err
         });
     }
 };

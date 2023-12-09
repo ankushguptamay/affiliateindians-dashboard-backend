@@ -131,12 +131,12 @@ router.post("/addUpSell", verifyAdminToken, isAdmin, addUpSell);
 router.delete("/deleteUpSell/:id", verifyAdminToken, isAdmin, deleteUpSell);
 //Assignment
 router.post("/createAssignment/:id", verifyAdminToken, isAdmin, createAssignment); // lessonId
-router.get("/ getAssignmentAnswer/:id", verifyAdminToken, isAdmin, getAssignmentAnswerByLessonIdForAdmin); // lessonId
-router.delete("/ hardDeleteAnswer/:id", verifyAdminToken, isAdmin, hardDeleteAssignment); // assignmentId
+router.get("/getAssignmentAnswer/:id", verifyAdminToken, isAdmin, getAssignmentAnswerByLessonIdForAdmin); // lessonId
+router.delete("/hardDeleteAnswer/:id", verifyAdminToken, isAdmin, hardDeleteAssignment); // assignmentId
 //LessonText
 router.post("/addLessonText/:lessonId", verifyAdminToken, isAdmin, addLessonText); // lessonId
-router.put("/ updateLessonText/:id", verifyAdminToken, isAdmin, updateLessonText); // lessonTextId
-router.delete("/ hardDeleteLessonText/:id", verifyAdminToken, isAdmin, hardDeleteLessonText); // lessonTextId
+router.put("/updateLessonText/:id", verifyAdminToken, isAdmin, updateLessonText); // lessonTextId
+router.delete("/hardDeleteLessonText/:id", verifyAdminToken, isAdmin, hardDeleteLessonText); // lessonTextId
 
 // User
 router.get("/myUsers", verifyAdminToken, isAdmin, findUserForAdmin);
