@@ -20,6 +20,9 @@ module.exports = (sequelize, DataTypes) => {
         authorImageOriginalName: {
             type: DataTypes.STRING
         },
+        authorImageCloudId: {
+            type: DataTypes.STRING
+        },
         authorImageFileName: {
             type: DataTypes.STRING
         },
@@ -30,6 +33,9 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING
         },
         courseImageFileName: {
+            type: DataTypes.STRING
+        },
+        courseImageCloudId: {
             type: DataTypes.STRING
         },
         courseImagePath: {

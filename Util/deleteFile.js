@@ -2,7 +2,7 @@ const fs = require('fs');
 
 const deleteSingleFile = (filePath) => {
     if (filePath) {
-        console.log(fs.existsSync(filePath));
+        // console.log(fs.existsSync(filePath));
         if (fs.existsSync(filePath)) {
             fs.unlink(filePath, (err) => {
                 if (err) {

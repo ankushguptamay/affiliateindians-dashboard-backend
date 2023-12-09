@@ -262,7 +262,8 @@ db.lesson.hasMany(db.lessonText, { foreignKey: "lessonId", as: "lessonTexts" });
 //     }
 // }).catch((err) => { console.log(err) });
 
-// queryInterface.dropTable("user_courses").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("courses", "courseImageCloudId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("courses", "authorImageCloudId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 // queryInterface.dropTable("affiliateLinks")
 //     .then((res) => {

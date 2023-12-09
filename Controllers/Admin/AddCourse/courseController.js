@@ -18,9 +18,9 @@ const cloudinary = require("cloudinary").v2;
 const { Op } = require('sequelize');
 
 cloudinary.config({
-    cloud_name: 'dbrdiwzr5',
-    api_key: '534226559833717',
-    api_secret: 'N7p-R_DMI0QrjZnoMlV9MWlKwoM'
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
 // createCourse in this route Title is required.
@@ -588,25 +588,24 @@ exports.addOrUpdateCourseImage = async (req, res) => {
                 message: "Course is not present!"
             });
         }
-        console.log(req.file);
+        // Upload image to cloudinary
         const imagePath = `./Resources/Course/${req.file.filename}`
-        console.log(imagePath)
         const image = await cloudinary.uploader.upload(imagePath);
+        // delete file from resource
         deleteSingleFile(req.file.path);
-        console.log(image);
-        return res.send("OK");
-        // delete file if present
+        // delete previous file if present
         let message = "added"
-        if (course.courseImagePath) {
-            deleteSingleFile(course.courseImagePath);
+        if (course.courseImageCloudId) {
+            await cloudinary.uploader.destroy(course.courseImageCloudId);
             message = "updated"
         }
         // update courseImage
         await course.update({
             ...course,
-            courseImagePath: req.file.path,
+            courseImagePath: image.secure_url,
             courseImageFileName: req.file.filename,
-            courseImageOriginalName: req.file.originalname
+            courseImageOriginalName: req.file.originalname,
+            courseImageCloudId: image.public_id
         });
         res.status(201).send({
             success: true,
@@ -642,15 +641,21 @@ exports.addOrUpdateAuthorImage = async (req, res) => {
                 message: "Course is not present!"
             });
         }
-        let originalName, fileName, path;
+        let originalName = course.authorImageOriginalName, fileName = course.authorImageFileName, path = course.authorImagePath, imageId = course.authorImageCloudId;
         let message = "added";
         if (req.file) {
             originalName = req.file.originalname;
             fileName = req.file.filename;
-            path = req.file.path;
+            // Upload image to cloudinary
+            const imagePath = `./Resources/Course/${req.file.filename}`
+            const image = await cloudinary.uploader.upload(imagePath);
+            path = image.secure_url;
+            imageId = image.public_id;
+            // delete file from resource
+            deleteSingleFile(req.file.path);
             // delete file if present
-            if (course.authorImagePath) {
-                deleteSingleFile(course.authorImagePath);
+            if (course.authorImageCloudId) {
+                await cloudinary.uploader.destroy(course.authorImageCloudId);
                 message = "updated";
             }
         }
@@ -661,6 +666,7 @@ exports.addOrUpdateAuthorImage = async (req, res) => {
             authorImageFileName: fileName,
             authorImagePath: path,
             authorDiscription: authorDiscription,
+            authorImageCloudId: imageId,
             authorName: authorName
         });
         res.status(201).send({
@@ -698,8 +704,8 @@ exports.deleteCourseImage = async (req, res) => {
             });
         }
         // delete file if present
-        if (course.courseImagePath) {
-            deleteSingleFile(course.courseImagePath);
+        if (course.courseImageCloudId) {
+            await cloudinary.uploader.destroy(course.courseImageCloudId);
         }
         // update courseImage
         await course.update({
@@ -707,6 +713,7 @@ exports.deleteCourseImage = async (req, res) => {
             courseImageOriginalName: null,
             courseImageFileName: null,
             courseImagePath: null,
+            courseImageCloudId: null
         });
         res.status(200).send({
             success: true,
@@ -742,8 +749,8 @@ exports.deleteAuthorImage = async (req, res) => {
             });
         }
         // delete file
-        if (course.authorImagePath) {
-            deleteSingleFile(course.authorImagePath);
+        if (course.authorImageCloudId) {
+            await cloudinary.uploader.destroy(course.authorImageCloudId);
         }
         // update authorImage
         await course.update({
@@ -751,6 +758,7 @@ exports.deleteAuthorImage = async (req, res) => {
             authorImageOriginalName: null,
             authorImageFileName: null,
             authorImagePath: null,
+            authorImageCloudId: null
         });
         res.status(200).send({
             success: true,
