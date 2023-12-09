@@ -90,7 +90,7 @@ exports.updateLessonText = async (req, res) => {
     }
 };
 
-exports.deleteLessonText = async (req, res) => {
+exports.hardDeleteLessonText = async (req, res) => {
     try {
         const textId = req.params.id;
         const lessonText = await LessonText.findOne({

@@ -23,6 +23,7 @@ const { addBanner, updateBanner, addPDF, hardDeletePDF, addResource, hardDeleteR
 const { addCommentForAdmin, approveComment, hardDeleteCommentForAdmin, getCommentForAdmin } = require('../../Controllers/Admin/AddCourse/videoCommentController');
 const { addUpSell, deleteUpSell } = require('../../Controllers/Admin/Master/upSellController');
 const { createAssignment, getAssignmentAnswerByLessonIdForAdmin, hardDeleteAssignment } = require('../../Controllers/Admin/AddCourse/assignmentController');
+const { addLessonText, updateLessonText, hardDeleteLessonText } = require('../../Controllers/Admin/AddCourse/lessonTextController');
 
 const { findUserForSuperAdmin, findUserForAdmin, getAllUserWallet } = require("../../Controllers/User/user");
 const { bulkRegisterUserAndCreateCourseAndAssign, findAllUserForOnlyBulkCheck, addUserToAllCourse } = require("../../Controllers/User/bulk");
@@ -135,6 +136,10 @@ router.delete("/deleteUpSell/:id", verifyAdminToken, isSuperAdmin, deleteUpSell)
 router.post("/createAssignment/:id", verifyAdminToken, isSuperAdmin, createAssignment); // lessonId
 router.get("/ getAssignmentAnswer/:id", verifyAdminToken, isSuperAdmin, getAssignmentAnswerByLessonIdForAdmin); // lessonId
 router.delete("/ hardDeleteAnswer/:id", verifyAdminToken, isSuperAdmin, hardDeleteAssignment); // assignmentId
+//LessonText
+router.post("/addLessonText/:lessonId", verifyAdminToken, isSuperAdmin, addLessonText); // lessonId
+router.put("/ updateLessonText/:id", verifyAdminToken, isSuperAdmin, updateLessonText); // lessonTextId
+router.delete("/ hardDeleteLessonText/:id", verifyAdminToken, isSuperAdmin, hardDeleteLessonText); // lessonTextId
 
 // User
 router.get("/users", verifyAdminToken, isSuperAdmin, findUserForSuperAdmin);

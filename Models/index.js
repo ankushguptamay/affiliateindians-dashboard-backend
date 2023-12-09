@@ -270,9 +270,9 @@ db.lesson.hasMany(db.lessonText, { foreignKey: "lessonId", as: "lessonTexts" });
 //     }
 // }).catch((err) => { console.log(err) });
 
-queryInterface.removeColumn("lessons", "codeExample").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.removeColumn("lessons", "customCode").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.removeColumn("lessons", "richTextEditor").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.removeColumn("lessons", "codeExample").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.removeColumn("lessons", "customCode").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.removeColumn("lessons", "richTextEditor").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 // queryInterface.dropTable("affiliateLinks")
 //     .then((res) => {
