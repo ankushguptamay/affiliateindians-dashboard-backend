@@ -137,14 +137,6 @@ db.lesson.hasMany(db.videoComment, { foreignKey: "lessonId", as: "videoComment",
 // Video Association
 db.lessonVideo.hasMany(db.videoComment, { foreignKey: "lessonVideoId", as: "videoComment", onDelete: "CASCADE" });
 
-// User Association with user_course
-db.user.hasMany(db.user_course, { foreignKey: "userId", as: "user_courses" });
-db.user_course.belongsTo(db.user, { foreignKey: "userId", as: "user" });
-
-// course Association user_course
-db.course.hasMany(db.user_course, { foreignKey: "courseId", as: "user_courses" });
-db.user_course.belongsTo(db.course, { foreignKey: "courseId", as: "course" });
-
 // Coupon Association with course_coupon
 db.coupon.hasMany(db.course_coupon, { foreignKey: "couponId", as: "course_coupons" });
 db.course_coupon.belongsTo(db.coupon, { foreignKey: "couponId", as: "coupon" });
@@ -270,9 +262,7 @@ db.lesson.hasMany(db.lessonText, { foreignKey: "lessonId", as: "lessonTexts" });
 //     }
 // }).catch((err) => { console.log(err) });
 
-// queryInterface.removeColumn("lessons", "codeExample").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-// queryInterface.removeColumn("lessons", "customCode").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-// queryInterface.removeColumn("lessons", "richTextEditor").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.dropTable("user_courses").then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 // queryInterface.dropTable("affiliateLinks")
 //     .then((res) => {

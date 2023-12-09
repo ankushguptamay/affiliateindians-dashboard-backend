@@ -41,13 +41,15 @@ module.exports = (sequelize, DataTypes) => {
     },
     saleLinkCode: {
       type: DataTypes.STRING
+    },
+    courseId: {
+      type: DataTypes.STRING
+    },
+    userId: {
+      type: DataTypes.STRING
     }
   }, {
     paranoid: true
   });
   return User_Course;
 };
-
-// ForeignKey
-// courseId
-// userId
