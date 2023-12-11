@@ -2,10 +2,10 @@ const path = require("path");
 const multer = require("multer");
 
 const filter = (req, file, cb) => {
-    console.log(file)
+    // console.log(file)
     const extention = (file.originalname).split(".");
     const lastExtention = extention.length - 1;
-    console.log(extention);
+    // console.log(extention);
     if (file.mimetype.startsWith("image")) {
         cb(null, true);
     } else if (file.mimetype.startsWith("application/pdf")) {

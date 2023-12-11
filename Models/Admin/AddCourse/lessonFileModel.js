@@ -23,6 +23,9 @@ module.exports = (sequelize, DataTypes) => {
         fileAsAssignment: {
             type: DataTypes.BOOLEAN,
             defaultValue:false
+        },
+        cloudinaryFileId: {
+            type: DataTypes.STRING
         }
     }, {
         paranoid: true

@@ -2,7 +2,15 @@ const { Op } = require('sequelize');
 const db = require('../../../Models');
 const LessonFile = db.lessonFile;
 const Lesson = db.lesson;
+const cloudinary = require("cloudinary").v2;
 const { deleteSingleFile } = require("../../../Util/deleteFile");
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
 
 exports.addBanner = async (req, res) => {
     try {
@@ -14,12 +22,18 @@ exports.addBanner = async (req, res) => {
         }
         const lessonId = req.params.lessonId;
         const lesson = await Lesson.findOne({ where: { id: lessonId } });
+        // Upload image to cloudinary
+        const imagePath = `./Resources/Lesson/${req.file.filename}`
+        const image = await cloudinary.uploader.upload(imagePath);
+        // delete file from server
+        deleteSingleFile(req.file.path);
         await LessonFile.create({
             file_FieldName: req.file.fieldname,
-            file_Path: req.file.path,
+            file_Path: image.secure_url,
             file_MimeType: req.file.mimetype,
             file_OriginalName: req.file.originalname,
             file_FileName: req.file.filename,
+            cloudinaryFileId: image.public_id,
             courseId: lesson.courseId,
             sectionId: lesson.sectionId,
             lessonId: lessonId,
@@ -64,13 +78,20 @@ exports.updateBanner = async (req, res) => {
                 message: "Banner not found!"
             });
         }
-        if (lessonFile.file_Path) {
-            deleteSingleFile(lessonFile.file_Path);
+        // Upload image to cloudinary
+        const imagePath = `./Resources/Lesson/${req.file.filename}`
+        const image = await cloudinary.uploader.upload(imagePath);
+        // delete file from server
+        deleteSingleFile(req.file.path);
+        if (lessonFile.cloudinaryFileId) {
+            await cloudinary.uploader.destroy(lessonFile.cloudinaryFileId);
         }
         await lessonFile.update({
             ...lessonFile,
             file_FieldName: req.file.fieldname,
             file_Path: req.file.path,
+            file_Path: image.secure_url,
+            cloudinaryFileId: image.public_id,
             file_MimeType: req.file.mimetype,
             file_OriginalName: req.file.originalname,
             file_FileName: req.file.filename
@@ -101,12 +122,18 @@ exports.addPDF = async (req, res) => {
         const lesson = await Lesson.findOne({ where: { id: lessonId } });
         const fileArray = req.files;
         for (let i = 0; i < fileArray.length; i++) {
+            // Upload image to cloudinary
+            const filePath = `./Resources/Lesson/${fileArray[i].filename}`;
+            const file = await cloudinary.uploader.upload(filePath);
+            // Delete file from server
+            deleteSingleFile(fileArray[i].path);
             await LessonFile.create({
                 file_FieldName: fileArray[i].fieldname,
-                file_Path: fileArray[i].path,
+                file_Path: file.secure_url,
                 file_MimeType: fileArray[i].mimetype,
                 file_OriginalName: fileArray[i].originalname,
                 file_FileName: fileArray[i].filename,
+                cloudinaryFileId: file.public_id,
                 courseId: lesson.courseId,
                 sectionId: lesson.sectionId,
                 lessonId: lessonId,
@@ -146,8 +173,8 @@ exports.hardDeletePDF = async (req, res) => {
                 message: "PDF not found!"
             });
         }
-        if (lessonFile.file_Path) {
-            deleteSingleFile(lessonFile.file_Path);
+        if (lessonFile.cloudinaryFileId) {
+            await cloudinary.uploader.destroy(lessonFile.cloudinaryFileId);
         }
         await lessonFile.destroy({ force: true });
         res.status(201).send({
@@ -176,12 +203,23 @@ exports.addResource = async (req, res) => {
         const lesson = await Lesson.findOne({ where: { id: lessonId } });
         const fileArray = req.files;
         for (let i = 0; i < fileArray.length; i++) {
+            // Upload image to cloudinary
+            const filePath = `./Resources/Lesson/${fileArray[i].filename}`;
+            let file;
+            if (fileArray[i].mimetype.startsWith("image") || fileArray[i].mimetype.startsWith("application/pdf")) {
+                file = await cloudinary.uploader.upload(filePath);
+            } else {
+                file = await cloudinary.uploader.upload(filePath, { resource_type: "raw" });
+            }
+            // Delete file from server
+            deleteSingleFile(fileArray[i].path);
             await LessonFile.create({
                 file_FieldName: fileArray[i].fieldname,
-                file_Path: fileArray[i].path,
+                file_Path: file.secure_url,
                 file_MimeType: fileArray[i].mimetype,
                 file_OriginalName: fileArray[i].originalname,
                 file_FileName: fileArray[i].filename,
+                cloudinaryFileId: file.public_id,
                 courseId: lesson.courseId,
                 sectionId: lesson.sectionId,
                 lessonId: lessonId,
@@ -222,8 +260,8 @@ exports.hardDeleteResource = async (req, res) => {
                 message: "Resource not found!"
             });
         }
-        if (lessonFile.file_Path) {
-            deleteSingleFile(lessonFile.file_Path);
+        if (lessonFile.cloudinaryFileId) {
+            await cloudinary.uploader.destroy(lessonFile.cloudinaryFileId);
         }
         await lessonFile.destroy({ force: true });
         res.status(201).send({
