@@ -347,8 +347,6 @@ exports.hardDeleteCourse = async (req, res) => {
             });
         };
         const commentFileArray = [];
-        const lessonFileArray = [];
-        const thumbnailArray = [];
         // hard Delete Lesson video 
         const video = await LessonVideo.findAll({
             where:
@@ -381,12 +379,11 @@ exports.hardDeleteCourse = async (req, res) => {
                             bunnyMessage: error.message
                         });
                     });
-                thumbnailArray.push(video[i].Thumbnail_Path);
+                // delete thumbnail from cloudinary
+                if (video[i].cloudinaryImageId) {
+                    await cloudinary.uploader.destroy(video[i].cloudinaryImageId);
+                }
             }
-        }
-        // delete thumbnail
-        if (thumbnailArray.length > 0) {
-            deleteMultiFile(thumbnailArray);
         }
         // delete comment Files
         const comment = await VideoComment.findAll({ where: { courseId: id } });
@@ -399,10 +396,9 @@ exports.hardDeleteCourse = async (req, res) => {
         // delete lesson files
         const lessonFile = await LessonFile.findAll({ where: { courseId: id } });
         for (let i = 0; i < lessonFile.length; i++) {
-            lessonFileArray.push(lessonFile[i].file_Path);
-        }
-        if (lessonFileArray.length > 0) {
-            deleteMultiFile(lessonFileArray);
+            if (lessonFile[i].cloudinaryFileId) {
+                await cloudinary.uploader.destroy(lessonFile[i].cloudinaryFileId);
+            }
         }
         // delete video from database
         await LessonVideo.destroy({
@@ -453,12 +449,12 @@ exports.hardDeleteCourse = async (req, res) => {
             }, force: true
         });
         // delete course image
-        if (course.courseImagePath) {
-            deleteSingleFile(course.courseImagePath);
+        if (course.courseImageCloudId) {
+            await cloudinary.uploader.destroy(course.courseImageCloudId);
         }
         // delete author image
-        if (course.authorImagePath) {
-            deleteSingleFile(course.authorImagePath);
+        if (course.authorImageCloudId) {
+            await cloudinary.uploader.destroy(course.authorImageCloudId);
         }
         // Delete Library from bunny
         const deleteVideoLibrary = {

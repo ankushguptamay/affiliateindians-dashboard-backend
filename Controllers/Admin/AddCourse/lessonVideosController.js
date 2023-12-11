@@ -7,6 +7,13 @@ const VideoComment = db.videoComment;
 const { deleteSingleFile, deleteMultiFile } = require("../../../Util/deleteFile");
 const { videoEmbeddedCodeValidation } = require("../../../Middlewares/Validate/validateCourse");
 const axios = require('axios');
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 // uploadLessonVideo
 // deleteLessonVideo
@@ -155,9 +162,9 @@ exports.hardDeleteLessonVideo = async (req, res) => {
                     });
                 });
         }
-        // delete lesson from database
-        if (lessonVideo.Thumbnail_Path) {
-            deleteSingleFile(lessonVideo.Thumbnail_Path);
+        // delete thumbnail from cloudinary
+        if (lessonVideo.cloudinaryImageId) {
+            await cloudinary.uploader.destroy(lessonVideo.cloudinaryImageId);
         }
         // delete comment files
         const comment = await VideoComment.findAll({ where: { lessonVideoId: id } });
@@ -209,13 +216,18 @@ exports.addOrUpdateThumbNail = async (req, res) => {
                 message: "Lesson Video is not present!"
             });
         };
+        // Upload image to cloudinary
+        const imagePath = `./Resources/Lesson/${req.file.filename}`
+        const image = await cloudinary.uploader.upload(imagePath);
+        // delete file from resource
+        deleteSingleFile(req.file.path);
         if (lessonVideo.videoType === "VIDEO") {
             // add to buuny video
             const setThumbNail = {
                 method: "POST",
                 url: `http://video.bunnycdn.com/library/${lessonVideo.BUNNY_VIDEO_LIBRARY_ID}/videos/${lessonVideo.Video_ID}/thumbnail`,
                 params: {
-                    thumbnailUrl: req.file.path
+                    thumbnailUrl: image.secure_url
                 },
                 headers: {
                     Accept: "application/json",
@@ -229,7 +241,7 @@ exports.addOrUpdateThumbNail = async (req, res) => {
                 })
                 .catch((error) => {
                     // console.log(error);
-                    deleteSingleFile(req.file.path);
+                    cloudinary.uploader.destroy(image.public_id);
                     return res.status(400).json({
                         success: false,
                         message: "failed to upload thumbnail! upload again",
@@ -239,13 +251,14 @@ exports.addOrUpdateThumbNail = async (req, res) => {
         }
         // delete existing file
         let message = "added";
-        if (lessonVideo.Thumbnail_Path) {
-            deleteSingleFile(lessonVideo.Thumbnail_Path);
+        if (lessonVideo.cloudinaryImageId) {
+            await cloudinary.uploader.destroy(lessonVideo.cloudinaryImageId);
             message = "updated";
         }
         await lessonVideo.update({
             ...lessonVideo,
-            Thumbnail_Path: req.file.path,
+            Thumbnail_Path: image.secure_url,
+            cloudinaryImageId: image.public_id,
             Thumbnail_OriginalName: req.file.originalname,
             Thumbnail_FileName: req.file.filename
         });

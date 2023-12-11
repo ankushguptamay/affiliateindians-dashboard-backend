@@ -11,7 +11,14 @@ const Assignment = db.assignment;
 const LessonQuiz = db.lessonQuiz;
 const LessonText = db.lessonText;
 const axios = require('axios');
-const { deleteMultiFile } = require("../../../Util/deleteFile")
+const { deleteMultiFile } = require("../../../Util/deleteFile");
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 // createSection
 // getAllSectionByCourseId for admin
@@ -200,8 +207,6 @@ exports.hardeleteSection = async (req, res) => {
             });
         };
         const commentFileArray = [];
-        const lessonFileArray = [];
-        const thumbnailArray = [];
         // hard Delete Lesson video 
         const video = await LessonVideo.findAll({
             where:
@@ -234,12 +239,11 @@ exports.hardeleteSection = async (req, res) => {
                             bunnyMessage: error.message
                         });
                     });
-                thumbnailArray.push(video[i].Thumbnail_Path);
+                // delete thumbnail from cloudinary
+                if (video[i].cloudinaryImageId) {
+                    await cloudinary.uploader.destroy(video[i].cloudinaryImageId);
+                }
             }
-        }
-        // delete thumbnail
-        if (thumbnailArray.length > 0) {
-            deleteMultiFile(thumbnailArray);
         }
         // delete comment Files
         const comment = await VideoComment.findAll({ where: { sectionId: id } });
@@ -252,10 +256,9 @@ exports.hardeleteSection = async (req, res) => {
         // delete lesson files
         const lessonFile = await LessonFile.findAll({ where: { sectionId: id } });
         for (let i = 0; i < lessonFile.length; i++) {
-            lessonFileArray.push(lessonFile[i].file_Path);
-        }
-        if (lessonFileArray.length > 0) {
-            deleteMultiFile(lessonFileArray);
+            if (lessonFile[i].cloudinaryFileId) {
+                await cloudinary.uploader.destroy(lessonFile[i].cloudinaryFileId);
+            }
         }
         // delete video from database
         await LessonVideo.destroy({
@@ -269,8 +272,8 @@ exports.hardeleteSection = async (req, res) => {
                 sectionId: id
             }, force: true
         });
-         // delete lessonText from database
-         await LessonText.destroy({
+        // delete lessonText from database
+        await LessonText.destroy({
             where: {
                 sectionId: id
             }, force: true

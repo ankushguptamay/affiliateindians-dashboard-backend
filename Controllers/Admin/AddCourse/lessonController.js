@@ -13,6 +13,13 @@ const LessonText = db.lessonText;
 const { deleteSingleFile, deleteMultiFile } = require("../../../Util/deleteFile");
 const axios = require('axios');
 const { Op } = require('sequelize');
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 // createLesson lesson name is required
 // getLessonByLessonId
@@ -409,8 +416,6 @@ exports.hardDeleteLesson = async (req, res) => {
             }
         });
         const commentFileArray = [];
-        const thumbnailArray = [];
-        const lessonFileArray = [];
         if (video.length > 0) {
             // delete video from bunny
             for (let i = 0; i < video.length; i++) {
@@ -435,12 +440,11 @@ exports.hardDeleteLesson = async (req, res) => {
                             bunnyMessage: error.message
                         });
                     });
-                thumbnailArray.push(video[i].Thumbnail_Path);
+                // delete thumbnail from cloudinary
+                if (video[i].cloudinaryImageId) {
+                    await cloudinary.uploader.destroy(video[i].cloudinaryImageId);
+                }
             }
-        }
-        // delete thumbnail
-        if (thumbnailArray.length > 0) {
-            deleteMultiFile(thumbnailArray);
         }
         // Get All comment file
         const comment = await VideoComment.findAll({ where: { lessonId: id } });
@@ -454,10 +458,9 @@ exports.hardDeleteLesson = async (req, res) => {
         // delete lesson files
         const lessonFile = await LessonFile.findAll({ where: { lessonId: id } });
         for (let i = 0; i < lessonFile.length; i++) {
-            lessonFileArray.push(lessonFile[i].file_Path);
-        }
-        if (lessonFileArray.length > 0) {
-            deleteMultiFile(lessonFileArray);
+            if (lessonFile[i].cloudinaryFileId) {
+                await cloudinary.uploader.destroy(lessonFile[i].cloudinaryFileId);
+            }
         }
         // delete video from database
         await LessonVideo.destroy({

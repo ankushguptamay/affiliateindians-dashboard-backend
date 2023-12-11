@@ -44,6 +44,9 @@ module.exports = (sequelize, DataTypes) => {
             validate: {
                 isIn: [['EMBEDDEDCODE', 'VIDEO']]
             }
+        },
+        cloudinaryImageId: {
+            type: DataTypes.STRING
         }
     }, {
         paranoid: true
