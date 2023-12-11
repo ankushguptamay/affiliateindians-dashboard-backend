@@ -263,7 +263,7 @@ db.lesson.hasMany(db.lessonText, { foreignKey: "lessonId", as: "lessonTexts" });
 // }).catch((err) => { console.log(err) });
 
 // queryInterface.addColumn("lessonFiles", "cloudinaryFileId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.addColumn("templates", "cloudinaryImageId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.addColumn("templates", "cloudinaryImageId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 // queryInterface.dropTable("affiliateLinks")
 //     .then((res) => {
