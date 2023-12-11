@@ -25,7 +25,7 @@ const { addUpSell, deleteUpSell } = require('../../Controllers/Admin/Master/upSe
 const { createAssignment, getAssignmentAnswerByLessonIdForAdmin, hardDeleteAssignment } = require('../../Controllers/Admin/AddCourse/assignmentController');
 const { addLessonText, updateLessonText, hardDeleteLessonText } = require('../../Controllers/Admin/AddCourse/lessonTextController');
 
-const { findUserForSuperAdmin, findUserForAdmin, getAllUserWallet } = require("../../Controllers/User/user");
+const { findUserForSuperAdmin, findUserForAdmin, getAllUserWallet, addUserToCourse } = require("../../Controllers/User/user");
 const { bulkRegisterUserAndCreateCourseAndAssign, addUserToAllCourse } = require("../../Controllers/User/bulk");
 const { getAffiliateUserIdRequestForAdmin, acceptAffiliateUserIdRequest, blockAffiliateUserIdRequest, unblockAffiliateUserIdRequest } = require("../../Controllers/User/affiliateUserIdController");
 
@@ -144,6 +144,7 @@ router.delete("/hardDeleteLessonText/:id", verifyAdminToken, isSuperAdmin, hardD
 // User
 router.get("/users", verifyAdminToken, isSuperAdmin, findUserForSuperAdmin);
 router.get("/myUsers", verifyAdminToken, isSuperAdmin, findUserForAdmin);
+router.post("/addUserToCourse", verifyAdminToken, isSuperAdmin, addUserToCourse);
 // AffiliateUserIdRequest
 router.get("/getAffiliateUserIdRequest", verifyAdminToken, isSuperAdmin, getAffiliateUserIdRequestForAdmin);
 router.put("/acceptAffiliateUserIdRequest/:id", verifyAdminToken, isSuperAdmin, acceptAffiliateUserIdRequest);

@@ -705,3 +705,88 @@ exports.generatePassword = async (req, res) => {
         });
     }
 };
+
+exports.addUserToCourse = async (req, res) => {
+    try {
+        const { email, name, courseId } = req.body;
+
+        const adminId = req.admin.id;
+        const condition = [{ id: courseId }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
+        const findCourse = await Course.findOne({
+            where: {
+                [Op.and]: condition
+            }
+        });
+        if (!findCourse) {
+            return res.status(400).send({
+                success: false,
+                message: `This course is not present in your courses!`
+            });
+        }
+        // find User
+        let user = await User.findOne({ where: { email: email } });
+        if (!user) {
+            // Generating Code
+            // 1.Today Date
+            const date = JSON.stringify(new Date((new Date).getTime() - (24 * 60 * 60 * 1000)));
+            const today = `${date.slice(1, 12)}18:30:00.000Z`;
+            // 2.Today Day
+            const Day = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+            const dayNumber = (new Date).getDay();
+            // Get All Today Code
+            let code;
+            const isUserCode = await User.findAll({
+                where: {
+                    createdAt: { [Op.gt]: today }
+                },
+                order: [
+                    ['createdAt', 'ASC']
+                ],
+                paranoid: false
+            });
+            const day = new Date().toISOString().slice(8, 10);
+            const year = new Date().toISOString().slice(2, 4);
+            const month = new Date().toISOString().slice(5, 7);
+            if (isUserCode.length === 0) {
+                code = "AFUS" + day + month + year + Day[dayNumber] + 1;
+            } else {
+                let lastCode = isUserCode[isUserCode.length - 1];
+                let lastDigits = lastCode.userCode.substring(13);
+                let incrementedDigits = parseInt(lastDigits, 10) + 1;
+                code = "AFUS" + day + month + year + Day[dayNumber] + incrementedDigits;
+            }
+            const salt = await bcrypt.genSalt(10);
+            const bcPassword = await bcrypt.hash(`${(email).slice(0, 8)}`, salt);
+            user = await User.create({
+                name: name,
+                email: email,
+                password: bcPassword,
+                userCode: code,
+                termAndConditionAccepted: true
+            });
+            // create wallet
+            await UserWallet.create({
+                userId: user.id
+            });
+        }
+        const isUserCourse = await User_Course.findOne({ where: { courseId: courseId, userId: user.id, verify: true, status: "paid" } });
+        if (isUserCourse) {
+            return res.status(400).send({
+                success: false,
+                message: `${user.name} already has ${findCourse.title} Course!`
+            });
+        }
+        await User_Course.create({ courseId: courseId, userId: user.id, verify: true, status: "paid" });
+        res.status(201).send({
+            success: true,
+            message: `${findCourse.title} assign to ${user.name} successfully!`
+        });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+};

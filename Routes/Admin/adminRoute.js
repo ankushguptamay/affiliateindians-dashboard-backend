@@ -27,7 +27,7 @@ const { addLessonText, updateLessonText, hardDeleteLessonText } = require('../..
 // Teacher
 const { registerTeacher } = require("../../Controllers/Admin/Teacher/teacherController");
 // User
-const { findUserForAdmin } = require("../../Controllers/User/user");
+const { findUserForAdmin, addUserToCourse } = require("../../Controllers/User/user");
 const { getAffiliateUserIdRequestForAdmin, acceptAffiliateUserIdRequest, blockAffiliateUserIdRequest, unblockAffiliateUserIdRequest } = require("../../Controllers/User/affiliateUserIdController");
 
 //middleware
@@ -140,6 +140,7 @@ router.delete("/hardDeleteLessonText/:id", verifyAdminToken, isAdmin, hardDelete
 
 // User
 router.get("/myUsers", verifyAdminToken, isAdmin, findUserForAdmin);
+router.post("/addUserToCourse", verifyAdminToken, isAdmin, addUserToCourse);
 // AffiliateUserIdRequest
 router.get("/getAffiliateUserIdRequest", verifyAdminToken, isAdmin, getAffiliateUserIdRequestForAdmin);
 router.put("/acceptAffiliateUserIdRequest/:id", verifyAdminToken, isAdmin, acceptAffiliateUserIdRequest);
