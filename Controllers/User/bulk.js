@@ -18,7 +18,7 @@ const { Op } = require('sequelize');
 
 const getData = () => {
     return new Promise(async (resolve, reject) => {
-        fs.readFile(__dirname + "/../../Data/CM.json", function (err, data) {
+        fs.readFile(__dirname + "/../../Data/EM.json", function (err, data) {
             if (err) {
                 reject(err);
             } else {
@@ -27,62 +27,62 @@ const getData = () => {
         })
     });
 }
-// exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
-//     try {
-//         const obj = await getData();
-//         let newRegister = 20;
-//         let oldRegister = 0;
-//         const Title = '4. CLICKBANK MASTERY';
-//         for (let i = 0; i < obj.length; i++) {
-//             const isUser = await User.findOne({ where: { email: obj[i].email } });
-//             if (!isUser) {
-//                 // Generating Code
-//                 // 2.Today Day
-//                 const Day = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-//                 const dayNumber = (new Date).getDay();
-//                 // Get All Today Code
-//                 const day = new Date().toISOString().slice(8, 10);
-//                 const year = new Date().toISOString().slice(2, 4);
-//                 const month = new Date().toISOString().slice(5, 7);
-//                 let code = "AFUS" + day + month + year + Day[dayNumber] + newRegister;
-//                 const salt = await bcrypt.genSalt(10);
-//                 const bcPassword = await bcrypt.hash(`${(obj[i].email).slice(0, 8)}`, salt);
-//                 const user = await User.create({
-//                     name: obj[i].fullname,
-//                     email: obj[i].email,
-//                     password: bcPassword,
-//                     userCode: code,
-//                     termAndConditionAccepted: true
-//                 });
-//                 newRegister = parseInt(newRegister) + 1;
-//                 await UserWallet.create({
-//                     userId: user.id
-//                 });
-//                 const isCourse = await Course.findOne({ where: { title: Title } });
-//                 const isUserCourse = await User_Course.findOne({ where: { courseId: isCourse.id, userId: user.id, verify: true, status: "paid" } });
-//                 if (!isUserCourse) {
-//                     await User_Course.create({ courseId: isCourse.id, userId: user.id, verify: true, status: "paid" });
-//                 }
-//             } else {
-//                 oldRegister = parseInt(oldRegister) + 1;
-//                 const isCourse = await Course.findOne({ where: { title: Title } });
-//                 const isUserCourse = await User_Course.findOne({ where: { courseId: isCourse.id, userId: isUser.id, verify: true, status: "paid" } });
-//                 if (!isUserCourse) {
-//                     await User_Course.create({ courseId: isCourse.id, userId: isUser.id, verify: true, status: "paid" });
-//                 }
-//             }
-//             console.log(i);
-//         }
-//         res.status(201).send({
-//             success: true,
-//             message: `User added with ${Title} successfully! ${newRegister} new register and ${oldRegister} old register!`
-//         });
-//     }
-//     catch (err) {
-//         console.log(err);
-//         res.status(500).send(err);
-//     }
-// };
+exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
+    try {
+        const obj = await getData();
+        let newRegister = 8;
+        let oldRegister = 0;
+        const Title = '7. EXPERT MEMBERSHIP';
+        for (let i = 0; i < obj.length; i++) {
+            const isUser = await User.findOne({ where: { email: obj[i].email } });
+            if (!isUser) {
+                // Generating Code
+                // 2.Today Day
+                const Day = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+                const dayNumber = (new Date).getDay();
+                // Get All Today Code
+                const day = new Date().toISOString().slice(8, 10);
+                const year = new Date().toISOString().slice(2, 4);
+                const month = new Date().toISOString().slice(5, 7);
+                let code = "AFUS" + day + month + year + Day[dayNumber] + newRegister;
+                const salt = await bcrypt.genSalt(10);
+                const bcPassword = await bcrypt.hash(`${(obj[i].email).slice(0, 8)}`, salt);
+                const user = await User.create({
+                    name: obj[i].fullname,
+                    email: obj[i].email,
+                    password: bcPassword,
+                    userCode: code,
+                    termAndConditionAccepted: true
+                });
+                newRegister = parseInt(newRegister) + 1;
+                await UserWallet.create({
+                    userId: user.id
+                });
+                const isCourse = await Course.findOne({ where: { title: Title } });
+                const isUserCourse = await User_Course.findOne({ where: { courseId: isCourse.id, userId: user.id, verify: true, status: "paid" } });
+                if (!isUserCourse) {
+                    await User_Course.create({ courseId: isCourse.id, userId: user.id, verify: true, status: "paid" });
+                }
+            } else {
+                oldRegister = parseInt(oldRegister) + 1;
+                const isCourse = await Course.findOne({ where: { title: Title } });
+                const isUserCourse = await User_Course.findOne({ where: { courseId: isCourse.id, userId: isUser.id, verify: true, status: "paid" } });
+                if (!isUserCourse) {
+                    await User_Course.create({ courseId: isCourse.id, userId: isUser.id, verify: true, status: "paid" });
+                }
+            }
+            console.log(i);
+        }
+        res.status(201).send({
+            success: true,
+            message: `User added with ${Title} successfully! ${newRegister} new register and ${oldRegister} old register!`
+        });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+};
 
 // exports.addUserToAllCourse = async (req, res) => {
 //     try {

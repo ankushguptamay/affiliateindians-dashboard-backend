@@ -351,7 +351,7 @@ exports.findUserForSuperAdmin = async (req, res) => {
             limit: recordLimit,
             offset: offSet,
             order: [
-                ['updatedAt', 'DESC']
+                ['createdAt', 'DESC']
             ]
         });
         res.status(200).send({

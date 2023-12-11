@@ -159,7 +159,7 @@ router.get("/adminWallet", verifyAdminToken, isSuperAdmin, getAllAdminWallet);
 router.get("/userWallet", verifyAdminToken, isSuperAdmin, getAllUserWallet);
 
 // Bulk
-// router.post("/bulkRegister", verifyAdminToken, isSuperAdmin, bulkRegisterUserAndCreateCourseAndAssign);
+router.post("/bulkRegister", verifyAdminToken, isSuperAdmin, bulkRegisterUserAndCreateCourseAndAssign);
 // router.post("/addUserToAllCourse/:id", verifyAdminToken, isSuperAdmin, addUserToAllCourse);
 
 module.exports = router;
