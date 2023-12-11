@@ -18,7 +18,7 @@ const { Op } = require('sequelize');
 
 const getData = () => {
     return new Promise(async (resolve, reject) => {
-        fs.readFile(__dirname + "/../../Data/YB.json", function (err, data) {
+        fs.readFile(__dirname + "/../../Data/BBC1.json", function (err, data) {
             if (err) {
                 reject(err);
             } else {
@@ -30,9 +30,10 @@ const getData = () => {
 exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
     try {
         const obj = await getData();
-        let newRegister = 45;
+        // 301 306 306 306 307 307 307 320
+        let newRegister = 297;
         let oldRegister = 0;
-        const Title = '3. YOUR BONUSES';
+        const Title = '2. BUSINESS BUILDER CHALLENGE';
         for (let i = 0; i < obj.length; i++) {
             const isUser = await User.findOne({ where: { email: obj[i].email } });
             if (!isUser) {
@@ -45,7 +46,7 @@ exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
                 const year = new Date().toISOString().slice(2, 4);
                 const month = new Date().toISOString().slice(5, 7);
                 let code = "AFUS" + day + month + year + Day[dayNumber] + newRegister;
-                
+
                 const salt = await bcrypt.genSalt(10);
                 const bcPassword = await bcrypt.hash(`${(obj[i].email).slice(0, 8)}`, salt);
                 const user = await User.create({
