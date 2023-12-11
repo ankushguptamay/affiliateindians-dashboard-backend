@@ -30,21 +30,42 @@ const getData = () => {
 exports.bulkRegisterUserAndCreateCourseAndAssign = async (req, res) => {
     try {
         const obj = await getData();
-        let newRegister = 8;
+        let newRegister = 0;
         let oldRegister = 0;
         const Title = '7. EXPERT MEMBERSHIP';
         for (let i = 0; i < obj.length; i++) {
             const isUser = await User.findOne({ where: { email: obj[i].email } });
             if (!isUser) {
                 // Generating Code
+                // 1.Today Date
+                const date = JSON.stringify(new Date((new Date).getTime() - (24 * 60 * 60 * 1000)));
+                const today = `${date.slice(1, 12)}18:30:00.000Z`;
                 // 2.Today Day
                 const Day = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
                 const dayNumber = (new Date).getDay();
                 // Get All Today Code
+                let code;
+                const isUserCode = await User.findAll({
+                    where: {
+                        createdAt: { [Op.gt]: today }
+                    },
+                    order: [
+                        ['createdAt', 'ASC']
+                    ],
+                    paranoid: false
+                });
                 const day = new Date().toISOString().slice(8, 10);
                 const year = new Date().toISOString().slice(2, 4);
                 const month = new Date().toISOString().slice(5, 7);
-                let code = "AFUS" + day + month + year + Day[dayNumber] + newRegister;
+                if (isUserCode.length == 0) {
+                    code = "AFUS" + day + month + year + Day[dayNumber] + 1;
+                } else {
+                    let lastCode = isUserCode[isUserCode.length - 1];
+                    let lastDigits = lastCode.userCode.substring(13);
+                    let incrementedDigits = parseInt(lastDigits, 10) + 1;
+                    code = "AFUS" + day + month + year + Day[dayNumber] + incrementedDigits;
+                }
+
                 const salt = await bcrypt.genSalt(10);
                 const bcPassword = await bcrypt.hash(`${(obj[i].email).slice(0, 8)}`, salt);
                 const user = await User.create({
