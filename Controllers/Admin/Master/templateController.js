@@ -1,7 +1,13 @@
 const db = require('../../../Models');
 const Template = db.template;
+const cloudinary = require("cloudinary").v2;
 const { Op } = require('sequelize');
 const { deleteSingleFile } = require("../../../Util/deleteFile");
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 exports.addTemplate = async (req, res) => {
     try {
@@ -12,10 +18,16 @@ exports.addTemplate = async (req, res) => {
             });
         }
         const { template } = req.body;
+        // Upload image to cloudinary
+        const imagePath = `./Resources/Master/${req.file.filename}`
+        const image = await cloudinary.uploader.upload(imagePath);
+        // delete file from resource
+        deleteSingleFile(req.file.path);
         await Template.create({
-            templateImage_Path: req.file.path,
+            templateImage_Path: image.secure_url,
             templateImage_OriginalName: req.file.originalname,
             templateImage_FileName: req.file.filename,
+            cloudinaryImageId: image.public_id,
             adminId: req.admin.id,
             template: template
         });
@@ -68,8 +80,8 @@ exports.hardDeleteTemplate = async (req, res) => {
                 message: "Template is not present!"
             });
         }
-        if (template.templateImage_Path) {
-            deleteSingleFile(template.templateImage_Path);
+        if (template.cloudinaryImageId) {
+            await cloudinary.uploader.destroy(template.cloudinaryImageId);
         }
         await template.destroy({ force: true });
         res.status(201).send({

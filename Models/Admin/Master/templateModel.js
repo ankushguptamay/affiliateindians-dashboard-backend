@@ -9,15 +9,17 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING
         },
         templateImage_Path: {
-            type: DataTypes.STRING(1234) 
+            type: DataTypes.STRING(1234)
         },
         templateImage_OriginalName: {
             type: DataTypes.STRING
         },
         templateImage_FileName: {
             type: DataTypes.STRING(1234)
+        },
+        cloudinaryImageId: {
+            type: DataTypes.STRING
         }
-       
     }, {
         paranoid: true
     });
