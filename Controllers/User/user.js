@@ -411,6 +411,10 @@ exports.findUserForAdmin = async (req, res) => {
                 ['createdAt', 'DESC']
             ]
         });
+        let courseName = "In All Courses";
+        if (courseId) {
+            courseName = allAdminCourse[0].title
+        }
         const courseIdArray = [];
         for (let i = 0; i < allAdminCourse.length; i++) {
             courseIdArray.push(allAdminCourse[i].id);
@@ -452,7 +456,8 @@ exports.findUserForAdmin = async (req, res) => {
             message: `Users fetched successfully!`,
             totalPage: Math.ceil(totalUser / recordLimit),
             currentPage: currentPage,
-            data: user
+            data: user,
+            courseName: courseName
         });
     } catch (err) {
         res.status(500).send({

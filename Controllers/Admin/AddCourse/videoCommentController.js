@@ -4,6 +4,13 @@ const VideoComment = db.videoComment;
 const LessonVideo = db.lessonVideo;
 const Course = db.course;
 const { deleteSingleFile } = require("../../../Util/deleteFile");
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 // addCommentForAdmin
 // deleteCommentForAdmin
@@ -21,11 +28,17 @@ exports.addCommentForAdmin = async (req, res) => {
         if (req.files.length > 0) {
             const files = req.files;
             for (let i = 0; i < files.length; i++) {
+                // Upload image to cloudinary
+                const imagePath = `./Resources/Lesson/${files[i].filename}`
+                const image = await cloudinary.uploader.upload(imagePath);
+                // delete file from resource
+                deleteSingleFile(files[i].path);
                 await VideoComment.create({
                     commenterName: commenterName,
                     approvalStatus: true,
                     mimeType: files[i].mimetype,
-                    file_Path: files[i].path,
+                    cloudinaryFileId: image.public_id,
+                    file_Path: image.secure_url,
                     file_OriginalName: files[i].originalname,
                     file_FileName: files[i].filename,
                     commenterId: req.admin.id,
@@ -87,8 +100,8 @@ exports.hardDeleteCommentForAdmin = async (req, res) => {
                 });
             }
         }
-        if (comment.file_Path) {
-            deleteSingleFile(comment.file_Path);
+        if (comment.cloudinaryFileId) {
+            await cloudinary.uploader.destroy(comment.cloudinaryFileId);
         }
         await comment.destroy({ force: true });
         res.status(201).send({
@@ -113,10 +126,16 @@ exports.addCommentForUser = async (req, res) => {
         if (req.files.length > 0) {
             const files = req.files;
             for (let i = 0; i < files.length; i++) {
+                // Upload image to cloudinary
+                const imagePath = `./Resources/Lesson/${files[i].filename}`
+                const image = await cloudinary.uploader.upload(imagePath);
+                // delete file from resource
+                deleteSingleFile(files[i].path);
                 await VideoComment.create({
                     commenterName: commenterName,
                     mimeType: files[i].mimetype,
-                    file_Path: files[i].path,
+                    cloudinaryFileId: image.public_id,
+                    file_Path: image.secure_url,
                     file_OriginalName: files[i].originalname,
                     file_FileName: files[i].filename,
                     commenterId: req.user.id,
@@ -163,11 +182,11 @@ exports.hardDeleteCommentForUser = async (req, res) => {
         if (!comment) {
             return res.status(400).send({
                 success: false,
-                message: "Comment not found!"
+                message: "Comment is not found!"
             })
         }
-        if (comment.file_Path) {
-            deleteSingleFile(comment.file_Path);
+        if (comment.cloudinaryFileId) {
+            await cloudinary.uploader.destroy(comment.cloudinaryFileId);
         }
         await comment.destroy({ force: true });
         res.status(201).send({

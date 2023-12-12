@@ -29,8 +29,10 @@ module.exports = (sequelize, DataTypes) => {
         approvalStatus: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
+        },
+        cloudinaryFileId: {
+            type: DataTypes.STRING
         }
-
     }, {
         paranoid: true
     });
