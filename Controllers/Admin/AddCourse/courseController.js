@@ -31,7 +31,7 @@ cloudinary.config({
 // addOrUpdateAuthorImage
 // deleteCourseImage
 // deleteAuthorImage
-// publicCourse
+// publishCourse
 // deleteCourse
 
 exports.createCourse = async (req, res) => {
@@ -796,7 +796,7 @@ exports.publicCourse = async (req, res) => {
         });
         res.status(200).send({
             success: true,
-            message: `Course publiced successfully!`
+            message: `Course published successfully!`
         });
     } catch (err) {
         // console.log(err);
@@ -835,7 +835,7 @@ exports.unPublicCourse = async (req, res) => {
         });
         res.status(200).send({
             success: true,
-            message: `Course unpubliced successfully!`
+            message: `Course unpublished successfully!`
         });
     } catch (err) {
         // console.log(err);

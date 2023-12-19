@@ -373,7 +373,7 @@ exports.publicSection = async (req, res) => {
         });
         res.status(200).send({
             success: true,
-            message: `Section publiced seccessfully!`
+            message: `Section published seccessfully!`
         });
     } catch (err) {
         // console.log(err);
@@ -409,7 +409,7 @@ exports.unPublicSection = async (req, res) => {
         });
         res.status(200).send({
             success: true,
-            message: `Section unpubliced seccessfully!`
+            message: `Section unpublished seccessfully!`
         });
     } catch (err) {
         // console.log(err);

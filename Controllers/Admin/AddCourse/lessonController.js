@@ -341,7 +341,7 @@ exports.publicLesson = async (req, res) => {
         });
         res.status(200).send({
             success: true,
-            message: `Lesson publiced successfully!`
+            message: `Lesson published successfully!`
         });
     }
     catch (err) {
@@ -377,7 +377,7 @@ exports.unPublicLesson = async (req, res) => {
         });
         res.status(200).send({
             success: true,
-            message: `Lesson unpubliced successfully!`
+            message: `Lesson unpublished successfully!`
         });
     }
     catch (err) {
