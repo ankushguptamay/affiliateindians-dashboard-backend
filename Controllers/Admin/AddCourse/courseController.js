@@ -517,6 +517,7 @@ exports.updateCourse = async (req, res) => {
         }
         // update title name
         if (courseTitle !== course.title) {
+            console.log("hiiii")
             const updateVideoLibrary = {
                 method: "POST",
                 url: `https://api.bunny.net/videolibrary/${course.BUNNY_VIDEO_LIBRARY_ID}`,
@@ -530,7 +531,8 @@ exports.updateCourse = async (req, res) => {
                     PlayerKeyColor: PlayerKeyColor // "#55ff60" their are more option, check it on bunny 
                 }
             };
-            await axios.request(updateVideoLibrary);
+            const response = await axios.request(updateVideoLibrary);
+            console.log(response);
         }
         // update in database
         await course.update({
@@ -553,7 +555,7 @@ exports.updateCourse = async (req, res) => {
         // console.log(err);
         res.status(500).send({
             success: false,
-            err: err.message
+            err: err
         });
     }
 };
