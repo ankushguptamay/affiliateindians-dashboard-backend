@@ -809,7 +809,6 @@ exports.publicCourse = async (req, res) => {
     }
 };
 
-
 exports.unPublicCourse = async (req, res) => {
     try {
         const id = req.params.id;
@@ -885,7 +884,6 @@ exports.allowAffiliateCourse = async (req, res) => {
         });
     }
 };
-
 
 exports.disAllowAffiliateCourse = async (req, res) => {
     try {
@@ -963,6 +961,58 @@ exports.getCourseByIdForUser = async (req, res) => {
             success: true,
             message: "Course fetched successfully!",
             data: course
+        });
+    } catch (err) {
+        // console.log(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
+
+exports.changeBunnyCredential = async (req, res) => {
+    try {
+        const obj = [{
+            courseName: "REACT COURSE",
+            BUNNY_VIDEO_LIBRARY_ID: "187999",
+            BUNNY_LIBRARY_API_KEY: "24972933-9e6d-448a-8a1b369e7090-48c3-4da1"
+        }];
+        let num = 0;
+        let num1 = 0;
+        for (let i = 0; i < obj.length; i++) {
+            const course = await Course.findOne({
+                where: {
+                    title: obj[i].courseName
+                }
+            });
+            if (course) {
+                num = num + 1;
+                const lessonVideo = await LessonVideo.findAll({
+                    where: {
+                        courseId: course.id,
+                        videoType: "VIDEO"
+                    }
+                });
+                for (let j = 0; j < lessonVideo.length; j++) {
+                    num1 = num1 + 1;
+                    await lessonVideo[j].update({
+                        ...lessonVideo[j],
+                        BUNNY_VIDEO_LIBRARY_ID: obj[i].BUNNY_VIDEO_LIBRARY_ID,
+                        BUNNY_LIBRARY_API_KEY: obj[i].BUNNY_LIBRARY_API_KEY
+                    });
+                }
+                await course.update({
+                    ...course,
+                    BUNNY_VIDEO_LIBRARY_ID: obj[i].BUNNY_VIDEO_LIBRARY_ID,
+                    BUNNY_LIBRARY_API_KEY: obj[i].BUNNY_LIBRARY_API_KEY
+                });
+            }
+        }
+
+        res.status(200).send({
+            success: true,
+            message: `Course updated successfully! course ${num}, lesson ${num1}`
         });
     } catch (err) {
         // console.log(err);
