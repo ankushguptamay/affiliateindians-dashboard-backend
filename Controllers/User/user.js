@@ -42,7 +42,8 @@ exports.create = async (req, res) => {
         const isUser = await User.findOne({
             where: {
                 email: req.body.email
-            }
+            },
+            paranoid: false
         });
         if (isUser) {
             return res.status(400).send({
@@ -247,25 +248,50 @@ exports.findUser = async (req, res) => {
     }
 };
 
-// exports.delete = async (req, res) => {
-//     try {
-//         const id = req.params.id;
-//         const users = await User.findOne({ where: { id: id } });
-//         if (!users) {
-//             return res.status(400).send({
-//                 success: false,
-//                 message: "User is not present"
-//             })
-//         }
-//         users.destroy();
-//         res.status(200).send({
-//             success: true,
-//             message: `User deleted successfully!`
-//         });
-//     } catch (err) {
-//        res.status(500).send({ message: err.message });
-//     }
-// };
+exports.softDeleteUser = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const users = await User.findOne({ where: { id: id } });
+        if (!users) {
+            return res.status(400).send({
+                success: false,
+                message: "User is not present"
+            })
+        }
+        await users.destroy();
+        res.status(200).send({
+            success: true,
+            message: `User blocked successfully!`
+        });
+    } catch (err) {
+        res.status(500).send({ message: err.message });
+    }
+};
+
+exports.restoreUser = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const users = await User.findOne({
+            where: {
+                id: id,
+                deletedAt: { [Op.ne]: null }
+            }, paranoid: false
+        });
+        if (!users) {
+            return res.status(400).send({
+                success: false,
+                message: "This user is not in block list!"
+            })
+        }
+        await users.restore();
+        res.status(200).send({
+            success: true,
+            message: `User unblocked successfully!`
+        });
+    } catch (err) {
+        res.status(500).send({ message: err.message });
+    }
+};
 
 exports.update = async (req, res) => {
     try {
@@ -371,7 +397,7 @@ exports.findUserForSuperAdmin = async (req, res) => {
 
 exports.findUserForAdmin = async (req, res) => {
     try {
-        const { page, limit, search, courseId } = req.query;
+        const { page, limit, search, courseId, block } = req.query;
         // Pagination
         const recordLimit = parseInt(limit) || 10;
         let offSet = 0;
@@ -435,13 +461,13 @@ exports.findUserForAdmin = async (req, res) => {
         } else {
             condition.push({ id: userIdArray });
         }
-        // Count All User
-        const totalUser = await User.count({
+        //get only blocked User
+        let countCondition = {
             where: {
                 [Op.and]: condition
             }
-        });
-        const user = await User.findAll({
+        };
+        let getCondition = {
             where: {
                 [Op.and]: condition
             },
@@ -450,7 +476,31 @@ exports.findUserForAdmin = async (req, res) => {
             order: [
                 ['createdAt', 'DESC']
             ]
-        });
+        };
+        if (block) {
+            condition.push({ deletedAt: { [Op.ne]: null } });
+            countCondition = {
+                where: {
+                    [Op.and]: condition
+                },
+                paranoid: false
+            };
+            getCondition = {
+                where: {
+                    [Op.and]: condition
+                },
+                limit: recordLimit,
+                offset: offSet,
+                paranoid: false,
+                order: [
+                    ['createdAt', 'DESC']
+                ]
+            };
+        }
+        // Count All User
+        const totalUser = await User.count(countCondition);
+        // Get user
+        const user = await User.findAll(getCondition);
         res.status(200).send({
             success: true,
             message: `Users fetched successfully!`,
@@ -732,7 +782,12 @@ exports.addUserToCourse = async (req, res) => {
             });
         }
         // find User
-        let user = await User.findOne({ where: { email: email } });
+        let user = await User.findOne({
+            where: {
+                email: email
+            },
+            paranoid: false
+        });
         if (!user) {
             // Generating Code
             // 1.Today Date
@@ -775,6 +830,12 @@ exports.addUserToCourse = async (req, res) => {
             // create wallet
             await UserWallet.create({
                 userId: user.id
+            });
+        }
+        if (user.deletedAt) {
+            return res.status(400).send({
+                success: false,
+                message: `This User ${user.name} blocked by admin! First Unblocked this user!`
             });
         }
         const isUserCourse = await User_Course.findOne({ where: { courseId: courseId, userId: user.id, verify: true, status: "paid" } });
