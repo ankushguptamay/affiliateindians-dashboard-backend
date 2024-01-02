@@ -27,7 +27,7 @@ const { addLessonText, updateLessonText, hardDeleteLessonText } = require('../..
 // Teacher
 const { registerTeacher } = require("../../Controllers/Admin/Teacher/teacherController");
 // User
-const { findUserForAdmin, addUserToCourse, softDeleteUser, restoreUser } = require("../../Controllers/User/user");
+const { findUnBlockUserForAdmin,findBlockUserForAdmin, addUserToCourse, softDeleteUser, restoreUser } = require("../../Controllers/User/user");
 const { getAffiliateUserIdRequestForAdmin, acceptAffiliateUserIdRequest, blockAffiliateUserIdRequest, unblockAffiliateUserIdRequest } = require("../../Controllers/User/affiliateUserIdController");
 
 //middleware
@@ -139,7 +139,8 @@ router.put("/updateLessonText/:id", verifyAdminToken, isAdmin, updateLessonText)
 router.delete("/hardDeleteLessonText/:id", verifyAdminToken, isAdmin, hardDeleteLessonText); // lessonTextId
 
 // User
-router.get("/myUsers", verifyAdminToken, isAdmin, findUserForAdmin);
+router.get("/myUsers", verifyAdminToken, isAdmin, findUnBlockUserForAdmin);
+router.get("/myBlockUsers", verifyAdminToken, isAdmin, findBlockUserForAdmin);
 router.post("/addUserToCourse", verifyAdminToken, isAdmin, addUserToCourse);
 router.put("/blockUser/:id", verifyAdminToken, isAdmin, softDeleteUser);
 router.put("/unBlockUser/:id", verifyAdminToken, isAdmin, restoreUser);

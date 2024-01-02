@@ -25,7 +25,7 @@ const { addUpSell, deleteUpSell } = require('../../Controllers/Admin/Master/upSe
 const { createAssignment, getAssignmentAnswerByLessonIdForAdmin, hardDeleteAssignment } = require('../../Controllers/Admin/AddCourse/assignmentController');
 const { addLessonText, updateLessonText, hardDeleteLessonText } = require('../../Controllers/Admin/AddCourse/lessonTextController');
 
-const { findUserForSuperAdmin, findUserForAdmin, getAllUserWallet, addUserToCourse, softDeleteUser, restoreUser } = require("../../Controllers/User/user");
+const { findUserForSuperAdmin, findUnBlockUserForAdmin, findBlockUserForAdmin, getAllUserWallet, addUserToCourse, softDeleteUser, restoreUser } = require("../../Controllers/User/user");
 const { bulkRegisterUserAndCreateCourseAndAssign, addUserToAllCourse } = require("../../Controllers/User/bulk");
 const { getAffiliateUserIdRequestForAdmin, acceptAffiliateUserIdRequest, blockAffiliateUserIdRequest, unblockAffiliateUserIdRequest } = require("../../Controllers/User/affiliateUserIdController");
 
@@ -143,7 +143,8 @@ router.delete("/hardDeleteLessonText/:id", verifyAdminToken, isSuperAdmin, hardD
 
 // User
 router.get("/users", verifyAdminToken, isSuperAdmin, findUserForSuperAdmin);
-router.get("/myUsers", verifyAdminToken, isSuperAdmin, findUserForAdmin);
+router.get("/myUsers", verifyAdminToken, isSuperAdmin, findUnBlockUserForAdmin);
+router.get("/myBlockUsers", verifyAdminToken, isSuperAdmin, findBlockUserForAdmin);
 router.post("/addUserToCourse", verifyAdminToken, isSuperAdmin, addUserToCourse);
 router.put("/blockUser/:id", verifyAdminToken, isSuperAdmin, softDeleteUser);
 router.put("/unBlockUser/:id", verifyAdminToken, isSuperAdmin, restoreUser);

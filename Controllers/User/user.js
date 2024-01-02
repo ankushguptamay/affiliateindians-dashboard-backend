@@ -395,9 +395,9 @@ exports.findUserForSuperAdmin = async (req, res) => {
     }
 };
 
-exports.findUserForAdmin = async (req, res) => {
+exports.findUnBlockUserForAdmin = async (req, res) => {
     try {
-        const { page, limit, search, courseId, block } = req.query;
+        const { page, limit, search, courseId } = req.query;
         // Pagination
         const recordLimit = parseInt(limit) || 10;
         let offSet = 0;
@@ -462,12 +462,12 @@ exports.findUserForAdmin = async (req, res) => {
             condition.push({ id: userIdArray });
         }
         //get only blocked User
-        let countCondition = {
+        const countCondition = {
             where: {
                 [Op.and]: condition
             }
         };
-        let getCondition = {
+        const getCondition = {
             where: {
                 [Op.and]: condition
             },
@@ -477,26 +477,110 @@ exports.findUserForAdmin = async (req, res) => {
                 ['createdAt', 'DESC']
             ]
         };
-        if (block) {
-            condition.push({ deletedAt: { [Op.ne]: null } });
-            countCondition = {
+        // Count All User
+        const totalUser = await User.count(countCondition);
+        // Get user
+        const user = await User.findAll(getCondition);
+        res.status(200).send({
+            success: true,
+            message: `Users fetched successfully!`,
+            totalPage: Math.ceil(totalUser / recordLimit),
+            currentPage: currentPage,
+            data: user,
+            courseName: courseName
+        });
+    } catch (err) {
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
+
+exports.findBlockUserForAdmin = async (req, res) => {
+    try {
+        const { page, limit, search, courseId } = req.query;
+        // Pagination
+        const recordLimit = parseInt(limit) || 10;
+        let offSet = 0;
+        let currentPage = 1;
+        if (page) {
+            offSet = (parseInt(page) - 1) * recordLimit;
+            currentPage = parseInt(page);
+        }
+        // Search 
+        const condition = [{ deletedAt: { [Op.ne]: null } }];
+        if (search) {
+            condition.push({
+                [Op.or]: [
+                    { name: { [Op.substring]: search } },
+                    { mobileNumber: { [Op.substring]: search } },
+                    { email: { [Op.substring]: search } }
+                ]
+            })
+        }
+        // Only that user who purchase admin course
+        const userIdArray = [];
+        let courseCondition;
+        // Filter by courseID
+        if (courseId) {
+            courseCondition = {
+                id: courseId,
+                adminId: req.admin.id
+            }
+        } else {
+            courseCondition = {
+                adminId: req.admin.id
+            }
+        }
+        const allAdminCourse = await Course.findAll({
+            where: courseCondition,
+            order: [
+                ['createdAt', 'DESC']
+            ]
+        });
+        let courseName = "In All Courses";
+        if (courseId) {
+            courseName = allAdminCourse[0].title
+        }
+        const courseIdArray = [];
+        for (let i = 0; i < allAdminCourse.length; i++) {
+            courseIdArray.push(allAdminCourse[i].id);
+        }
+        if (courseIdArray.length > 0) {
+            const association = await User_Course.findAll({
                 where: {
-                    [Op.and]: condition
+                    courseId: courseIdArray
                 },
-                paranoid: false
-            };
-            getCondition = {
-                where: {
-                    [Op.and]: condition
-                },
-                limit: recordLimit,
-                offset: offSet,
-                paranoid: false,
                 order: [
                     ['createdAt', 'DESC']
                 ]
-            };
+            });
+            for (let i = 0; i < association.length; i++) {
+                userIdArray.push(association[i].userId);
+            }
+            condition.push({ id: userIdArray });
+        } else {
+            condition.push({ id: userIdArray });
         }
+        //get only blocked User
+        const countCondition = {
+            where: {
+                [Op.and]: condition
+            },
+            paranoid: false
+        };
+        const getCondition = {
+            where: {
+                [Op.and]: condition
+            },
+            limit: recordLimit,
+            offset: offSet,
+            paranoid: false,
+            order: [
+                ['createdAt', 'DESC']
+            ]
+        };
         // Count All User
         const totalUser = await User.count(countCondition);
         // Get user
