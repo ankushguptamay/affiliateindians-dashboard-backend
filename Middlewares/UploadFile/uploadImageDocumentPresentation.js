@@ -5,12 +5,12 @@ const filter = (req, file, cb) => {
     // console.log(file)
     const extention = (file.originalname).split(".");
     const lastExtention = extention.length - 1;
-    // console.log(extention);
+    // console.log(extention[lastExtention]);
     if (file.mimetype.startsWith("image")) {
         cb(null, true);
     } else if (file.mimetype.startsWith("application/pdf")) {
         cb(null, true);
-    } else if (extention[lastExtention] === "docx" || extention[lastExtention] === "doc" || extention[lastExtention] === "ppt" || extention[lastExtention] === "pptx") {
+    } else if (extention[lastExtention] === "docx" || extention[lastExtention] === "zip" || extention[lastExtention] === "doc" || extention[lastExtention] === "ppt" || extention[lastExtention] === "pptx") {
         cb(null, true);
     } else {
         cb("Please upload only Image, PDF, DOCX, DOC, PPT and PPTX.", false);

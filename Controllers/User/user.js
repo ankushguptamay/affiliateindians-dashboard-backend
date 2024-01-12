@@ -46,10 +46,17 @@ exports.create = async (req, res) => {
             paranoid: false
         });
         if (isUser) {
-            return res.status(400).send({
-                success: false,
-                message: "User is present! Login.."
-            });
+            if (isUser.deletedAt !== null) {
+                return res.status(400).send({
+                    success: false,
+                    message: "You are blocked by Affiliate Indian!"
+                });
+            } else {
+                return res.status(400).send({
+                    success: false,
+                    message: "User is present! Login.."
+                });
+            }
         }
         // Generating Code
         // 1.Today Date
@@ -130,12 +137,19 @@ exports.login = async (req, res) => {
         const isUser = await User.findOne({
             where: {
                 email: email
-            }
+            },
+            paranoid: false
         });
         if (!isUser) {
             return res.status(400).send({
                 success: false,
                 message: 'Sorry! try to login with currect credentials.'
+            });
+        }
+        if (isUser.deletedAt !== null) {
+            return res.status(400).send({
+                success: false,
+                message: "You are blocked by Affiliate Indian!"
             });
         }
         const compairPassword = await bcrypt.compare(password, isUser.password);
