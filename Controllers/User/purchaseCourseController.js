@@ -598,3 +598,21 @@ exports.verifyPaymentForNewUser = async (req, res) => {
         });
     }
 };
+
+exports.webHookApi = async (req, res) => {
+    try {
+        console.log(req);
+        console.log(req.body);
+
+        res.status(201).send({
+            success: true,
+            message: `webHookData get successfully!`
+        });
+    }
+    catch (err) {
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};

@@ -23,6 +23,7 @@ const { addCommentForAdmin, approveComment, hardDeleteCommentForAdmin, getCommen
 const { addUpSell, deleteUpSell } = require('../../Controllers/Admin/Master/upSellController');
 const { createAssignment, getAssignmentAnswerByLessonIdForAdmin, hardDeleteAssignment } = require('../../Controllers/Admin/AddCourse/assignmentController');
 const { addLessonText, updateLessonText, hardDeleteLessonText } = require('../../Controllers/Admin/AddCourse/lessonTextController');
+const { webHookApi } = require('../../Controllers/User/purchaseCourseController');
 
 // Teacher
 const { registerTeacher } = require("../../Controllers/Admin/Teacher/teacherController");
@@ -150,5 +151,7 @@ router.get("/getAffiliateUserIdRequest", verifyAdminToken, isAdmin, getAffiliate
 router.put("/acceptAffiliateUserIdRequest/:id", verifyAdminToken, isAdmin, acceptAffiliateUserIdRequest);
 router.put("/blockAffiliateUserIdRequest/:id", verifyAdminToken, isAdmin, blockAffiliateUserIdRequest);
 router.put("/unblockAffiliateUserIdRequest/:id", verifyAdminToken, isAdmin, unblockAffiliateUserIdRequest);
+// Purchase
+router.post("/paymentWebhook", verifyAdminToken, isAdmin, webHookApi);
 
 module.exports = router;
