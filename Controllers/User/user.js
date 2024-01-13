@@ -5,7 +5,7 @@ const UserEmailOTP = db.userEmailOTP;
 const EmailCredential = db.emailCredential
 const Course = db.course;
 const UserWallet = db.userWallet;
-const { userRegistration, userLogin, changePassword, sendOTP, verifyOTP, generatePassword } = require("../../Middlewares/Validate/validateUser");
+const { userRegistration, userLogin, changePassword, sendOTP, verifyOTP, generatePassword, bulkUserAddToCourse } = require("../../Middlewares/Validate/validateUser");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { Op } = require('sequelize');
@@ -947,6 +947,55 @@ exports.addUserToCourse = async (req, res) => {
         res.status(201).send({
             success: true,
             message: `${findCourse.title} assign to ${user.name} successfully!`
+        });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).send(err);
+    }
+};
+
+exports.bulkUserAddToCourse = async (req, res) => {
+    try {
+         // Validate body
+         const { error } = bulkUserAddToCourse(req.body);
+         if (error) {
+             return res.status(400).send(error.details[0].message);
+         }
+        const { userId, courseId } = req.body;
+        if (userId.length>250) {
+            return res.status(400).send({
+                success: false,
+                message: `Only 250 user allow!`
+            });
+        }
+        const adminId = req.admin.id;
+        const condition = [{ id: courseId }];
+        if (req.admin.adminTag === "ADMIN") {
+            condition.push({ adminId: adminId });
+        }
+        const findCourse = await Course.findOne({
+            where: {
+                [Op.and]: condition
+            }
+        });
+        if (!findCourse) {
+            return res.status(400).send({
+                success: false,
+                message: `This course is not present in your courses!`
+            });
+        }
+        let num =0;
+        for(let i =0; i<userId.length; i++){
+            const isUserCourse = await User_Course.findOne({ where: { courseId: courseId, userId: userId[i], verify: true, status: "paid" } });
+            if (!isUserCourse) {
+                num = num +1;
+                await User_Course.create({ courseId: courseId, userId: userId[i], verify: true, status: "paid" });
+            }
+        }
+        res.status(201).send({
+            success: true,
+            message: `${num} user assign to ${findCourse.title} successfully!`
         });
     }
     catch (err) {

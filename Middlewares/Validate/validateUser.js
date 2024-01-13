@@ -85,3 +85,11 @@ exports.generatePassword = (data) => {
     }) // .options({ allowUnknown: true });
     return schema.validate(data);
 }
+
+exports.bulkUserAddToCourse = (data) => {
+    const schema = joi.object().keys({
+        courseId: joi.string().required(),
+        userId: joi.array().required()
+    });
+    return schema.validate(data);
+}
