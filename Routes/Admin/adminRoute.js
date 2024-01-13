@@ -152,6 +152,6 @@ router.put("/acceptAffiliateUserIdRequest/:id", verifyAdminToken, isAdmin, accep
 router.put("/blockAffiliateUserIdRequest/:id", verifyAdminToken, isAdmin, blockAffiliateUserIdRequest);
 router.put("/unblockAffiliateUserIdRequest/:id", verifyAdminToken, isAdmin, unblockAffiliateUserIdRequest);
 // Purchase
-router.post("/paymentWebhook", verifyAdminToken, isAdmin, webHookApi);
+router.post("/paymentWebhook", webHookApi);
 
 module.exports = router;
