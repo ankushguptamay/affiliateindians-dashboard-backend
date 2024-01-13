@@ -602,7 +602,11 @@ exports.verifyPaymentForNewUser = async (req, res) => {
 exports.webHookApi = async (req, res) => {
     try {
         console.log(req);
+        console.log("After first successfully!")
         console.log(req.body);
+        console.log("After second successfully!")
+        console.log(req.body.payload.payment.entity);
+        console.log("End successfully!")
 
         res.status(201).send({
             success: true,
