@@ -601,17 +601,215 @@ exports.verifyPaymentForNewUser = async (req, res) => {
 
 exports.webHookApi = async (req, res) => {
     try {
-        console.log(req);
-        console.log("After first successfully!")
         console.log(req.body);
-        console.log("After second successfully!")
         console.log(req.body.payload.payment.entity);
-        console.log("End successfully!")
-
-        res.status(201).send({
-            success: true,
-            message: `webHookData get successfully!`
-        });
+        // Price course relation
+        const courseAmount = {
+            199: "cf95f6de-f1d4-4414-9b98-4eedf7591baf",
+            499: "cf95f6de-f1d4-4414-9b98-4eedf7591baf",
+            2499: "cf95f6de-f1d4-4414-9b98-4eedf7591baf",
+            1999: "2cc013d3-7637-46c1-a93b-ef202bc8122f",
+            2500: "b1c30ef9-411d-44f8-8943-a9579bc3cdaa",
+            500: "76fa9493-29c9-4575-bf37-de76280cf016",
+            2000: "76fa9493-29c9-4575-bf37-de76280cf016",
+            1000: "76fa9493-29c9-4575-bf37-de76280cf016",
+            10000: ["26527676-311b-4622-b2ac-ac57de3a872c", "142b72f6-fa2b-44eb-8d11-46dea4e9c5dc"],
+            5000: ["26527676-311b-4622-b2ac-ac57de3a872c", "142b72f6-fa2b-44eb-8d11-46dea4e9c5dc"],
+            30000: "84b010a6-083f-4fd6-8ffa-13e0ebff286e",
+            50000: "23279fd4-cf3b-47da-969d-43795fc09ab3",
+            60000: "23279fd4-cf3b-47da-969d-43795fc09ab3",
+            99999: "23279fd4-cf3b-47da-969d-43795fc09ab3"
+        }
+        // Price
+        const amount = req.body.payload.payment.entity.amount;
+        // On Success payment
+        if (req.body.event === "payment.captured") {
+            const email = req.body.payload.payment.entity.email;
+            const contact = req.body.payload.payment.entity.contact;
+            // Find user
+            let isUser = await User.findOne({
+                where: {
+                    email: email
+                }
+            });
+            let course;
+            let htmlContent;
+            // Check price course relation and get course and Set HTML content for email 
+            if (amount / 100 === 5000 || amount / 100 === 10000) {
+                course = await Course.findAll({ where: { courseId: courseAmount[amount / 100] } });
+                htmlContent = `<p>Dear user!</P> Thanks you to purchased ${course[0].title} and ${course[1].title} !.
+                https://courses.affiliateindians.com/sign_in`;
+            }
+            else {
+                course = await Course.findOne({ where: { courseId: courseAmount[amount / 100] } });
+                htmlContent = `<p>Dear user!</P> Thanks you to purchased ${course.title} !.
+                https://courses.affiliateindians.com/sign_in`;
+            }
+            let headers = { "Thank you mail": isUser.userCode };
+            // If user is new
+            if (!isUser) {
+                // Generating Code
+                // 1.Today Date
+                const date = JSON.stringify(new Date((new Date).getTime() - (24 * 60 * 60 * 1000)));
+                const today = `${date.slice(1, 12)}18:30:00.000Z`;
+                // 2.Today Day
+                const Day = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+                const dayNumber = (new Date).getDay();
+                // Get All Today Code
+                let code;
+                const isUserCode = await User.findAll({
+                    where: {
+                        createdAt: { [Op.gt]: today }
+                    },
+                    order: [
+                        ['createdAt', 'ASC']
+                    ],
+                    paranoid: false
+                });
+                const day = new Date().toISOString().slice(8, 10);
+                const year = new Date().toISOString().slice(2, 4);
+                const month = new Date().toISOString().slice(5, 7);
+                if (isUserCode.length == 0) {
+                    code = "AFUS" + day + month + year + Day[dayNumber] + 1;
+                } else {
+                    let lastCode = isUserCode[isUserCode.length - 1];
+                    let lastDigits = lastCode.userCode.substring(13);
+                    let incrementedDigits = parseInt(lastDigits, 10) + 1;
+                    code = "AFUS" + day + month + year + Day[dayNumber] + incrementedDigits;
+                }
+                // Generate password
+                const password = (email).slice(0, 8);
+                const salt = await bcrypt.genSalt(10);
+                const bcPassword = await bcrypt.hash(password, salt);
+                // Store in database
+                isUser = await User.create({
+                    email: email,
+                    mobileNumber: contact,
+                    userCode: code,
+                    password: bcPassword,
+                    termAndConditionAccepted: termAndConditionAccepted
+                });
+                // Creating Wallet
+                await UserWallet.create({
+                    userId: isUser.id
+                });
+                headers = { "Login Credential": code };
+                // Set HTML content for email 
+                if (amount / 100 === 5000 || amount / 100 === 10000) {
+                    htmlContent = `
+                    <p>Dear user!</p> you purchased ${course[0].title} and ${course[1].title} successfully. Your login credential...
+                    <h3>Email: ${email}</h3><br>
+                    <h3>Password: ${password}</h3><br>
+                    https://courses.affiliateindians.com/sign_in`;
+                }
+                else {
+                    htmlContent = `
+                    <p>Dear user!</p> you purchased ${course.title} successfully. Your login credential...
+                    <h3>Email: ${email}</h3><br>
+                    <h3>Password: ${password}</h3><br>
+                    https://courses.affiliateindians.com/sign_in`;
+                }
+            }
+            // Association with course
+            if (amount / 100 === 5000 || amount / 100 === 10000) {
+                for (let i = 0; i < course.length; i++) {
+                    await User_Course.create({
+                        courseId: course[i].id,
+                        userId: isUser.id,
+                        amount: amount / 100,
+                        currency: req.body.payload.payment.entity.currency,
+                        razorpayOrderId: req.body.payload.payment.entity.order_id,
+                        status: "paid",
+                        razorpayTime: req.body.payload.payment.entity.created_at,
+                        razorpayPaymentId: req.body.payload.payment.entity.id,
+                        verify: true,
+                    })
+                }
+            }
+            else {
+                await User_Course.create({
+                    courseId: course.id,
+                    userId: isUser.id,
+                    amount: amount / 100,
+                    currency: req.body.payload.payment.entity.currency,
+                    razorpayOrderId: req.body.payload.payment.entity.order_id,
+                    status: "paid",
+                    razorpayTime: req.body.payload.payment.entity.created_at,
+                    razorpayPaymentId: req.body.payload.payment.entity.id,
+                    verify: true,
+                })
+            }
+            // Update sendEmail 0 every day
+            const date1 = JSON.stringify(new Date());
+            const todayDate = `${date1.slice(1, 11)}`;
+            const changeUpdateDate = await EmailCredential.findAll({
+                where: {
+                    updatedAt: { [Op.lt]: todayDate }
+                },
+                order: [
+                    ['createdAt', 'ASC']
+                ]
+            });
+            for (let i = 0; i < changeUpdateDate.length; i++) {
+                // console.log("hii");
+                await EmailCredential.update({
+                    emailSend: 0
+                }, {
+                    where: {
+                        id: changeUpdateDate[i].id
+                    }
+                });
+            }
+            // finalise email credentiel
+            const emailCredential = await EmailCredential.findAll({
+                order: [
+                    ['createdAt', 'ASC']
+                ]
+            });
+            let finaliseEmailCredential;
+            for (let i = 0; i < emailCredential.length; i++) {
+                if (parseInt(emailCredential[i].emailSend) < 300) {
+                    finaliseEmailCredential = emailCredential[i];
+                    break;
+                }
+            }
+            if (finaliseEmailCredential) {
+                // Send OTP to Email By Brevo
+                if (finaliseEmailCredential.plateForm === "BREVO") {
+                    let defaultClient = brevo.ApiClient.instance;
+                    let apiKey = defaultClient.authentications['api-key'];
+                    apiKey.apiKey = finaliseEmailCredential.EMAIL_API_KEY;
+                    let apiInstance = new brevo.TransactionalEmailsApi();
+                    let sendSmtpEmail = new brevo.SendSmtpEmail();
+                    sendSmtpEmail.subject = "AFFILIATE INDIAN";
+                    sendSmtpEmail.sender = { "name": "Affiliate Indian", "email": finaliseEmailCredential.email };
+                    sendSmtpEmail.replyTo = { "email": finaliseEmailCredential.email, "name": "Affiliate Indian" };
+                    sendSmtpEmail.headers = headers;
+                    sendSmtpEmail.htmlContent = htmlContent;
+                    sendSmtpEmail.to = [
+                        { "email": email, "name": "User" }
+                    ];
+                    apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
+                        // console.log('API called successfully. Returned data: ' + JSON.stringify(data));
+                    }, function (error) {
+                        // console.error(error);
+                    });
+                }
+                const increaseNumber = parseInt(finaliseEmailCredential.emailSend) + 1;
+                await EmailCredential.update({
+                    emailSend: increaseNumber
+                }, { where: { id: finaliseEmailCredential.id } });
+            }
+            res.status(201).send({
+                success: true,
+                message: `webHookData get successfully!`
+            });
+        } else {
+            res.status(400).send({
+                success: false,
+                message: `Unexpected error!`
+            });
+        }
     }
     catch (err) {
         res.status(500).send({
@@ -620,3 +818,20 @@ exports.webHookApi = async (req, res) => {
         });
     }
 };
+
+// const courseAmount = {
+//     199: "3-Step High Ticket Affiliate System",
+//     499: "3-Step High Ticket Affiliate System",
+//     2499: "3-Step High Ticket Affiliate System",
+//     1999: "Business builder challenge",
+//     2500: "Your bonuses",
+//     500: "Clickbank mastery",
+//     2000: "Clickbank mastery",
+//     1000: "Clickbank mastery",
+//     10000: ["beginner membership", "pro membership"],
+//     5000: ["beginner membership", "pro membership"],
+//     30000: "Expert MEMBERSHIP",
+//     50000: "SUPER Affiliate Membership",
+//     60000: "SUPER Affiliate Membership",
+//     99999: "SUPER Affiliate Membership"
+// }
