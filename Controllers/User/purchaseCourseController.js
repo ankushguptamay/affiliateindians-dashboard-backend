@@ -601,7 +601,6 @@ exports.verifyPaymentForNewUser = async (req, res) => {
 
 exports.webHookApi = async (req, res) => {
     try {
-        console.log(req.body);
         console.log(req.body.payload.payment.entity);
         // Price course relation
         const courseAmount = {
@@ -613,6 +612,8 @@ exports.webHookApi = async (req, res) => {
             500: "76fa9493-29c9-4575-bf37-de76280cf016",
             2000: "76fa9493-29c9-4575-bf37-de76280cf016",
             1000: "76fa9493-29c9-4575-bf37-de76280cf016",
+            999: ["cf95f6de-f1d4-4414-9b98-4eedf7591baf", "76fa9493-29c9-4575-bf37-de76280cf016"],
+            699: ["cf95f6de-f1d4-4414-9b98-4eedf7591baf", "76fa9493-29c9-4575-bf37-de76280cf016"],
             10000: ["26527676-311b-4622-b2ac-ac57de3a872c", "142b72f6-fa2b-44eb-8d11-46dea4e9c5dc"],
             5000: ["26527676-311b-4622-b2ac-ac57de3a872c", "142b72f6-fa2b-44eb-8d11-46dea4e9c5dc"],
             30000: "84b010a6-083f-4fd6-8ffa-13e0ebff286e",
@@ -635,7 +636,7 @@ exports.webHookApi = async (req, res) => {
             let course;
             let htmlContent;
             // Check price course relation and get course and Set HTML content for email 
-            if (amount / 100 === 5000 || amount / 100 === 10000) {
+            if (amount / 100 === 5000 || amount / 100 === 10000 || amount / 100 === 999 || amount / 100 === 699 ) {
                 course = await Course.findAll({ where: { courseId: courseAmount[amount / 100] } });
                 htmlContent = `<p>Dear user!</P> Thanks you to purchased ${course[0].title} and ${course[1].title} !.
                 https://courses.affiliateindians.com/sign_in`;
@@ -695,7 +696,7 @@ exports.webHookApi = async (req, res) => {
                 });
                 headers = { "Login Credential": code };
                 // Set HTML content for email 
-                if (amount / 100 === 5000 || amount / 100 === 10000) {
+                if (amount / 100 === 5000 || amount / 100 === 10000 || amount / 100 === 999 || amount / 100 === 699) {
                     htmlContent = `
                     <p>Dear user!</p> you purchased ${course[0].title} and ${course[1].title} successfully. Your login credential...
                     <h3>Email: ${email}</h3><br>
@@ -711,7 +712,8 @@ exports.webHookApi = async (req, res) => {
                 }
             }
             // Association with course
-            if (amount / 100 === 5000 || amount / 100 === 10000) {
+            if (amount / 100 === 5000 || amount / 100 === 10000 || amount / 100 === 999 || amount / 100 === 699) {
+                console.log("two Course Add.")
                 for (let i = 0; i < course.length; i++) {
                     await User_Course.create({
                         courseId: course[i].id,
@@ -727,6 +729,7 @@ exports.webHookApi = async (req, res) => {
                 }
             }
             else {
+                console.log("one Course Add.")
                 await User_Course.create({
                     courseId: course.id,
                     userId: isUser.id,
@@ -773,6 +776,7 @@ exports.webHookApi = async (req, res) => {
                     break;
                 }
             }
+            console.log(finaliseEmailCredential);
             if (finaliseEmailCredential) {
                 // Send OTP to Email By Brevo
                 if (finaliseEmailCredential.plateForm === "BREVO") {
@@ -800,6 +804,7 @@ exports.webHookApi = async (req, res) => {
                     emailSend: increaseNumber
                 }, { where: { id: finaliseEmailCredential.id } });
             }
+            console.log("Finish!")
             res.status(201).send({
                 success: true,
                 message: `webHookData get successfully!`
@@ -834,4 +839,46 @@ exports.webHookApi = async (req, res) => {
 //     50000: "SUPER Affiliate Membership",
 //     60000: "SUPER Affiliate Membership",
 //     99999: "SUPER Affiliate Membership"
+// }
+
+// {
+//     "id": "6238e81c-f884-4bea-9497-4ee563ac1edc",
+//     "amount": null,
+//     "currency": null,
+//     "receipt": null,
+//     "razorpayOrderId": null,
+//     "razorpayPaymentId": null,
+//     "razorpayTime": null,
+//     "status": "paid",
+//     "verify": true,
+//     "referalId": null,
+//     "marketingTag": null,
+//     "couponCode": null,
+//     "saleLinkCode": null,
+//     "courseId": "cf95f6de-f1d4-4414-9b98-4eedf7591baf",
+//     "userId": "6df91ef7-8824-46e0-864f-efeb7cc9ffcf",
+//     "createdAt": "2023-12-25T10:42:35.000Z",
+//     "updatedAt": "2023-12-25T10:42:35.000Z",
+//     "deletedAt": null
+// },
+
+// {
+//     "id": "c677ef12-887b-4710-8743-c31054398a4b",
+//     "amount": null,
+//     "currency": null,
+//     "receipt": null,
+//     "razorpayOrderId": null,
+//     "razorpayPaymentId": null,
+//     "razorpayTime": null,
+//     "status": "paid",
+//     "verify": true,
+//     "referalId": null,
+//     "marketingTag": null,
+//     "couponCode": null,
+//     "saleLinkCode": null,
+//     "courseId": "76fa9493-29c9-4575-bf37-de76280cf016",
+//     "userId": "6df91ef7-8824-46e0-864f-efeb7cc9ffcf",
+//     "createdAt": "2023-12-25T10:43:03.000Z",
+//     "updatedAt": "2023-12-25T10:43:03.000Z",
+//     "deletedAt": null
 // }
