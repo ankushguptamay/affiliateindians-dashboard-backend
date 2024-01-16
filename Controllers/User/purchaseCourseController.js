@@ -601,7 +601,6 @@ exports.verifyPaymentForNewUser = async (req, res) => {
 
 exports.webHookApi = async (req, res) => {
     try {
-        console.log(req.body.payload.payment.entity);
         // Price course relation
         const courseAmount = {
             199: "cf95f6de-f1d4-4414-9b98-4eedf7591baf",
@@ -635,18 +634,34 @@ exports.webHookApi = async (req, res) => {
             });
             let course;
             let htmlContent;
+            let headers;
             // Check price course relation and get course and Set HTML content for email 
-            if (amount / 100 === 5000 || amount / 100 === 10000 || amount / 100 === 999 || amount / 100 === 699 ) {
-                course = await Course.findAll({ where: { courseId: courseAmount[amount / 100] } });
-                htmlContent = `<p>Dear user!</P> Thanks you to purchased ${course[0].title} and ${course[1].title} !.
-                https://courses.affiliateindians.com/sign_in`;
+            if (amount / 100 === 5000 || amount / 100 === 10000 || amount / 100 === 999 || amount / 100 === 699) {
+                course = await Course.findAll({ where: { id: courseAmount[amount / 100] } });
             }
             else {
-                course = await Course.findOne({ where: { courseId: courseAmount[amount / 100] } });
-                htmlContent = `<p>Dear user!</P> Thanks you to purchased ${course.title} !.
-                https://courses.affiliateindians.com/sign_in`;
+                course = await Course.findOne({ where: { id: courseAmount[amount / 100] } });
             }
-            let headers = { "Thank you mail": isUser.userCode };
+            htmlContent = `
+                <body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; color: #333;">
+                    <div style="width: 80%; margin: auto; overflow: hidden;">
+                    </div>
+                    <div style="width: 80%; margin: auto;">
+                        <h2 style="text-align: center;">Welcome to the Affiliate Indians System!</h2>
+                        <p>Thank you to purchase course.</p>
+                        <p><strong>Login Url:</strong> https://courses.affiliateindians.com/sign_in</p>
+                        <p><strong>Email:</strong> ${email}</p>
+                        <p>Make sure you save this email in case you ever need it.</p>
+                        <p>See you on the inside!</p>
+                        <p>The Affiliate Indians Team</p>
+                        <p>
+                            <strong>IMPORTANT MESSAGE:</strong> We are dedicated to customer support, and solving your problems. If you experience any technical issues with our system, compensation plan, or have a billing question -- please email us at <a href="mailto:support@affiliateindians.com">support@affiliateindians.com</a>
+                        </p>
+                    </div>
+                </body>`;
+            if (isUser) {
+                headers = { "Thank you mail": isUser.userCode };
+            }
             // If user is new
             if (!isUser) {
                 // Generating Code
@@ -688,7 +703,7 @@ exports.webHookApi = async (req, res) => {
                     mobileNumber: contact,
                     userCode: code,
                     password: bcPassword,
-                    termAndConditionAccepted: termAndConditionAccepted
+                    termAndConditionAccepted: true
                 });
                 // Creating Wallet
                 await UserWallet.create({
@@ -696,24 +711,27 @@ exports.webHookApi = async (req, res) => {
                 });
                 headers = { "Login Credential": code };
                 // Set HTML content for email 
-                if (amount / 100 === 5000 || amount / 100 === 10000 || amount / 100 === 999 || amount / 100 === 699) {
-                    htmlContent = `
-                    <p>Dear user!</p> you purchased ${course[0].title} and ${course[1].title} successfully. Your login credential...
-                    <h3>Email: ${email}</h3><br>
-                    <h3>Password: ${password}</h3><br>
-                    https://courses.affiliateindians.com/sign_in`;
-                }
-                else {
-                    htmlContent = `
-                    <p>Dear user!</p> you purchased ${course.title} successfully. Your login credential...
-                    <h3>Email: ${email}</h3><br>
-                    <h3>Password: ${password}</h3><br>
-                    https://courses.affiliateindians.com/sign_in`;
-                }
+                htmlContent = `
+                    <body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; color: #333;">
+                        <div style="width: 80%; margin: auto; overflow: hidden;">
+                        </div>
+                        <div style="width: 80%; margin: auto;">
+                            <h2 style="text-align: center;">Welcome to the Affiliate Indians System!</h2>
+                            <p>Below are your login details for the Affiliate Indians Portal.</p>
+                            <p><strong>Login Url:</strong> https://courses.affiliateindians.com/sign_in</p>
+                            <p><strong>Email:</strong> ${email}</p>
+                            <p><strong>Password:</strong>  ${password}</p>
+                            <p>Make sure you save this email in case you ever need it.</p>
+                            <p>See you on the inside!</p>
+                            <p>The Affiliate Indians Team</p>
+                            <p>
+                                <strong>IMPORTANT MESSAGE:</strong> We are dedicated to customer support, and solving your problems. If you experience any technical issues with our system, compensation plan, or have a billing question -- please email us at <a href="mailto:support@affiliateindians.com">support@affiliateindians.com</a>
+                            </p>
+                        </div>
+                    </body>`;
             }
             // Association with course
             if (amount / 100 === 5000 || amount / 100 === 10000 || amount / 100 === 999 || amount / 100 === 699) {
-                console.log("two Course Add.")
                 for (let i = 0; i < course.length; i++) {
                     await User_Course.create({
                         courseId: course[i].id,
@@ -729,7 +747,6 @@ exports.webHookApi = async (req, res) => {
                 }
             }
             else {
-                console.log("one Course Add.")
                 await User_Course.create({
                     courseId: course.id,
                     userId: isUser.id,
@@ -754,7 +771,6 @@ exports.webHookApi = async (req, res) => {
                 ]
             });
             for (let i = 0; i < changeUpdateDate.length; i++) {
-                // console.log("hii");
                 await EmailCredential.update({
                     emailSend: 0
                 }, {
@@ -776,7 +792,6 @@ exports.webHookApi = async (req, res) => {
                     break;
                 }
             }
-            console.log(finaliseEmailCredential);
             if (finaliseEmailCredential) {
                 // Send OTP to Email By Brevo
                 if (finaliseEmailCredential.plateForm === "BREVO") {
@@ -794,9 +809,7 @@ exports.webHookApi = async (req, res) => {
                         { "email": email, "name": "User" }
                     ];
                     apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
-                        // console.log('API called successfully. Returned data: ' + JSON.stringify(data));
                     }, function (error) {
-                        // console.error(error);
                     });
                 }
                 const increaseNumber = parseInt(finaliseEmailCredential.emailSend) + 1;
@@ -804,7 +817,6 @@ exports.webHookApi = async (req, res) => {
                     emailSend: increaseNumber
                 }, { where: { id: finaliseEmailCredential.id } });
             }
-            console.log("Finish!")
             res.status(201).send({
                 success: true,
                 message: `webHookData get successfully!`
