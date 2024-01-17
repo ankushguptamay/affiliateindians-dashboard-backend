@@ -733,8 +733,41 @@ exports.webHookApi = async (req, res) => {
             // Association with course
             if (amount / 100 === 5000 || amount / 100 === 10000 || amount / 100 === 999 || amount / 100 === 699) {
                 for (let i = 0; i < course.length; i++) {
+                    const userCourse = await User_Course.findOne({
+                        where: {
+                            courseId: course[i].id,
+                            userId: isUser.id,
+                            status: "paid",
+                            verify: true
+                        }
+                    });
+                    if (!userCourse) {
+                        await User_Course.create({
+                            courseId: course[i].id,
+                            userId: isUser.id,
+                            amount: amount / 100,
+                            currency: req.body.payload.payment.entity.currency,
+                            razorpayOrderId: req.body.payload.payment.entity.order_id,
+                            status: "paid",
+                            razorpayTime: req.body.payload.payment.entity.created_at,
+                            razorpayPaymentId: req.body.payload.payment.entity.id,
+                            verify: true,
+                        });
+                    }
+                }
+            }
+            else {
+                const userCourse = await User_Course.findOne({
+                    where: {
+                        courseId: course.id,
+                        userId: isUser.id,
+                        status: "paid",
+                        verify: true
+                    }
+                });
+                if (!userCourse) {
                     await User_Course.create({
-                        courseId: course[i].id,
+                        courseId: course.id,
                         userId: isUser.id,
                         amount: amount / 100,
                         currency: req.body.payload.payment.entity.currency,
@@ -742,22 +775,9 @@ exports.webHookApi = async (req, res) => {
                         status: "paid",
                         razorpayTime: req.body.payload.payment.entity.created_at,
                         razorpayPaymentId: req.body.payload.payment.entity.id,
-                        verify: true,
-                    })
+                        verify: true
+                    });
                 }
-            }
-            else {
-                await User_Course.create({
-                    courseId: course.id,
-                    userId: isUser.id,
-                    amount: amount / 100,
-                    currency: req.body.payload.payment.entity.currency,
-                    razorpayOrderId: req.body.payload.payment.entity.order_id,
-                    status: "paid",
-                    razorpayTime: req.body.payload.payment.entity.created_at,
-                    razorpayPaymentId: req.body.payload.payment.entity.id,
-                    verify: true,
-                })
             }
             // Update sendEmail 0 every day
             const date1 = JSON.stringify(new Date());
