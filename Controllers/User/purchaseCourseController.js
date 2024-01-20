@@ -647,7 +647,7 @@ exports.webHookApi = async (req, res) => {
                     <div style="width: 80%; margin: auto; overflow: hidden;">
                     </div>
                     <div style="width: 80%; margin: auto;">
-                        <h2 style="text-align: center;">Welcome to the Affiliate Indians Support!</h2>
+                        <h2 style="text-align: center;">Welcome to the Affiliate Indians System!</h2>
                         <p>Thank you to purchase course.</p>
                         <p><strong>Login Url:</strong> https://courses.affiliateindians.com/sign_in</p>
                         <p><strong>Email:</strong> ${email}</p>
@@ -716,7 +716,7 @@ exports.webHookApi = async (req, res) => {
                         <div style="width: 80%; margin: auto; overflow: hidden;">
                         </div>
                         <div style="width: 80%; margin: auto;">
-                            <h2 style="text-align: center;">Welcome to the Affiliate Indians Support!</h2>
+                            <h2 style="text-align: center;">Welcome to the Affiliate Indians System!</h2>
                             <p>Below are your login details for the Affiliate Indians Portal.</p>
                             <p><strong>Login Url:</strong> https://courses.affiliateindians.com/sign_in</p>
                             <p><strong>Email:</strong> ${email}</p>
@@ -822,7 +822,7 @@ exports.webHookApi = async (req, res) => {
                     let sendSmtpEmail = new brevo.SendSmtpEmail();
                     sendSmtpEmail.subject = "AFFILIATE INDIAN";
                     sendSmtpEmail.sender = { "name": "Affiliate Indian", "email": finaliseEmailCredential.email };
-                    sendSmtpEmail.replyTo = { "email": finaliseEmailCredential.email, "name": "Affiliate Indian" };
+                    sendSmtpEmail.replyTo = { "email": finaliseEmailCredential.email, "name": "Affiliate Indian Support" };
                     sendSmtpEmail.headers = headers;
                     sendSmtpEmail.htmlContent = htmlContent;
                     sendSmtpEmail.to = [
