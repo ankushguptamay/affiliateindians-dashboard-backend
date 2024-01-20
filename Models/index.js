@@ -247,39 +247,24 @@ db.course.hasMany(db.lessonText, { foreignKey: "courseId", as: "lessonTexts" });
 db.section.hasMany(db.lessonText, { foreignKey: "sectionId", as: "lessonTexts" });
 db.lesson.hasMany(db.lessonText, { foreignKey: "lessonId", as: "lessonTexts" });
 
-db.emailCredential.destroy({ where: { email: "affiliateindians@gmail.com" } });
+// db.emailCredential.destroy({ where: { email: "affiliateindians@gmail.com" } });
 
-db.emailCredential.findOne({
-    where: {
-        email: "support@affiliateindians.com"
-    }
-}).then((res) => {
-    console.log(res);
-    if (!res) {
-        db.emailCredential.create({
-            email: "support@affiliateindians.com",
-            plateForm: "BREVO",
-            EMAIL_API_KEY: "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"
-        });
-    }
-}).catch((err) => { console.log(err) });
+// db.emailCredential.findOne({
+//     where: {
+//         email: ""
+//     }
+// }).then((res) => {
+//     console.log(res);
+//     if (!res) {
+//         db.emailCredential.create({
+//             email: "",
+//             plateForm: "BREVO",
+//             EMAIL_API_KEY: ""
+//         });
+//     }
+// }).catch((err) => { console.log(err) });
 
 // queryInterface.addColumn("videoComments", "cloudinaryFileId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 // queryInterface.addColumn("templates", "cloudinaryImageId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-
-// queryInterface.dropTable("affiliateLinks")
-//     .then((res) => {
-//         console.log(res);
-//         queryInterface.dropTable("affiliateUserIds")
-//             .then((res) => {
-//                 console.log(res);
-//             })
-//             .catch((err) => {
-//                 console.log(err);
-//             });
-//     })
-//     .catch((err) => {
-//         console.log(err);
-//     });
 
 module.exports = db;
