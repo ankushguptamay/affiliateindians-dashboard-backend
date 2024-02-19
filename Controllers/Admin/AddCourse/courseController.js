@@ -189,14 +189,14 @@ exports.getCourseForAdmin = async (req, res) => {
 exports.getAllCourse = async (req, res) => {
     try {
         const { page, limit, search } = req.query;
-        // Pagination
-        const recordLimit = parseInt(limit) || 10;
-        let offSet = 0;
-        let currentPage = 1;
-        if (page) {
-            offSet = (parseInt(page) - 1) * recordLimit;
-            currentPage = parseInt(page);
-        }
+        // // Pagination
+        // const recordLimit = parseInt(limit) || 10;
+        // let offSet = 0;
+        // let currentPage = 1;
+        // if (page) {
+        //     offSet = (parseInt(page) - 1) * recordLimit;
+        //     currentPage = parseInt(page);
+        // }
         // Search 
         const condition = [];
         if (!req.admin) {
@@ -212,15 +212,15 @@ exports.getAllCourse = async (req, res) => {
             })
         }
         // Count All Course
-        const totalCourse = await Course.count({
-            where: {
-                [Op.and]: condition
-            }
-        });
+        // const totalCourse = await Course.count({
+        //     where: {
+        //         [Op.and]: condition
+        //     }
+        // });
         // All Course
         const course = await Course.findAll({
-            limit: recordLimit,
-            offset: offSet,
+            // limit: recordLimit,
+            // offset: offSet,
             where: {
                 [Op.and]: condition
             },
@@ -243,8 +243,8 @@ exports.getAllCourse = async (req, res) => {
         res.status(200).send({
             success: true,
             message: "Course fetched successfully!",
-            totalPage: Math.ceil(totalCourse / recordLimit),
-            currentPage: currentPage,
+            // totalPage: Math.ceil(totalCourse / recordLimit),
+            // currentPage: currentPage,
             data: course
         });
     } catch (err) {
