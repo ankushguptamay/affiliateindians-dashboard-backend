@@ -16,7 +16,7 @@ const { getCoupon, addCouponToCourse, createCoupon, hardDeleteCoupon, UpdateCoup
 const { createSection, getAllSectionByCourseIdForAdmin, publicSection, unPublicSection, updateSection, hardeleteSection } = require('../../Controllers/Admin/AddCourse/sectionControllers');
 const { createLesson, getLessonByLessonIdForAdmin, publicLesson, unPublicLesson, updateLesson, hardDeleteLesson } = require('../../Controllers/Admin/AddCourse/lessonController');
 const { createCourse, getCourseForAdmin, getAllCourse, addOrUpdateAuthorImage, addOrUpdateCourseImage, updateCourse, getCourseById, hardDeleteCourse, allowAffiliateCourse,
-    disAllowAffiliateCourse, deleteAuthorImage, deleteCourseImage, publicCourse, unPublicCourse } = require('../../Controllers/Admin/AddCourse/courseController');
+    disAllowAffiliateCourse, deleteAuthorImage, deleteCourseImage, publicCourse, unPublicCourse, updatePosition } = require('../../Controllers/Admin/AddCourse/courseController');
 const { uploadLessonVideo, hardDeleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail, uploadVideoEmbeddedCode } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
 const { createLessonQuiz, getAllQuizByLessonId, hardDeleteLessonQuiz, updateLessonQuiz } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
 const { addBanner, updateBanner, addPDF, hardDeletePDF, addResource, hardDeleteResource } = require('../../Controllers/Admin/AddCourse/lessonFileController');
@@ -92,6 +92,7 @@ router.put("/updateCourse/:id", verifyAdminToken, isSuperAdmin, updateCourse);
 router.delete("/deleteAuthorImage/:id", verifyAdminToken, isSuperAdmin, deleteAuthorImage);
 router.delete("/deleteCourseImage/:id", verifyAdminToken, isSuperAdmin, deleteCourseImage);
 router.delete("/hardDeleteCourse/:id", verifyAdminToken, isSuperAdmin, hardDeleteCourse);
+router.put("/updatePosition", verifyAdminToken, isSuperAdmin, updatePosition);
 // Section
 router.post("/createSection", verifyAdminToken, isSuperAdmin, createSection);
 router.get("/sections/:courseId", verifyAdminToken, isSuperAdmin, getAllSectionByCourseIdForAdmin);

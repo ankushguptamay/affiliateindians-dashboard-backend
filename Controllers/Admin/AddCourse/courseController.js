@@ -970,3 +970,58 @@ exports.getCourseByIdForUser = async (req, res) => {
         });
     }
 };
+
+exports.updatePosition = async (req, res) => {
+    try {
+        const compareArrays = (a, b) => a.length === b.length && a.every((element, index) => element === b[index]);
+        const updatedPosition = req.body.updatedPosition;
+        // find course
+        const courses = await Course.findAll({
+            where: {
+                adminId: req.admin.id
+            },
+            order: [
+                ['id', 'ASC']
+            ]
+        });
+        if (courses.length !== updatedPosition.length) {
+            return res.status(400).json({
+                success: false,
+                message: "Please send all courses position!"
+            });
+        }
+        const dataCourseId = [];
+        const reqCourseId = [];
+        for (let i = 0; i < courses.length; i++) {
+            dataCourseId.push(courses[i].id);
+        }
+        for (let i = 0; i < updatedPosition.length; i++) {
+            reqCourseId.push(updatedPosition[i].courseId);
+        }
+        const check = compareArrays(dataCourseId.sort(), reqCourseId.sort());
+        if (check === false) {
+            return res.status(400).json({
+                success: false,
+                message: "All course should be present!"
+            });
+        }
+        // Update course position
+        for (let i = 0; i < updatedPosition.length; i++) {
+            await Course.update({
+                position: updatedPosition[i].position
+            }, {
+                where: { id: updatedPosition[i].courseId }
+            });
+        }
+        res.status(200).send({
+            success: true,
+            message: `Course position updated successfully!`
+        });
+    } catch (err) {
+        // console.log(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};

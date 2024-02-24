@@ -75,6 +75,9 @@ module.exports = (sequelize, DataTypes) => {
         },
         allowAffiliate: {
             type: DataTypes.BOOLEAN
+        },
+        position: {
+            type: DataTypes.INTEGER
         }
     }, {
         paranoid: true

@@ -264,7 +264,18 @@ db.lesson.hasMany(db.lessonText, { foreignKey: "lessonId", as: "lessonTexts" });
 //     }
 // }).catch((err) => { console.log(err) });
 
-// queryInterface.addColumn("videoComments", "cloudinaryFileId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-// queryInterface.addColumn("templates", "cloudinaryImageId", { type: DataTypes.STRING }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// db.course.findAll({
+//     order: [
+//         ['createdAt', 'DESC']
+//     ]
+// }).then((res) => {
+//     console.log(res);
+//     for (let i = 0; i < res.length; i++) {
+//         db.course.update({ position: i + 1 }, { where: { id: res[i].id } }).then(() => { console.log(`${i + 1} updated!`) }).catch((err) => { console.log(err) });
+//     }
+// }).catch((err) => { console.log(err) });
+
+queryInterface.addColumn("courses", "position", { type: DataTypes.INTEGER }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+
 
 module.exports = db;

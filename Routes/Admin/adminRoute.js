@@ -15,7 +15,7 @@ const { addTemplateFrom, getAllFormByAdminId } = require('../../Controllers/Admi
 const { createSection, getAllSectionByCourseIdForAdmin, publicSection, unPublicSection, updateSection, hardeleteSection } = require('../../Controllers/Admin/AddCourse/sectionControllers');
 const { createLesson, getLessonByLessonIdForAdmin, publicLesson, unPublicLesson, updateLesson, hardDeleteLesson } = require('../../Controllers/Admin/AddCourse/lessonController');
 const { createCourse, getCourseForAdmin, addOrUpdateAuthorImage, addOrUpdateCourseImage, updateCourse, hardDeleteCourse, getCourseById, allowAffiliateCourse,
-    disAllowAffiliateCourse, deleteAuthorImage, deleteCourseImage, publicCourse, unPublicCourse } = require('../../Controllers/Admin/AddCourse/courseController');
+    disAllowAffiliateCourse, deleteAuthorImage, deleteCourseImage, publicCourse, unPublicCourse, updatePosition } = require('../../Controllers/Admin/AddCourse/courseController');
 const { uploadLessonVideo, hardDeleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail, uploadVideoEmbeddedCode } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
 const { createLessonQuiz, getAllQuizByLessonId, hardDeleteLessonQuiz, updateLessonQuiz } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
 const { addBanner, updateBanner, addPDF, hardDeletePDF, addResource, hardDeleteResource } = require('../../Controllers/Admin/AddCourse/lessonFileController');
@@ -90,6 +90,7 @@ router.put("/updateCourse/:id", verifyAdminToken, isAdmin, updateCourse);
 router.delete("/deleteAuthorImage/:id", verifyAdminToken, isAdmin, deleteAuthorImage);
 router.delete("/deleteCourseImage/:id", verifyAdminToken, isAdmin, deleteCourseImage);
 router.delete("/hardDeleteCourse/:id", verifyAdminToken, isAdmin, hardDeleteCourse);
+router.put("/updatePosition", verifyAdminToken, isAdmin, updatePosition);
 // Section
 router.post("/createSection", verifyAdminToken, isAdmin, createSection);
 router.get("/sections/:courseId", verifyAdminToken, isAdmin, getAllSectionByCourseIdForAdmin);
