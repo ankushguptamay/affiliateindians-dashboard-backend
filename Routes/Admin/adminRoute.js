@@ -12,10 +12,10 @@ const { getCoupon, addCouponToCourse, createCoupon, UpdateCoupon, getCouponByCou
 const { getRatio, addRatio, updateRatio, hardDeleteRatio } = require('../../Controllers/Admin/Master/affiliateMarketingRatioController');
 const { addTemplateFrom, getAllFormByAdminId } = require('../../Controllers/Admin/Master/templateFormController');
 // Course
-const { createSection, getAllSectionByCourseIdForAdmin, publicSection, unPublicSection, updateSection, hardeleteSection } = require('../../Controllers/Admin/AddCourse/sectionControllers');
-const { createLesson, getLessonByLessonIdForAdmin, publicLesson, unPublicLesson, updateLesson, hardDeleteLesson } = require('../../Controllers/Admin/AddCourse/lessonController');
+const { createSection, getAllSectionByCourseIdForAdmin, publicSection, unPublicSection, updateSection, hardeleteSection, updateSectionPosition } = require('../../Controllers/Admin/AddCourse/sectionControllers');
+const { createLesson, getLessonByLessonIdForAdmin, publicLesson, unPublicLesson, updateLesson, hardDeleteLesson, updateLessonPosition } = require('../../Controllers/Admin/AddCourse/lessonController');
 const { createCourse, getCourseForAdmin, addOrUpdateAuthorImage, addOrUpdateCourseImage, updateCourse, hardDeleteCourse, getCourseById, allowAffiliateCourse,
-    disAllowAffiliateCourse, deleteAuthorImage, deleteCourseImage, publicCourse, unPublicCourse, updatePosition } = require('../../Controllers/Admin/AddCourse/courseController');
+    disAllowAffiliateCourse, deleteAuthorImage, deleteCourseImage, publicCourse, unPublicCourse, updateCoursePosition } = require('../../Controllers/Admin/AddCourse/courseController');
 const { uploadLessonVideo, hardDeleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail, uploadVideoEmbeddedCode } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
 const { createLessonQuiz, getAllQuizByLessonId, hardDeleteLessonQuiz, updateLessonQuiz } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
 const { addBanner, updateBanner, addPDF, hardDeletePDF, addResource, hardDeleteResource } = require('../../Controllers/Admin/AddCourse/lessonFileController');
@@ -90,7 +90,7 @@ router.put("/updateCourse/:id", verifyAdminToken, isAdmin, updateCourse);
 router.delete("/deleteAuthorImage/:id", verifyAdminToken, isAdmin, deleteAuthorImage);
 router.delete("/deleteCourseImage/:id", verifyAdminToken, isAdmin, deleteCourseImage);
 router.delete("/hardDeleteCourse/:id", verifyAdminToken, isAdmin, hardDeleteCourse);
-router.put("/updatePosition", verifyAdminToken, isAdmin, updatePosition);
+router.put("/coursePosition", verifyAdminToken, isAdmin, updateCoursePosition);
 // Section
 router.post("/createSection", verifyAdminToken, isAdmin, createSection);
 router.get("/sections/:courseId", verifyAdminToken, isAdmin, getAllSectionByCourseIdForAdmin);
@@ -98,6 +98,7 @@ router.put("/publicSection/:id", verifyAdminToken, isAdmin, publicSection);
 router.put("/updateSection/:id", verifyAdminToken, isAdmin, updateSection);
 router.put("/unPublicSection/:id", verifyAdminToken, isAdmin, unPublicSection);
 router.delete("/hardDeleteSection/:id", verifyAdminToken, isAdmin, hardeleteSection);
+router.put("/sectionPosition", verifyAdminToken, isAdmin, updateSectionPosition);
 // Lesson
 router.post("/createLesson", verifyAdminToken, isAdmin, createLesson);
 router.get("/lesson/:id", verifyAdminToken, isAdmin, getLessonByLessonIdForAdmin);
@@ -105,6 +106,7 @@ router.put("/publicLesson/:id", verifyAdminToken, isAdmin, publicLesson);
 router.put("/updateLesson/:id", verifyAdminToken, isAdmin, updateLesson);
 router.put("/unPublicLesson/:id", verifyAdminToken, isAdmin, unPublicLesson);
 router.delete("/hardDeleteLesson/:id", verifyAdminToken, isAdmin, hardDeleteLesson);
+router.put("/lessonPosition", verifyAdminToken, isAdmin, updateLessonPosition);
 // Video
 router.post("/uploadVideo/:lessonId", verifyAdminToken, isAdmin, upload.single("lessonVideo"), uploadLessonVideo);
 router.put("/addOrUpdateThumbNail/:id", verifyAdminToken, isAdmin, uploadImage.single("thumbnail"), addOrUpdateThumbNail);

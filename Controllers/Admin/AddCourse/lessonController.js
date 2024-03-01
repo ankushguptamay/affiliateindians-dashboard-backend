@@ -10,6 +10,7 @@ const VideoComment = db.videoComment;
 const User_Course = db.user_course;
 const Section = db.section;
 const LessonText = db.lessonText;
+const { updateLessonPosition } = require("../../../Middlewares/Validate/validateCourse");
 const { deleteSingleFile, deleteMultiFile } = require("../../../Util/deleteFile");
 const axios = require('axios');
 const { Op } = require('sequelize');
@@ -500,6 +501,67 @@ exports.hardDeleteLesson = async (req, res) => {
         });
     } catch (err) {
         console.log(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
+
+exports.updateLessonPosition = async (req, res) => {
+    try {
+        // Validate Body
+        const { error } = updateLessonPosition(req.body);
+        if (error) {
+            return res.status(400).send(error.details[0].message);
+        }
+        const compareArrays = (a, b) => a.length === b.length && a.every((element, index) => element === b[index]);
+        const { updatedPosition, sectionId } = req.body;
+        // find course
+        const lesson = await Lesson.findAll({
+            where: {
+                adminId: req.admin.id,
+                sectionId: sectionId
+            },
+            order: [
+                ['id', 'ASC']
+            ]
+        });
+        if (lesson.length !== updatedPosition.length) {
+            return res.status(400).json({
+                success: false,
+                message: "Please send all lessons position!"
+            });
+        }
+        const dataLessonId = [];
+        const reqLessonId = [];
+        for (let i = 0; i < lesson.length; i++) {
+            dataLessonId.push(lesson[i].id);
+        }
+        for (let i = 0; i < updatedPosition.length; i++) {
+            reqLessonId.push(updatedPosition[i].lessonId);
+        }
+        const check = compareArrays(dataLessonId.sort(), reqLessonId.sort());
+        if (check === false) {
+            return res.status(400).json({
+                success: false,
+                message: "All lesson should be present!"
+            });
+        }
+        // Update lesson position
+        for (let i = 0; i < updatedPosition.length; i++) {
+            await Lesson.update({
+                position: updatedPosition[i].position
+            }, {
+                where: { id: updatedPosition[i].lessonId }
+            });
+        }
+        res.status(200).send({
+            success: true,
+            message: `Lesson position updated successfully!`
+        });
+    } catch (err) {
+        // console.log(err);
         res.status(500).send({
             success: false,
             err: err.message

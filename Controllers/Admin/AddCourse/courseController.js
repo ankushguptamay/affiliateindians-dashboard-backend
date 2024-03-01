@@ -971,7 +971,7 @@ exports.getCourseByIdForUser = async (req, res) => {
     }
 };
 
-exports.updatePosition = async (req, res) => {
+exports.updateCoursePosition = async (req, res) => {
     try {
         const compareArrays = (a, b) => a.length === b.length && a.every((element, index) => element === b[index]);
         const updatedPosition = req.body.updatedPosition;

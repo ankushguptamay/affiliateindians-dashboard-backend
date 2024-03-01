@@ -13,10 +13,10 @@ const { getTag, hardDeleteTag, addTag } = require('../../Controllers/Admin/Maste
 const { getRatio, addRatio, hardDeleteRatio, updateRatio } = require('../../Controllers/Admin/Master/affiliateMarketingRatioController');
 const { getCoupon, addCouponToCourse, createCoupon, hardDeleteCoupon, UpdateCoupon, getCouponByCourseId } = require('../../Controllers/Admin/Master/couponController');
 // Course
-const { createSection, getAllSectionByCourseIdForAdmin, publicSection, unPublicSection, updateSection, hardeleteSection } = require('../../Controllers/Admin/AddCourse/sectionControllers');
-const { createLesson, getLessonByLessonIdForAdmin, publicLesson, unPublicLesson, updateLesson, hardDeleteLesson } = require('../../Controllers/Admin/AddCourse/lessonController');
+const { createSection, getAllSectionByCourseIdForAdmin, publicSection, unPublicSection, updateSection, hardeleteSection, updateSectionPosition } = require('../../Controllers/Admin/AddCourse/sectionControllers');
+const { createLesson, getLessonByLessonIdForAdmin, publicLesson, unPublicLesson, updateLesson, hardDeleteLesson, updateLessonPosition } = require('../../Controllers/Admin/AddCourse/lessonController');
 const { createCourse, getCourseForAdmin, getAllCourse, addOrUpdateAuthorImage, addOrUpdateCourseImage, updateCourse, getCourseById, hardDeleteCourse, allowAffiliateCourse,
-    disAllowAffiliateCourse, deleteAuthorImage, deleteCourseImage, publicCourse, unPublicCourse, updatePosition } = require('../../Controllers/Admin/AddCourse/courseController');
+    disAllowAffiliateCourse, deleteAuthorImage, deleteCourseImage, publicCourse, unPublicCourse, updateCoursePosition } = require('../../Controllers/Admin/AddCourse/courseController');
 const { uploadLessonVideo, hardDeleteLessonVideo, getAllVideoByLessonId, addOrUpdateThumbNail, uploadVideoEmbeddedCode } = require('../../Controllers/Admin/AddCourse/lessonVideosController');
 const { createLessonQuiz, getAllQuizByLessonId, hardDeleteLessonQuiz, updateLessonQuiz } = require('../../Controllers/Admin/AddCourse/lessonQuizController');
 const { addBanner, updateBanner, addPDF, hardDeletePDF, addResource, hardDeleteResource } = require('../../Controllers/Admin/AddCourse/lessonFileController');
@@ -92,7 +92,7 @@ router.put("/updateCourse/:id", verifyAdminToken, isSuperAdmin, updateCourse);
 router.delete("/deleteAuthorImage/:id", verifyAdminToken, isSuperAdmin, deleteAuthorImage);
 router.delete("/deleteCourseImage/:id", verifyAdminToken, isSuperAdmin, deleteCourseImage);
 router.delete("/hardDeleteCourse/:id", verifyAdminToken, isSuperAdmin, hardDeleteCourse);
-router.put("/updatePosition", verifyAdminToken, isSuperAdmin, updatePosition);
+router.put("/coursePosition", verifyAdminToken, isSuperAdmin, updateCoursePosition);
 // Section
 router.post("/createSection", verifyAdminToken, isSuperAdmin, createSection);
 router.get("/sections/:courseId", verifyAdminToken, isSuperAdmin, getAllSectionByCourseIdForAdmin);
@@ -100,6 +100,7 @@ router.put("/publicSection/:id", verifyAdminToken, isSuperAdmin, publicSection);
 router.put("/updateSection/:id", verifyAdminToken, isSuperAdmin, updateSection);
 router.put("/unPublicSection/:id", verifyAdminToken, isSuperAdmin, unPublicSection);
 router.delete("/hardDeleteSection/:id", verifyAdminToken, isSuperAdmin, hardeleteSection);
+router.put("/sectionPosition", verifyAdminToken, isSuperAdmin, updateSectionPosition);
 // Lesson
 router.post("/createLesson", verifyAdminToken, isSuperAdmin, createLesson);
 router.get("/lesson/:id", verifyAdminToken, isSuperAdmin, getLessonByLessonIdForAdmin);
@@ -107,6 +108,7 @@ router.put("/publicLesson/:id", verifyAdminToken, isSuperAdmin, publicLesson);
 router.put("/updateLesson/:id", verifyAdminToken, isSuperAdmin, updateLesson);
 router.put("/unPublicLesson/:id", verifyAdminToken, isSuperAdmin, unPublicLesson);
 router.delete("/hardDeleteLesson/:id", verifyAdminToken, isSuperAdmin, hardDeleteLesson);
+router.put("/lessonPosition", verifyAdminToken, isSuperAdmin, updateLessonPosition);
 // Files
 router.post("/addBanner/:lessonId", verifyAdminToken, isSuperAdmin, uploadImage.single("lessonBanner"), addBanner);
 router.post("/addPDF/:lessonId", verifyAdminToken, isSuperAdmin, uploadPDF.array("lessonPDF", 10), addPDF);

@@ -11,6 +11,7 @@ const Assignment = db.assignment;
 const LessonQuiz = db.lessonQuiz;
 const LessonText = db.lessonText;
 const axios = require('axios');
+const { updateSectionPosition } = require("../../../Middlewares/Validate/validateCourse");
 const { deleteMultiFile } = require("../../../Util/deleteFile");
 const cloudinary = require("cloudinary").v2;
 
@@ -410,6 +411,67 @@ exports.unPublicSection = async (req, res) => {
         res.status(200).send({
             success: true,
             message: `Section unpublished seccessfully!`
+        });
+    } catch (err) {
+        // console.log(err);
+        res.status(500).send({
+            success: false,
+            err: err.message
+        });
+    }
+};
+
+exports.updateSectionPosition = async (req, res) => {
+    try {
+         // Validate Body
+         const { error } = updateSectionPosition(req.body);
+         if (error) {
+             return res.status(400).send(error.details[0].message);
+         }
+        const compareArrays = (a, b) => a.length === b.length && a.every((element, index) => element === b[index]);
+        const { updatedPosition, courseId } = req.body;
+        // find course
+        const section = await Section.findAll({
+            where: {
+                adminId: req.admin.id,
+                courseId: courseId
+            },
+            order: [
+                ['id', 'ASC']
+            ]
+        });
+        if (section.length !== updatedPosition.length) {
+            return res.status(400).json({
+                success: false,
+                message: "Please send all sections position!"
+            });
+        }
+        const dataSectionId = [];
+        const reqSectionId = [];
+        for (let i = 0; i < section.length; i++) {
+            dataSectionId.push(section[i].id);
+        }
+        for (let i = 0; i < updatedPosition.length; i++) {
+            reqSectionId.push(updatedPosition[i].sectionId);
+        }
+        const check = compareArrays(dataSectionId.sort(), reqSectionId.sort());
+        if (check === false) {
+            return res.status(400).json({
+                success: false,
+                message: "All section should be present!"
+            });
+        }
+        // Update section position
+        for (let i = 0; i < updatedPosition.length; i++) {
+            await Section.update({
+                position: updatedPosition[i].position
+            }, {
+                where: { id: updatedPosition[i].sectionId }
+            });
+        }
+        res.status(200).send({
+            success: true,
+            message: `Section position updated successfully!`
         });
     } catch (err) {
         // console.log(err);

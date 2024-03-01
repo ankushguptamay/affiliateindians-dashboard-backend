@@ -121,3 +121,19 @@ exports.lessonTextValidation = (data) => {
     }) // .options({ allowUnknown: true });
     return schema.validate(data);
 }
+
+exports.updateSectionPosition = (data) => {
+    const schema = joi.object().keys({
+        courseId: joi.string().required(),
+        updatedPosition: joi.array().required()
+    }) // .options({ allowUnknown: true });
+    return schema.validate(data);
+}
+
+exports.updateLessonPosition = (data) => {
+    const schema = joi.object().keys({
+        sectionId: joi.string().required(),
+        updatedPosition: joi.array().required()
+    }) // .options({ allowUnknown: true });
+    return schema.validate(data);
+}
