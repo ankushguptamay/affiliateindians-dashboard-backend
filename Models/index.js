@@ -276,6 +276,7 @@ db.lesson.hasMany(db.lessonText, { foreignKey: "lessonId", as: "lessonTexts" });
 // }).catch((err) => { console.log(err) });
 
 // queryInterface.addColumn("courses", "position", { type: DataTypes.INTEGER }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-
+queryInterface.addColumn("sections", "position", { type: DataTypes.INTEGER }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+queryInterface.addColumn("lessons", "position", { type: DataTypes.INTEGER }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 module.exports = db;

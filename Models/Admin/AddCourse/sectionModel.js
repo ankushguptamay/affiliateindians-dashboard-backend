@@ -12,6 +12,9 @@ module.exports = (sequelize, DataTypes) => {
         isPublic: {
             type: DataTypes.BOOLEAN,
             defaultValue: false
+        },
+        position: {
+            type: DataTypes.INTEGER
         }
     }, {
         paranoid: true
