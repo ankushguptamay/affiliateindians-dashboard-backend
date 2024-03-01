@@ -264,42 +264,42 @@ db.lesson.hasMany(db.lessonText, { foreignKey: "lessonId", as: "lessonTexts" });
 //     }
 // }).catch((err) => { console.log(err) });
 
-// db.course.findAll().then((res) => {
-//     for (let i = 0; i < res.length; i++) {
-//         const courseId = res[i].id;
-//         db.section.findAll({
-//             where: { courseId: courseId },
-//             order: [
-//                 ['createdAt', 'ASC']
-//             ]
-//         })
-//             .then((sec) => {
-//                 for (let j = 0; j < sec.length; j++) {
-//                     const sectionId = sec[j].id;
-//                     db.section.update({ position: j + 1 }, { where: { id: sectionId } }).then(() => { console.log(`${j + 1} updated!`) }).catch((err) => { console.log(err) });
-//                     db.lesson.findAll({
-//                         where: { sectionId: sectionId },
-//                         order: [
-//                             ['createdAt', 'ASC']
-//                         ]
-//                     })
-//                         .then((les) => {
-//                             for (let k = 0; k < les.length; k++) {
-//                                 const lessonId = les[k].id;
-//                                 db.lesson.update({ position: k + 1 }, { where: { id: lessonId } }).then(() => { console.log(`${k + 1} updated!`) }).catch((err) => { console.log(err) });
-//                             }
-//                         })
-//                         .catch(() => {
-//                             console.log(`Error on lesson`)
-//                         });
-//                 }
-//             })
-//             .catch((err) => { console.log(`Error on course ${res[i].title}`) })
-//     }
-// }).catch((err) => { console.log(err) });
+db.course.findAll().then((res) => {
+    for (let i = 0; i < res.length; i++) {
+        const courseId = res[i].id;
+        db.section.findAll({
+            where: { courseId: courseId },
+            order: [
+                ['createdAt', 'ASC']
+            ]
+        })
+            .then((sec) => {
+                for (let j = 0; j < sec.length; j++) {
+                    const sectionId = sec[j].id;
+                    db.section.update({ position: j + 1 }, { where: { id: sectionId } }).then(() => { console.log(`${j + 1} updated!`) }).catch((err) => { console.log(err) });
+                    db.lesson.findAll({
+                        where: { sectionId: sectionId },
+                        order: [
+                            ['createdAt', 'ASC']
+                        ]
+                    })
+                        .then((les) => {
+                            for (let k = 0; k < les.length; k++) {
+                                const lessonId = les[k].id;
+                                db.lesson.update({ position: k + 1 }, { where: { id: lessonId } }).then(() => { console.log(`${k + 1} updated!`) }).catch((err) => { console.log(err) });
+                            }
+                        })
+                        .catch(() => {
+                            console.log(`Error on lesson`)
+                        });
+                }
+            })
+            .catch((err) => { console.log(`Error on course ${res[i].title}`) })
+    }
+}).catch((err) => { console.log(err) });
 
 // queryInterface.addColumn("courses", "position", { type: DataTypes.INTEGER }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.addColumn("sections", "position", { type: DataTypes.INTEGER }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
-queryInterface.addColumn("lessons", "position", { type: DataTypes.INTEGER }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.addColumn("sections", "position", { type: DataTypes.INTEGER }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
+// queryInterface.addColumn("lessons", "position", { type: DataTypes.INTEGER }).then((res) => { console.log(res) }).catch((err) => { console.log(err) });
 
 module.exports = db;
