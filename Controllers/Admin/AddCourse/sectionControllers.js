@@ -85,8 +85,8 @@ exports.getAllSectionByCourseIdForAdmin = async (req, res) => {
                 }]
             }],
             order: [
-                ['createdAt', 'ASC'],
-                [{ model: Lesson, as: "lessons" }, 'createdAt', 'ASC'],
+                ['position', 'ASC'],
+                [{ model: Lesson, as: "lessons" }, 'position', 'ASC'],
                 [{ model: Lesson, as: "lessons" }, { model: LessonVideo, as: "lessonVideos" }, 'createdAt', 'ASC'],
                 [{ model: Lesson, as: "lessons" }, { model: LessonFile, as: "lessonFiles" }, 'createdAt', 'ASC'],
                 [{ model: Lesson, as: "lessons" }, { model: LessonQuiz, as: "lessonQuizs" }, 'createdAt', 'ASC'],
