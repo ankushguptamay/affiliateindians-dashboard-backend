@@ -262,13 +262,13 @@ db.lesson.hasMany(db.lessonText, { foreignKey: "lessonId", as: "lessonTexts" });
 //     }
 // }).catch((err) => { console.log(err) });
 
-db.emailCredential.update({
-    EMAIL_API_KEY: process.env.EMAIL_API_KEY
-}, {
-    where: {
-        email: "support@affiliateindians.com"
-    }
-}).then(() => { console.log("Updated") }).catch((err) => { console.log(err) });
+// db.emailCredential.update({
+//     EMAIL_API_KEY: process.env.EMAIL_API_KEY
+// }, {
+//     where: {
+//         email: "support@affiliateindians.com"
+//     }
+// }).then(() => { console.log("Updated") }).catch((err) => { console.log(err) });
 
 // db.course.findAll().then((res) => {
 //     for (let i = 0; i < res.length; i++) {

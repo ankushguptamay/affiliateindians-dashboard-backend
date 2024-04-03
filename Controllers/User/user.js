@@ -680,7 +680,6 @@ exports.sendOTPForForgetPassword = async (req, res) => {
                 ['createdAt', 'ASC']
             ]
         });
-        console.log("ALL " + emailCredential);
         let finaliseEmailCredential;
         for (let i = 0; i < emailCredential.length; i++) {
             if (parseInt(emailCredential[i].emailSend) < 300) {
@@ -702,7 +701,6 @@ exports.sendOTPForForgetPassword = async (req, res) => {
         }
         // Send OTP to Email By Brevo
         if (finaliseEmailCredential.plateForm === "BREVO") {
-            console.log(finaliseEmailCredential);
             let defaultClient = brevo.ApiClient.instance;
             let apiKey = defaultClient.authentications['api-key'];
             apiKey.apiKey = finaliseEmailCredential.EMAIL_API_KEY;
