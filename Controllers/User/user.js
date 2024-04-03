@@ -680,6 +680,7 @@ exports.sendOTPForForgetPassword = async (req, res) => {
                 ['createdAt', 'ASC']
             ]
         });
+        console.log("ALL " + emailCredential);
         let finaliseEmailCredential;
         for (let i = 0; i < emailCredential.length; i++) {
             if (parseInt(emailCredential[i].emailSend) < 300) {
@@ -701,6 +702,7 @@ exports.sendOTPForForgetPassword = async (req, res) => {
         }
         // Send OTP to Email By Brevo
         if (finaliseEmailCredential.plateForm === "BREVO") {
+            console.log(finaliseEmailCredential);
             let defaultClient = brevo.ApiClient.instance;
             let apiKey = defaultClient.authentications['api-key'];
             apiKey.apiKey = finaliseEmailCredential.EMAIL_API_KEY;
@@ -957,13 +959,13 @@ exports.addUserToCourse = async (req, res) => {
 
 exports.bulkUserAddToCourse = async (req, res) => {
     try {
-         // Validate body
-         const { error } = bulkUserAddToCourse(req.body);
-         if (error) {
-             return res.status(400).send(error.details[0].message);
-         }
+        // Validate body
+        const { error } = bulkUserAddToCourse(req.body);
+        if (error) {
+            return res.status(400).send(error.details[0].message);
+        }
         const { userId, courseId } = req.body;
-        if (userId.length>250) {
+        if (userId.length > 250) {
             return res.status(400).send({
                 success: false,
                 message: `Only 250 user allow!`
@@ -985,11 +987,11 @@ exports.bulkUserAddToCourse = async (req, res) => {
                 message: `This course is not present in your courses!`
             });
         }
-        let num =0;
-        for(let i =0; i<userId.length; i++){
+        let num = 0;
+        for (let i = 0; i < userId.length; i++) {
             const isUserCourse = await User_Course.findOne({ where: { courseId: courseId, userId: userId[i], verify: true, status: "paid" } });
             if (!isUserCourse) {
-                num = num +1;
+                num = num + 1;
                 await User_Course.create({ courseId: courseId, userId: userId[i], verify: true, status: "paid" });
             }
         }
