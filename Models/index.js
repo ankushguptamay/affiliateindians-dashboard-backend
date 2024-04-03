@@ -247,22 +247,28 @@ db.course.hasMany(db.lessonText, { foreignKey: "courseId", as: "lessonTexts" });
 db.section.hasMany(db.lessonText, { foreignKey: "sectionId", as: "lessonTexts" });
 db.lesson.hasMany(db.lessonText, { foreignKey: "lessonId", as: "lessonTexts" });
 
-// db.emailCredential.destroy({ where: { email: "affiliateindians@gmail.com" } });
-
 // db.emailCredential.findOne({
 //     where: {
 //         email: ""
 //     }
 // }).then((res) => {
 //     console.log(res);
-//     if (!res) {
-//         db.emailCredential.create({
+//     if (res) {
+//         db.emailCredential.update({
 //             email: "",
 //             plateForm: "BREVO",
 //             EMAIL_API_KEY: ""
 //         });
 //     }
 // }).catch((err) => { console.log(err) });
+
+db.emailCredential.update({
+    EMAIL_API_KEY: process.env.EMAIL_API_KEY
+}, {
+    where: {
+        email: "support@affiliateindians.com"
+    }
+}).then(() => { console.log("Updated") }).catch((err) => { console.log(err) });
 
 // db.course.findAll().then((res) => {
 //     for (let i = 0; i < res.length; i++) {
